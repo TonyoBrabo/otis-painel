@@ -258,8 +258,9 @@
   .prod.bought{opacity:.5}
   .prod.bought .pn{text-decoration:line-through}
   /* cinema - filmes por shopping */
-  .films{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:10px;margin-bottom:6px}
-  .film{background:var(--panel2);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .films{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:9px;margin-bottom:6px}
+  .film{background:var(--panel2);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:block;text-decoration:none;color:inherit}
+  .film:hover{border-color:var(--accent)}
   .film .fp{display:block;width:100%;aspect-ratio:2/3;object-fit:cover;background:#0a0f15}
   .film .fi{padding:7px 8px}
   .film .ft{font-weight:700;font-size:11.5px;line-height:1.2;margin-bottom:3px}
@@ -398,12 +399,12 @@
     <div class="shead"><h2><span class="dot"></span>Cinema - Braga e Matosinhos</h2><button class="tog" aria-label="Minimizar"></button></div>
     <div class="sbody">
       <p class="hint">Viana ja nao tem cinema. Sessoes de hoje/fim de semana (snapshot de 14 Jun) nos 3 cinemas mais proximos. Clica no nome do cinema para horarios e bilhetes sempre atualizados.</p>
-      <div class="evcity"><a href="https://filmspot.pt/cinema/cinemas-nos-braga-parque-25/" target="_blank" rel="noopener">NOS Braga Parque</a> <span class="km">~45 km</span></div>
-      <div class="films" id="cine-braga"></div>
-      <div class="evcity" style="margin-top:14px"><a href="https://filmspot.pt/cinema/cinemas-nos-norteshopping-matosinhos-35/" target="_blank" rel="noopener">NOS NorteShopping</a> <span class="km">~65 km</span></div>
-      <div class="films" id="cine-norte"></div>
-      <div class="evcity" style="margin-top:14px"><a href="https://filmspot.pt/cinema/cinemas-nos-mar-shopping-matosinhos-49/" target="_blank" rel="noopener">NOS MAR Shopping</a> <span class="km">~65 km</span></div>
+      <div class="evcity"><a href="https://filmspot.pt/cinema/cinemas-nos-mar-shopping-matosinhos-49/" target="_blank" rel="noopener">NOS MAR Shopping</a></div>
       <div class="films" id="cine-mar"></div>
+      <div class="evcity" style="margin-top:14px"><a href="https://filmspot.pt/cinema/cinemas-nos-norteshopping-matosinhos-35/" target="_blank" rel="noopener">NOS NorteShopping</a></div>
+      <div class="films" id="cine-norte"></div>
+      <div class="evcity" style="margin-top:14px"><a href="https://filmspot.pt/cinema/cinemas-nos-braga-parque-25/" target="_blank" rel="noopener">NOS Braga Parque</a></div>
+      <div class="films" id="cine-braga"></div>
     </div>
   </section>
 
@@ -416,40 +417,6 @@
         <div class="card"><div class="k">Etapa</div><div class="v">1.1</div><div class="sub">Sofa + TV + iluminacao sala</div></div>
         <div class="card"><div class="k">Gasto estimado</div><div class="v" id="gastoVal">0 <small>EUR</small></div><div class="sub">itens marcados como comprados</div></div>
         <div class="card"><div class="k">Disponivel 1o ano</div><div class="v" id="restoVal">2.700 <small>EUR</small></div><div class="sub">total: 2.700 EUR</div></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ORCAMENTO (sempre fechado por defeito) -->
-  <section id="s-orcamento">
-    <div class="shead"><h2><span class="dot"></span>Orcamento</h2><button class="tog" aria-label="Abrir"></button></div>
-    <div class="sbody">
-      <p class="hint">500 EUR em Junho + 200 EUR/mes ate Maio 2027.</p>
-      <div class="bar"><i id="barFill" style="width:0%"></i></div>
-      <div class="barlabels"><span id="barLeft">0 EUR gastos</span><span id="barRight">2.700 EUR disponiveis</span></div>
-      <div class="two" style="margin-top:16px">
-        <table>
-          <thead><tr><th>Mes</th><th class="num">Disponivel</th><th class="num">Saldo acum.</th></tr></thead>
-          <tbody>
-            <tr><td>Jun 2026</td><td class="num">500</td><td class="num">500</td></tr>
-            <tr><td>Jul 2026</td><td class="num">200</td><td class="num">700</td></tr>
-            <tr><td>Ago 2026</td><td class="num">200</td><td class="num">900</td></tr>
-            <tr><td>Set 2026</td><td class="num">200</td><td class="num">1.100</td></tr>
-            <tr><td>Out 2026</td><td class="num">200</td><td class="num">1.300</td></tr>
-            <tr><td>Nov 2026</td><td class="num">200</td><td class="num">1.500</td></tr>
-          </tbody>
-        </table>
-        <table>
-          <thead><tr><th>Mes</th><th class="num">Disponivel</th><th class="num">Saldo acum.</th></tr></thead>
-          <tbody>
-            <tr><td>Dez 2026</td><td class="num">200</td><td class="num">1.700</td></tr>
-            <tr><td>Jan 2027</td><td class="num">200</td><td class="num">1.900</td></tr>
-            <tr><td>Fev 2027</td><td class="num">200</td><td class="num">2.100</td></tr>
-            <tr><td>Mar 2027</td><td class="num">200</td><td class="num">2.300</td></tr>
-            <tr><td>Abr 2027</td><td class="num">200</td><td class="num">2.500</td></tr>
-            <tr><td>Mai 2027</td><td class="num">200</td><td class="num">2.700</td></tr>
-          </tbody>
-        </table>
       </div>
     </div>
   </section>
@@ -579,46 +546,72 @@
 
   <!-- TREINO CALISTENIA -->
   <section id="s-treino">
-    <div class="shead"><h2><span class="dot"></span>Treino - Calistenia em casa</h2><button class="tog" aria-label="Minimizar"></button></div>
+    <div class="shead"><h2><span class="dot"></span>Treino - Plano Carlos Gil (Axis)</h2><button class="tog" aria-label="Minimizar"></button></div>
     <div class="sbody">
-      <p class="hint">4 dias/semana, ~30 min, nivel iniciante. Aquece 5 min antes (polichinelos + rotacoes); alonga no fim. As sessoes estao no teu calendario (Tony Stark), de manha as 7:00 (antes do trabalho). Clica em "video" para a tecnica.</p>
+      <p class="hint">Fase 1 - Fundacao (semanas 1-4). Recomposicao corporal, 5-6x/semana, 07:15-08:15 no ginasio Axis (Viana). As sessoes estao no calendario (Tony Stark). Clica num exercicio para o video.</p>
 
-      <div class="evcity">Segunda - Empurrar (peito / ombros / triceps)</div>
+      <div class="evcity">Estrutura semanal</div>
       <ul class="weeklist">
-        <li>Flexoes no joelho - 3x8-10 - <a href="https://www.youtube.com/results?search_query=flexoes+no+joelho+tecnica+iniciante" target="_blank" rel="noopener">video</a></li>
-        <li>Flexoes inclinadas (maos na mesa) - 3x8 - <a href="https://www.youtube.com/results?search_query=flexoes+inclinadas+mesa+tecnica" target="_blank" rel="noopener">video</a></li>
-        <li>Pike push-ups (ombros) - 3x6 - <a href="https://www.youtube.com/results?search_query=pike+push+up+tecnica" target="_blank" rel="noopener">video</a></li>
-        <li>Mergulhos na cadeira (triceps) - 3x8 - <a href="https://www.youtube.com/results?search_query=tricep+dips+cadeira+tecnica" target="_blank" rel="noopener">video</a></li>
-        <li>Prancha - 3x20-30s - <a href="https://www.youtube.com/results?search_query=prancha+plank+tecnica+correta" target="_blank" rel="noopener">video</a></li>
+        <li>Seg - Treino A: Push (peito/ombros/triceps) - 50-60 min</li>
+        <li>Ter - Cardio leve (caminhada/eliptica/bicicleta) - 25-30 min</li>
+        <li>Qua - Treino B: Pull (costas/biceps/abs) - 50-60 min</li>
+        <li>Qui - Treino C: Pernas + Core - 45-50 min</li>
+        <li>Sex - Treino D: Upper Hyper (peito/bracos/abs) - 50-60 min</li>
+        <li>Sab - Cardio / ativo - 30 min &nbsp;|&nbsp; Dom - Descanso</li>
       </ul>
 
-      <div class="evcity">Terca - Puxar (costas / biceps)</div>
+      <div class="evcity" style="margin-top:14px">Seg - A: Push</div>
       <ul class="weeklist">
-        <li>Remada australiana (debaixo da mesa) - 3x8 - <a href="https://www.youtube.com/results?search_query=remada+australiana+debaixo+da+mesa" target="_blank" rel="noopener">video</a></li>
-        <li>Superman - 3x12 - <a href="https://www.youtube.com/results?search_query=exercicio+superman+costas" target="_blank" rel="noopener">video</a></li>
-        <li>Remada com toalha na porta - 3x8 - <a href="https://www.youtube.com/results?search_query=remada+toalha+porta+costas" target="_blank" rel="noopener">video</a></li>
-        <li>Bird-dog - 3x10/lado - <a href="https://www.youtube.com/results?search_query=bird+dog+exercicio+tecnica" target="_blank" rel="noopener">video</a></li>
-        <li>Isometria de biceps (toalha) - 3x20s - <a href="https://www.youtube.com/results?search_query=biceps+isometrico+toalha" target="_blank" rel="noopener">video</a></li>
+        <li>Supino plano c/ barra - 4x8-10 (90s)</li>
+        <li>Supino inclinado c/ halteres - 3x10-12 (75s)</li>
+        <li>Crossover cabos / aberturas - 3x12-15 (60s)</li>
+        <li>Press militar c/ halteres - 3x10-12 (75s)</li>
+        <li>Elevacoes laterais - 3x12-15 (60s)</li>
+        <li>Triceps polia (corda) - 3x12-15 (60s)</li>
+        <li>Fundos no banco (dips) - 2xMax (60s)</li>
       </ul>
 
-      <div class="evcity">Quinta - Pernas</div>
+      <div class="evcity" style="margin-top:14px">Qua - B: Pull</div>
       <ul class="weeklist">
-        <li>Agachamentos - 3x12-15 - <a href="https://www.youtube.com/results?search_query=agachamento+tecnica+correta" target="_blank" rel="noopener">video</a></li>
-        <li>Afundos (lunges) - 3x10/perna - <a href="https://www.youtube.com/results?search_query=afundos+lunges+tecnica" target="_blank" rel="noopener">video</a></li>
-        <li>Ponte de gluteos - 3x15 - <a href="https://www.youtube.com/results?search_query=ponte+de+gluteos+exercicio" target="_blank" rel="noopener">video</a></li>
-        <li>Elevacao de gemeos - 3x20 - <a href="https://www.youtube.com/results?search_query=elevacao+de+gemeos+exercicio" target="_blank" rel="noopener">video</a></li>
-        <li>Agachamento na parede (wall sit) - 3x30s - <a href="https://www.youtube.com/results?search_query=wall+sit+agachamento+parede" target="_blank" rel="noopener">video</a></li>
+        <li>Puxada a frente (lat pulldown) - 4x8-10 (90s)</li>
+        <li>Remada c/ haltere (1 braco) - 3x10-12 (75s)</li>
+        <li>Remada sentado cabos - 3x10-12 (75s)</li>
+        <li>Face pulls - 3x15-20 (60s)</li>
+        <li>Curl barra EZ - 3x10-12 (60s)</li>
+        <li>Curl martelo (halteres) - 3x12-15 (60s)</li>
+        <li>Prancha frontal - 3x30-45s &nbsp;|&nbsp; Crunch polia alta - 3x15-20</li>
       </ul>
 
-      <div class="evcity">Sexta - Core (abdominais)</div>
+      <div class="evcity" style="margin-top:14px">Qui - C: Pernas + Core</div>
       <ul class="weeklist">
-        <li>Prancha - 3x30s - <a href="https://www.youtube.com/results?search_query=prancha+plank+tecnica+correta" target="_blank" rel="noopener">video</a></li>
-        <li>Prancha lateral - 3x20s/lado - <a href="https://www.youtube.com/results?search_query=prancha+lateral+tecnica" target="_blank" rel="noopener">video</a></li>
-        <li>Dead bug - 3x10/lado - <a href="https://www.youtube.com/results?search_query=dead+bug+exercicio+tecnica" target="_blank" rel="noopener">video</a></li>
-        <li>Elevacao de pernas (deitado) - 3x12 - <a href="https://www.youtube.com/results?search_query=elevacao+de+pernas+deitado+abdominais" target="_blank" rel="noopener">video</a></li>
-        <li>Mountain climbers - 3x20 - <a href="https://www.youtube.com/results?search_query=mountain+climbers+tecnica" target="_blank" rel="noopener">video</a></li>
+        <li>Agachamento c/ barra - 4x8-10 (120s)</li>
+        <li>Leg press - 3x10-12 (90s)</li>
+        <li>Extensao de pernas - 3x12-15 (60s)</li>
+        <li>Curl de pernas - 3x10-12 (60s)</li>
+        <li>Elevacao de gemeos - 4x15-20 (45s)</li>
+        <li>Prancha lateral - 2x30s/lado &nbsp;|&nbsp; Bicycle crunch - 3x20</li>
       </ul>
-      <p class="upd">Progressao: quando um exercicio ficar facil, sobe as repeticoes ou avanca para a versao mais dificil (ex: flexoes no joelho para flexoes normais). Diz-me se quiseres mudar o horario das sessoes.</p>
+
+      <div class="evcity" style="margin-top:14px">Sex - D: Upper Hyper</div>
+      <ul class="weeklist">
+        <li>Supino inclinado c/ barra - 4x10-12 (75s)</li>
+        <li>Aberturas c/ halteres (plano) - 3x12-15 (60s)</li>
+        <li>Flexoes (push-ups) - 3xMax (60s)</li>
+        <li>Curl concentrado - 3x12-15 (60s)</li>
+        <li>Triceps extensao overhead - 3x12-15 (60s)</li>
+        <li>Superset: Curl + Tricep dip - 3x(12+12) (75s)</li>
+        <li>Ab wheel / rollout - 3x8-12 &nbsp;|&nbsp; Leg raise - 3x12-15</li>
+      </ul>
+
+      <div class="evcity" style="margin-top:14px">Nutricao (2000-2200 kcal | 140-160g proteina)</div>
+      <ul class="weeklist">
+        <li>Proteina em TODAS as refeicoes; legumes/salada ao almoco e jantar</li>
+        <li>Azeite: 1 fio (medir); agua 2.5-3L/dia</li>
+        <li>Cerveja so ao sabado (max 3), zero durante a semana</li>
+        <li>Fome entre refeicoes: fruta ou iogurte, nunca pao/bolachas</li>
+        <li>Cozinhar em batch ao domingo (arroz, frango, legumes)</li>
+      </ul>
+      <p class="upd">Plano do Carlos Gil (via Gustavo), Abr 2026, v1.0. Semanas 1-2 tecnica; 3-4 carga progressiva (+2.5kg compostos); reavaliar apos 4 semanas. Metricas a segunda em jejum: peso, cintura, peito, braco, fotos.</p>
     </div>
   </section>
 
@@ -758,12 +751,12 @@
   function gInit(){
     if(!(window.google&&google.accounts&&google.accounts.oauth2)){return setTimeout(gInit,300);}
     gTokenClient=google.accounts.oauth2.initTokenClient({
-      client_id:CLIENT_ID, scope:GSCOPE,
+      client_id:CLIENT_ID, scope:GSCOPE, hint:"daniel.queiros.lima@gmail.com",
       callback:function(resp){ if(resp&&resp.access_token){ gToken=resp.access_token; gSetBtn("Google ligado",true); fetchCalLive(); } }
     });
     try{ gTokenClient.requestAccessToken({prompt:""}); }catch(e){}
   }
-  function gConnect(){ if(gTokenClient){ gTokenClient.requestAccessToken({prompt:"select_account consent"}); } else { gInit(); } }
+  function gConnect(){ if(gTokenClient){ gTokenClient.requestAccessToken({prompt:""}); } else { gInit(); } }
   function fetchCalLive(){
     if(!gToken)return;
     var tMin=new Date(now); tMin.setDate(tMin.getDate()-35); tMin.setHours(0,0,0,0);
@@ -919,9 +912,9 @@
     document.getElementById("gastoVal").innerHTML=fmt(gasto)+" <small>EUR</small>";
     document.getElementById("restoVal").innerHTML=fmt(resto)+" <small>EUR</small>";
     var pct=Math.min(100,Math.round(gasto/TOTAL*100));
-    document.getElementById("barFill").style.width=pct+"%";
-    document.getElementById("barLeft").textContent=fmt(gasto)+" EUR gastos ("+pct+"%)";
-    document.getElementById("barRight").textContent=fmt(resto)+" EUR por usar";
+    var bf=document.getElementById("barFill"); if(bf)bf.style.width=pct+"%";
+    var bl=document.getElementById("barLeft"); if(bl)bl.textContent=fmt(gasto)+" EUR gastos ("+pct+"%)";
+    var br2=document.getElementById("barRight"); if(br2)br2.textContent=fmt(resto)+" EUR por usar";
   }
   (function(){
     var saved=JSON.parse(localStorage.getItem("jarvis:buy")||"{}");
@@ -1024,10 +1017,12 @@
       {t:"Toy Story 5 (estreia 18 Jun)",s:"12:20, 15:00, 17:40, 20:10, 22:50",p:PB+"1084244_pt.jpg"}
     ]
   };
+  var cineUrl={"cine-braga":"https://filmspot.pt/cinema/cinemas-nos-braga-parque-25/","cine-norte":"https://filmspot.pt/cinema/cinemas-nos-norteshopping-matosinhos-35/","cine-mar":"https://filmspot.pt/cinema/cinemas-nos-mar-shopping-matosinhos-49/"};
   Object.keys(cinema).forEach(function(id){
     var el=document.getElementById(id); if(!el)return;
+    var u=cineUrl[id]||"#";
     el.innerHTML=cinema[id].map(function(f){
-      return '<div class="film"><img class="fp" src="'+f.p+'" alt="" loading="lazy" onerror="this.style.display=\'none\'"><div class="fi"><div class="ft">'+esc(f.t)+'</div><div class="fs">'+esc(f.s)+'</div></div></div>';
+      return '<a class="film" href="'+u+'" target="_blank" rel="noopener"><img class="fp" src="'+f.p+'" alt="" loading="lazy" onerror="this.style.display=\'none\'"><div class="fi"><div class="ft">'+esc(f.t)+'</div><div class="fs">'+esc(f.s)+'</div></div></a>';
     }).join("");
   });
 

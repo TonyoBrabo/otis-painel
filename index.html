@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JARVIS - Painel do Daniel</title>
+<style>
+  :root{
+    --bg:#0b0f14; --panel:#111824; --panel2:#0e141d; --line:#1e2937;
+    --txt:#e6edf3; --muted:#8696ab; --accent:#39c5cf; --accent2:#5ee0a0;
+    --alta:#ff6b6b; --media:#ffc14d; --baixa:#6aa6ff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);
+    font-family:"Segoe UI",system-ui,Arial,sans-serif;line-height:1.55}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1140px;margin:0 auto;padding:24px 18px 60px}
+
+  header.top{display:flex;align-items:center;justify-content:space-between;
+    gap:16px;flex-wrap:wrap;margin-bottom:20px}
+  .brand{display:flex;align-items:center;gap:14px}
+  .logo{width:44px;height:44px;border-radius:50%;flex:0 0 auto;
+    background:radial-gradient(circle at 50% 50%,var(--accent),#0b3a40);
+    position:relative;animation:logoPulse 2.4s ease-in-out infinite}
+  .logo::before{content:"";position:absolute;inset:-3px;border-radius:50%;
+    background:conic-gradient(from 0deg,transparent 0 55%,var(--accent2) 75%,#bff7ff 88%,transparent 100%);
+    -webkit-mask:radial-gradient(circle,transparent 58%,#000 60%);mask:radial-gradient(circle,transparent 58%,#000 60%);
+    animation:spin 2.8s linear infinite}
+  .logo::after{content:"";position:absolute;inset:12px;border-radius:50%;
+    background:var(--bg);box-shadow:inset 0 0 9px rgba(57,197,207,.85);
+    animation:logoCore 2.4s ease-in-out infinite}
+  @keyframes logoPulse{0%,100%{box-shadow:0 0 16px rgba(57,197,207,.5)}50%{box-shadow:0 0 32px rgba(57,197,207,.95)}}
+  @keyframes logoCore{0%,100%{inset:12px}50%{inset:14px}}
+  h1{font-size:21px;margin:0;letter-spacing:.5px}
+  .sub{color:var(--muted);font-size:13px}
+  .clock{text-align:right;font-size:12.5px;color:var(--muted)}
+  .clock b{color:var(--txt);font-size:14.5px}
+  .topbtns{margin-top:8px}
+  .ghost{background:none;border:1px solid var(--line);color:var(--muted);
+    border-radius:8px;padding:5px 11px;font-size:12px;cursor:pointer}
+  .ghost:hover{color:var(--txt);border-color:var(--accent)}
+
+  .grid{display:grid;gap:13px}
+  .cards{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+  .card{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:15px}
+  .card .k{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.6px}
+  .card .v{font-size:23px;font-weight:700;margin-top:5px}
+  .card .v small{font-size:13px;color:var(--muted);font-weight:500}
+  .card .sub{margin-top:2px}
+
+  section{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+    margin-bottom:13px;overflow:hidden}
+  section.feature{border-color:rgba(57,197,207,.5);
+    background:linear-gradient(180deg,rgba(57,197,207,.07),transparent 60%);
+    box-shadow:0 0 0 1px rgba(57,197,207,.12),0 8px 26px rgba(0,0,0,.28)}
+  .shead{display:flex;align-items:center;justify-content:space-between;
+    padding:15px 18px;cursor:pointer;user-select:none}
+  .shead:hover{background:rgba(57,197,207,.05)}
+  .shead h2{margin:0;font-size:15.5px;display:flex;align-items:center;gap:10px;font-weight:600}
+  section.feature .shead h2{font-size:16.5px}
+  .shead h2 .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);
+    box-shadow:0 0 9px var(--accent);flex:0 0 auto}
+  .shead .star{font-size:11px;color:var(--accent2);border:1px solid rgba(94,224,160,.4);
+    border-radius:6px;padding:1px 8px;font-weight:700;letter-spacing:.4px}
+  .tog{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);
+    background:var(--panel2);cursor:pointer;position:relative;flex:0 0 auto}
+  .tog::before{content:"";position:absolute;left:50%;top:46%;width:8px;height:8px;
+    border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);
+    transform:translate(-50%,-50%) rotate(45deg);transition:transform .18s}
+  .collapsed .tog::before{transform:translate(-50%,-50%) rotate(-135deg)}
+  .tog:hover::before{border-color:var(--accent)}
+  .sbody{padding:0 18px 18px}
+  .collapsed .sbody{display:none}
+  .hint{color:var(--muted);font-size:12px;margin:0 0 14px}
+
+  .bar{height:11px;border-radius:7px;background:var(--bg);border:1px solid var(--line);
+    overflow:hidden;margin:4px 0 6px}
+  .bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .barlabels{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line)}
+  th{color:var(--muted);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.4px}
+  tr:last-child td{border-bottom:none}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  tr.tot td{font-weight:700;border-top:2px solid var(--line)}
+
+  .badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:700}
+  .b-alta{background:rgba(255,107,107,.14);color:var(--alta);border:1px solid rgba(255,107,107,.38)}
+  .b-media{background:rgba(255,193,77,.14);color:var(--media);border:1px solid rgba(255,193,77,.38)}
+  .b-baixa{background:rgba(106,166,255,.14);color:var(--baixa);border:1px solid rgba(106,166,255,.38)}
+  .b-activa{background:rgba(94,224,160,.14);color:var(--accent2);border:1px solid rgba(94,224,160,.4)}
+  .b-fut{background:rgba(134,150,171,.12);color:var(--muted);border:1px solid var(--line)}
+
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+  @media(max-width:820px){.two{grid-template-columns:1fr}}
+
+  input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent);cursor:pointer}
+  tr.done td{opacity:.45;text-decoration:line-through}
+  tr.done td .badge{text-decoration:none}
+
+  /* Etapas (acordeao de compras) */
+  .etapa{border:1px solid var(--line);border-radius:11px;margin-bottom:9px;
+    overflow:hidden;background:var(--panel2)}
+  .ehead{display:flex;align-items:center;gap:12px;padding:11px 14px;cursor:pointer;user-select:none}
+  .ehead:hover{background:rgba(57,197,207,.05)}
+  .ehead .en{font-weight:700;color:var(--accent2);min-width:30px}
+  .ehead .ef{flex:1;font-size:13.5px}
+  .ehead .ev{color:var(--muted);font-size:12.5px;font-variant-numeric:tabular-nums}
+  .echev{width:24px;height:24px;position:relative;flex:0 0 auto}
+  .echev::before{content:"";position:absolute;left:50%;top:44%;width:7px;height:7px;
+    border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);
+    transform:translate(-50%,-50%) rotate(45deg);transition:transform .18s}
+  .etapa.open .echev::before{transform:translate(-50%,-50%) rotate(-135deg)}
+  .ebody{display:none;padding:0 14px 10px}
+  .etapa.open .ebody{display:block}
+  .etot{display:flex;justify-content:space-between;align-items:center;
+    padding:11px 14px;border:1px dashed var(--line);border-radius:11px;
+    font-size:13.5px;margin-top:4px}
+  .etot b{font-size:15px}
+
+  .pill{display:inline-block;background:var(--panel2);border:1px solid var(--line);
+    border-radius:8px;padding:4px 10px;margin:3px 4px 3px 0;font-size:12.5px;
+    font-family:"Cascadia Code",Consolas,monospace;color:var(--accent)}
+  .pill b{color:var(--muted);font-weight:400}
+  .legend{font-size:12px;color:var(--muted);margin-top:8px}
+
+  .routine{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:11px}
+  .day{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px}
+  .day .d{font-size:12.5px;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;font-weight:700}
+  .day .t{font-size:13px;margin-top:5px}
+  .day.today{border-color:var(--accent);background:rgba(57,197,207,.12)}
+  .day.today .d{color:var(--accent2)}
+  .day.today::after{content:"hoje";float:right;font-size:10px;color:var(--accent2);
+    border:1px solid rgba(94,224,160,.4);border-radius:6px;padding:0 6px;font-weight:700}
+
+  .venue{background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:13px}
+  .venue h3{margin:0 0 8px;font-size:13.5px;display:flex;align-items:center;gap:8px}
+  .venue h3 .tag{font-size:10.5px;color:var(--muted);font-weight:500;
+    border:1px solid var(--line);border-radius:6px;padding:1px 7px}
+  .venue ul{margin:0;padding-left:16px;font-size:13px}
+  .venue li{margin:3px 0}
+  .note{background:rgba(57,197,207,.06);border:1px solid rgba(57,197,207,.25);
+    border-radius:10px;padding:11px 13px;font-size:12.5px;color:var(--txt);margin-top:13px}
+  .note b{color:var(--accent)}
+  .evcity{font-size:13.5px;font-weight:700;margin:16px 0 6px;color:var(--accent2);
+    display:flex;align-items:center;gap:8px}
+  .evcity .km{font-size:10.5px;color:var(--muted);font-weight:500;
+    border:1px solid var(--line);border-radius:6px;padding:1px 7px}
+  .ev{display:grid;grid-template-columns:60px 1fr auto;gap:10px;align-items:baseline;
+    padding:7px 0;border-bottom:1px solid rgba(30,41,55,.55);font-size:13px}
+  .ev:last-child{border-bottom:none}
+  .ev .evd{color:var(--accent);font-weight:700;font-size:12px;white-space:nowrap}
+  .ev .evp{color:var(--muted);font-size:11.5px;text-align:right;white-space:nowrap}
+  .ev .free{color:var(--accent2);font-size:10.5px;border:1px solid rgba(94,224,160,.4);
+    border-radius:6px;padding:0 6px;margin-left:6px;white-space:nowrap}
+  .upd{font-size:11px;color:var(--muted);margin-top:14px}
+  .weeklist{margin:8px 0 0;padding-left:18px;font-size:13px}
+  .weeklist li{margin:7px 0}
+  .weeklist a{font-weight:600}
+  /* barra de topo - acesso ao OTIS */
+  .otisbar{position:sticky;top:0;z-index:30;display:flex;gap:8px;align-items:center;
+    background:rgba(11,15,20,.93);backdrop-filter:blur(8px);border:1px solid var(--line);
+    border-radius:12px;padding:8px 10px;margin-bottom:16px}
+  .otisbar .lbl{font-weight:800;letter-spacing:1px;color:var(--accent);padding:0 4px;font-size:14px}
+  .otisbar input{flex:1;min-width:120px;background:var(--panel2);border:1px solid var(--line);
+    border-radius:8px;color:var(--txt);padding:8px 10px;font-size:13px;font-family:inherit}
+  .otisbar input:focus{outline:none;border-color:var(--accent)}
+  .barbtn{background:var(--accent);color:#04222a;border:none;border-radius:8px;padding:8px 12px;
+    font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;text-decoration:none;display:inline-block}
+  .barbtn.alt{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+  .barbtn:hover{opacity:.88}
+  @media(max-width:600px){.otisbar{flex-wrap:wrap}.otisbar input{order:5;flex-basis:100%}}
+  /* navegacao do calendario semanal */
+  .weeknav{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .navb{width:32px;height:32px;border-radius:8px;border:1px solid var(--line);
+    background:var(--panel2);cursor:pointer;position:relative}
+  .navb::before{content:"";position:absolute;top:50%;width:8px;height:8px;
+    border-left:2px solid var(--muted);border-bottom:2px solid var(--muted)}
+  #weekPrev::before{left:55%;transform:translate(-50%,-50%) rotate(45deg)}
+  #weekNext::before{left:45%;transform:translate(-50%,-50%) rotate(-135deg)}
+  .navb:hover::before{border-color:var(--accent)}
+  .weekrange{font-weight:700;font-size:14px;min-width:160px;text-align:center}
+  .agtoggle{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;margin-bottom:13px}
+  .agbtn{background:var(--panel2);color:var(--muted);border:none;padding:7px 15px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit}
+  .agbtn+.agbtn{border-left:1px solid var(--line)}
+  .agbtn.active{background:var(--accent);color:#04222a}
+  .agbtn:hover:not(.active){color:var(--txt)}
+  #weekcal{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  /* meteorologia - icones animados em CSS */
+  .dateline{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:wrap}
+  .wxnow{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:700;color:var(--txt)}
+  .day .dwx{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;color:var(--muted);font-weight:600}
+  .day .dwx b{color:var(--txt)}
+  .wx{display:inline-block;width:1.5em;height:1.5em;position:relative;vertical-align:-.35em;font-size:15px}
+  .wxnow .wx{font-size:18px}
+  .wx i{position:absolute;inset:0}
+  .wx-cloud::before,.wx-rain::before,.wx-snow::before,.wx-storm::before,.wx-part::before{content:"";position:absolute;left:8%;top:42%;width:84%;height:38%;background:#c4d2e2;border-radius:60px;animation:wxdrift 5s ease-in-out infinite}
+  .wx-cloud::after,.wx-rain::after,.wx-snow::after,.wx-storm::after,.wx-part::after{content:"";position:absolute;left:30%;top:22%;width:44%;height:44%;background:#d4e0ed;border-radius:50%;animation:wxdrift 5s ease-in-out infinite}
+  .wx-sun::before{content:"";position:absolute;inset:30%;border-radius:50%;background:#ffd24d;box-shadow:0 0 7px #ffd24d;animation:wxpulse 2.4s ease-in-out infinite}
+  .wx-sun i{border-radius:50%;background:conic-gradient(#ffd24d 0 6%,transparent 6% 19%,#ffd24d 19% 25%,transparent 25% 38%,#ffd24d 38% 44%,transparent 44% 56%,#ffd24d 56% 62%,transparent 62% 75%,#ffd24d 75% 81%,transparent 81% 94%,#ffd24d 94%);-webkit-mask:radial-gradient(circle,transparent 44%,#000 46%);mask:radial-gradient(circle,transparent 44%,#000 46%);animation:spin 10s linear infinite}
+  .wx-part i{inset:auto;right:4%;top:6%;width:46%;height:46%;border-radius:50%;background:#ffd24d;box-shadow:0 0 6px #ffd24d;animation:wxpulse 2.4s ease-in-out infinite}
+  .wx-rain i{top:70%;left:16%;width:68%;height:30%;background:linear-gradient(#5bb8ff,#5bb8ff) 10% 0/2px 55% no-repeat,linear-gradient(#5bb8ff,#5bb8ff) 50% 0/2px 55% no-repeat,linear-gradient(#5bb8ff,#5bb8ff) 90% 0/2px 55% no-repeat;animation:wxrain .85s linear infinite}
+  .wx-snow i{top:72%;left:16%;width:68%;height:28%;background:radial-gradient(#fff 42%,transparent 44%) 10% 0/5px 5px no-repeat,radial-gradient(#fff 42%,transparent 44%) 50% 2px/5px 5px no-repeat,radial-gradient(#fff 42%,transparent 44%) 90% 0/5px 5px no-repeat;animation:wxsnow 1.8s linear infinite}
+  .wx-storm i{top:62%;left:40%;width:26%;height:36%;background:#ffd24d;clip-path:polygon(55% 0,8% 58%,44% 58%,28% 100%,92% 38%,52% 38%);animation:wxflash 1.4s steps(1) infinite}
+  .wx-fog::before{content:"";position:absolute;left:10%;top:34%;width:80%;height:10%;background:#b9c6d6;border-radius:4px;animation:wxdrift 3s ease-in-out infinite}
+  .wx-fog::after{content:"";position:absolute;left:14%;top:56%;width:72%;height:10%;background:#9fb0c2;border-radius:4px;animation:wxdrift 3.6s ease-in-out infinite reverse}
+  @keyframes wxdrift{0%,100%{transform:translateX(-5%)}50%{transform:translateX(5%)}}
+  @keyframes wxpulse{0%,100%{transform:scale(.9);opacity:.85}50%{transform:scale(1.08);opacity:1}}
+  @keyframes wxrain{0%{background-position:10% -20%,50% 0,90% -20%}100%{background-position:10% 120%,50% 120%,90% 120%}}
+  @keyframes wxsnow{0%{background-position:10% 0,50% 2px,90% 0}100%{background-position:10% 120%,50% 120%,90% 120%}}
+  @keyframes wxflash{0%,100%{opacity:1}50%{opacity:.2}}
+  /* boot OTIS estilo JARVIS */
+  #boot{position:fixed;inset:0;z-index:1000;background:radial-gradient(circle at 50% 44%,#06222a,#04090f 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .6s ease}
+  #boot.hide{opacity:0;pointer-events:none}
+  .boot-rings{width:150px;height:150px;position:relative;margin-bottom:6px}
+  .boot-rings i{position:absolute;inset:0;border-radius:50%;border:2px solid transparent}
+  .boot-rings .r1{border-top-color:var(--accent);border-right-color:var(--accent);animation:spin 1.4s linear infinite}
+  .boot-rings .r2{inset:16px;border-bottom-color:var(--accent2);border-left-color:var(--accent2);animation:spin 1.9s linear infinite reverse}
+  .boot-rings .r3{inset:34px;border-top-color:rgba(57,197,207,.55);border-left-color:rgba(57,197,207,.55);animation:spin 1.05s linear infinite}
+  .boot-core{position:absolute;inset:52px;border-radius:50%;background:radial-gradient(circle,#bff7ff,var(--accent) 55%,#0b3a40);box-shadow:0 0 34px var(--accent);animation:wxpulse 1.2s ease-in-out infinite}
+  .boot-title{font-size:34px;font-weight:800;letter-spacing:9px;color:#e8feff;text-shadow:0 0 20px var(--accent);animation:bootflick 1.7s ease both}
+  .boot-sub{font-size:11px;letter-spacing:3px;color:var(--accent2);text-transform:uppercase}
+  .boot-bar{width:230px;height:4px;border-radius:3px;background:#0b2a30;overflow:hidden}
+  .boot-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));animation:bootfill 2.3s ease forwards}
+  .boot-status{font-size:12px;color:var(--muted);font-family:Consolas,monospace;height:15px}
+  @keyframes bootfill{to{width:100%}}
+  @keyframes bootflick{0%{opacity:0}10%{opacity:1}13%{opacity:.3}18%{opacity:1}55%{opacity:1}58%{opacity:.5}62%{opacity:1}100%{opacity:1}}
+  .boot-rings .sweep{position:absolute;inset:6px;border-radius:50%;
+    background:conic-gradient(from 0deg,rgba(57,197,207,.5),transparent 28%);
+    -webkit-mask:radial-gradient(circle,transparent 30%,#000 31%);mask:radial-gradient(circle,transparent 30%,#000 31%);
+    animation:spin 2.1s linear infinite}
+  #boot::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(57,197,207,.045) 3px 4px)}
+  .boot-hint{font-size:11px;color:var(--accent);letter-spacing:1px;opacity:.85;
+    animation:wxpulse 1.6s ease-in-out infinite;margin-top:2px}
+  /* eventos do calendario nos dias */
+  .devs{list-style:none;margin:8px 0 0;padding:0;font-size:11.5px}
+  .devs li{padding:3px 0 3px 11px;position:relative;color:var(--txt);line-height:1.3;
+    border-bottom:1px solid rgba(30,41,55,.5)}
+  .devs li:last-child{border-bottom:none}
+  .devs li::before{content:"";position:absolute;left:0;top:8px;width:4px;height:4px;border-radius:50%;background:var(--accent)}
+  .noev{font-size:11.5px;color:var(--muted);margin-top:8px;font-style:italic}
+  .day.today{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 8px 22px rgba(57,197,207,.18)}
+  /* lista de compras - mobilia e casa */
+  .prodgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px;margin-top:4px}
+  .prod{background:var(--panel2);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+  .prod .ph{display:block;aspect-ratio:1/1;background:#0a0f15;overflow:hidden}
+  .prod .ph img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .25s}
+  .prod .ph:hover img{transform:scale(1.06)}
+  .prod .info{padding:10px 11px;display:flex;flex-direction:column;gap:5px;flex:1}
+  .prod .pn{font-size:12.5px;font-weight:600;line-height:1.25}
+  .prod .meta{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:auto}
+  .prod .price{font-weight:800;color:var(--accent2);font-size:14px;white-space:nowrap}
+  .prod .store{font-size:10.5px;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:1px 6px}
+  .prod .buy{display:block;text-align:center;background:var(--accent);color:#04222a;font-weight:700;font-size:12px;padding:7px;text-decoration:none}
+  .prod .buy:hover{opacity:.9}
+  .prod .chk{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);padding:8px 11px;cursor:pointer;user-select:none}
+  .prod.bought{opacity:.5}
+  .prod.bought .pn{text-decoration:line-through}
+  @media(max-width:560px){.ev{grid-template-columns:54px 1fr}.ev .evp{grid-column:2;text-align:left}}
+
+  footer{color:var(--muted);font-size:12px;text-align:center;margin-top:26px}
+  .reset{background:none;border:1px solid var(--line);color:var(--muted);
+    border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer}
+  .reset:hover{color:var(--txt);border-color:var(--accent)}
+</style>
+</head>
+<body>
+
+<!-- ARRANQUE OTIS (estilo JARVIS) -->
+<div id="boot">
+  <div class="boot-rings"><i class="r1"></i><i class="r2"></i><i class="r3"></i><span class="sweep"></span><div class="boot-core"></div></div>
+  <div class="boot-title">OTIS</div>
+  <div class="boot-sub">Organizational Task &amp; Intelligence System</div>
+  <div class="boot-bar"><i></i></div>
+  <div class="boot-status" id="bootStatus">A iniciar...</div>
+  <div class="boot-hint">clica para entrar com som</div>
+</div>
+
+<div class="wrap">
+
+  <!-- BARRA DE ACESSO AO OTIS -->
+  <div class="otisbar">
+    <span class="lbl">OTIS</span>
+    <input id="cmdInput" placeholder="Escreve um comando (ex: dia, lista leite, eventos) e copia para a sessao">
+    <button class="barbtn" id="cmdCopy">Copiar comando</button>
+    <a class="barbtn alt" id="openChat" href="https://claude.ai" target="_blank" rel="noopener">Abrir conversa</a>
+  </div>
+
+  <header class="top">
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        <h1>OTIS</h1>
+        <div class="sub">Organizational Task &amp; Intelligence System</div>
+      </div>
+    </div>
+    <div class="clock">
+      <div class="dateline"><span id="data"><b>--</b></span><span id="wxNow" class="wxnow"></span></div>
+      <div id="prox"></div>
+      <div class="topbtns"><button class="ghost" id="toggleAll">Minimizar tudo</button></div>
+    </div>
+  </header>
+
+  <!-- ROTINA SEMANAL (destaque, primeiro) -->
+  <section id="s-rotina" class="feature">
+    <div class="shead"><h2><span class="dot"></span>Rotina semanal</h2><button class="tog" aria-label="Minimizar"></button></div>
+    <div class="sbody">
+      <div class="weeknav">
+        <button class="navb" id="weekPrev" aria-label="Semana anterior"></button>
+        <div class="weekrange" id="weekRange">--</div>
+        <button class="navb" id="weekNext" aria-label="Semana seguinte"></button>
+        <button class="ghost" id="weekToday">Hoje</button>
+      </div>
+      <div class="agtoggle">
+        <button class="agbtn" data-mode="work">Iron Man</button>
+        <button class="agbtn" data-mode="life">Tony Stark</button>
+      </div>
+      <p class="hint" id="rotinaHint"></p>
+      <div class="routine" id="weekcal"></div>
+    </div>
+  </section>
+
+  <!-- AGENDA CULTURAL -->
+  <section id="s-cultura">
+    <div class="shead"><h2><span class="dot"></span>Agenda cultural - Viana e Porto</h2><button class="tog" aria-label="Minimizar"></button></div>
+    <div class="sbody">
+      <p class="hint">Dividida por cidade. Em baixo, o que esta a decorrer na proxima semana com link para bilhetes.</p>
+      <div class="two">
+        <div class="venue">
+          <h3>Viana e Alto Minho <span class="tag">base - junto a casa</span></h3>
+          <div class="ev"><span class="evd">Sab 13</span><span class="evt">Dia do Porto de Viana - barcos, Navio Gil Eannes, animacao<span class="free">gratis</span></span></div>
+          <div class="ev"><span class="evd">Sab 13</span><span class="evt">Folclore + mercado de sabores, Praca da Republica<span class="free">gratis</span></span></div>
+          <div class="ev"><span class="evd">Dom 14</span><span class="evt">44o Festival de Folclore, Ponte de Lima - 15:30</span></div>
+          <div class="ev"><span class="evd">ate 2 Ago</span><span class="evt">Exposicao "Mana - Agua Mae", Museu de Caminha</span></div>
+          <p class="upd"><a href="https://www.cm-viana-castelo.pt" target="_blank" rel="noopener">Agenda da Camara</a> - <a href="https://www.viralagenda.com/pt/viana-do-castelo" target="_blank" rel="noopener">Viral Agenda</a> - <a href="https://vianafestas.com/eventos/" target="_blank" rel="noopener">Festas de Viana</a></p>
+        </div>
+        <div class="venue">
+          <h3>Porto <span class="tag">~70 km - 1h de carro</span></h3>
+          <div class="ev"><span class="evd">Sab 13</span><span class="evt">Casa da Musica - Cibermusica (16:00) e Sala Suggia (18:00)</span></div>
+          <div class="ev"><span class="evd">Sab 27</span><span class="evt">Opera Puccini: Suor Angelica + Gianni Schicchi - 21:00 - <a href="https://www.ticketline.pt/evento/suor-angelica-gianni-schicchi-103478" target="_blank" rel="noopener">bilhetes</a> (20-45 EUR)</span></div>
+          <div class="ev"><span class="evd">Dom 28</span><span class="evt">The Arena Battle - dancas urbanas, Coliseu</span></div>
+          <p class="upd"><a href="https://casadamusica.com/agenda/" target="_blank" rel="noopener">Casa da Musica</a> - <a href="https://www.coliseu.pt" target="_blank" rel="noopener">Coliseu</a> - <a href="https://www.ticketline.pt" target="_blank" rel="noopener">Ticketline</a></p>
+        </div>
+      </div>
+
+      <div class="evcity">A decorrer na proxima semana - 15 a 21 Jun</div>
+      <ul class="weeklist">
+        <li>Seg 15 - Concerto de Encerramento do Ano Letivo, Casa da Musica, 21:00 - <a href="https://casadamusica.com/agenda/" target="_blank" rel="noopener">bilhetes</a></li>
+        <li>Ter 16 - Anavitoria (folk-pop), Casa da Musica (Sala Suggia), 21:00 - <a href="https://casadamusica.com/agenda/" target="_blank" rel="noopener">bilhetes</a></li>
+        <li>Qua 17 - Pedro &amp; Helder Moutinho (fado), Casa da Musica, 21:30 - <a href="https://casadamusica.com/agenda/" target="_blank" rel="noopener">bilhetes</a></li>
+        <li>Qui 18 - Cesar Soares canta Ney Matogrosso, Casa da Musica, 21:30 - <a href="https://casadamusica.com/agenda/" target="_blank" rel="noopener">bilhetes</a></li>
+        <li>Sex 19 - Desire Haze, Casa da Musica (Esplanada), 22:00 - <span class="free">entrada livre</span></li>
+        <li>16-19 - Concertos das Festas, Tui-Valenca, 22:30 - <span class="free">entrada livre</span></li>
+        <li>Sex 19 - Cinema no Palco, Cerveira, 21:30 - <span class="free">entrada livre</span></li>
+        <li>18-21 - Festas de Viana - <a href="https://vianafestas.com/eventos/" target="_blank" rel="noopener">programa</a></li>
+      </ul>
+      <p class="upd">Atualizado a 13 Jun 2026. Confirma data, hora e preco na bilheteira antes de ires. Bilhetes do Coliseu tambem na <a href="https://www.bol.pt" target="_blank" rel="noopener">BOL</a>.</p>
+
+      <div class="evcity" style="margin-top:18px">Cinema</div>
+      <p class="hint">Viana ja nao tem cinema (a Cineplace fechou no inicio de 2026). Os mais proximos sao em Braga e Matosinhos. Clica para as sessoes e horarios atualizados:</p>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <a class="barbtn" href="https://bragaparque.pt/cinema/" target="_blank" rel="noopener">NOS Braga Parque</a>
+        <a class="barbtn" href="https://cinecartaz.publico.pt/cinema/zon-lusomundo-norteshopping-17583" target="_blank" rel="noopener">NOS NorteShopping</a>
+        <a class="barbtn" href="https://filmspot.pt/cinema/cinemas-nos-mar-shopping-matosinhos-49/" target="_blank" rel="noopener">NOS MAR Shopping</a>
+      </div>
+
+      <div class="evcity" style="margin-top:18px">Formula 1 2026 - proximas corridas</div>
+      <ul class="weeklist">
+        <li>28 Jun - GP da Austria (Spielberg)</li>
+        <li>5 Jul - GP da Gra-Bretanha (Silverstone)</li>
+        <li>19 Jul - GP da Belgica (Spa)</li>
+        <li>26 Jul - GP da Hungria (Budapeste)</li>
+        <li>23 Ago - GP dos Paises Baixos (Zandvoort)</li>
+        <li>6 Set - GP de Italia (Monza)</li>
+        <li>13 Set - GP de Madrid</li>
+        <li>27 Set - GP do Azerbaijao (Baku)</li>
+        <li>11 Out - GP de Singapura</li>
+        <li>25 Out - GP dos EUA (Austin)</li>
+        <li>1 Nov - GP do Mexico</li>
+        <li>8 Nov - GP do Brasil (Interlagos)</li>
+        <li>21 Nov - GP de Las Vegas (corrida ao sabado)</li>
+        <li>29 Nov - GP do Catar (Lusail)</li>
+        <li>6 Dez - GP de Abu Dhabi (Yas Marina)</li>
+      </ul>
+      <p class="upd">Datas das corridas (domingo); qualificacao no dia anterior. Tudo no teu calendario (Tony Stark). Horas exatas em <a href="https://f1calendar.com/" target="_blank" rel="noopener">f1calendar.com</a>.</p>
+    </div>
+  </section>
+
+  <!-- RESUMO -->
+  <section id="s-resumo">
+    <div class="shead"><h2><span class="dot"></span>Resumo</h2><button class="tog" aria-label="Minimizar"></button></div>
+    <div class="sbody">
+      <div class="grid cards">
+        <div class="card"><div class="k">Fase actual</div><div class="v">1 <small>de 4</small></div><div class="sub">Mobilar o apartamento</div></div>
+        <div class="card"><div class="k">Etapa</div><div class="v">1.1</div><div class="sub">Sofa + TV + iluminacao sala</div></div>
+        <div class="card"><div class="k">Gasto estimado</div><div class="v" id="gastoVal">0 <small>EUR</small></div><div class="sub">itens marcados como comprados</div></div>
+        <div class="card"><div class="k">Disponivel 1o ano</div><div class="v" id="restoVal">2.700 <small>EUR</small></div><div class="sub">total: 2.700 EUR</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ORCAMENTO (sempre fechado por defeito) -->
+  <section id="s-orcamento">
+    <div class="shead"><h2><span class="dot"></span>Orcamento</h2><button class="tog" aria-label="Abrir"></button></div>
+    <div class="sbody">
+      <p class="hint">500 EUR em Junho + 200 EUR/mes ate Maio 2027.</p>
+      <div class="bar"><i id="barFill" style="width:0%"></i></div>
+      <div class="barlabels"><span id="barLeft">0 EUR gastos</span><span id="barRight">2.700 EUR disponiveis</span></div>
+      <div class="two" style="margin-top:16px">
+        <table>
+          <thead><tr><th>Mes</th><th class="num">Disponivel</th><th class="num">Saldo acum.</th></tr></thead>
+          <tbody>
+            <tr><td>Jun 2026</td><td class="num">500</td><td class="num">500</td></tr>
+            <tr><td>Jul 2026</td><td class="num">200</td><td class="num">700</td></tr>
+            <tr><td>Ago 2026</td><td class="num">200</td><td class="num">900</td></tr>
+            <tr><td>Set 2026</td><td class="num">200</td><td class="num">1.100</td></tr>
+            <tr><td>Out 2026</td><td class="num">200</td><td class="num">1.300</td></tr>
+            <tr><td>Nov 2026</td><td class="num">200</td><td class="num">1.500</td></tr>
+          </tbody>
+        </table>
+        <table>
+          <thead><tr><th>Mes</th><th class="num">Disponivel</th><th class="num">Saldo acum.</th></tr></thead>
+          <tbody>
+            <tr><td>Dez 2026</td><td class="num">200</td><td class="num">1.700</td></tr>
+            <tr><td>Jan 2027</td><td class="num">200</td><td class="num">1.900</td></tr>
+            <tr><td>Fev 2027</td><td class="num">200</td><td class="num">2.100</td></tr>
+            <tr><td>Mar 2027</td><td class="num">200</td><td class="num">2.300</td></tr>
+            <tr><td>Abr 2027</td><td class="num">200</td><td class="num">2.500</td></tr>
+            <tr><td>Mai 2027</td><td class="num">200</td><td class="num">2.700</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTO: FASES + COMPRAS (unificado) -->
+  <section id="s-projecto">
+    <div class="shead"><h2><span class="dot"></span>Fases do projecto e compras</h2><button class="tog" aria-label="Minimizar"></button></div>
+    <div class="sbody">
+      <table>
+        <thead><tr><th>Fase</th><th>Descricao</th><th>Periodo</th><th class="num">Orcamento</th><th>Estado</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Mobilar o apartamento</td><td>Jun-Out 2026</td><td class="num">1.300</td><td><span class="badge b-activa">Activa</span></td></tr>
+          <tr><td>2</td><td>Renovar casa de banho</td><td>Inicio 2027</td><td class="num">1.500-2.500</td><td><span class="badge b-fut">Futura</span></td></tr>
+          <tr><td>3</td><td>Renovar cozinha</td><td>Meados-fim 2027</td><td class="num">2.000-3.500</td><td><span class="badge b-fut">Futura</span></td></tr>
+          <tr><td>4</td><td>Janelas vidro duplo</td><td>2028</td><td class="num">2.000-4.000</td><td><span class="badge b-fut">Futura</span></td></tr>
+        </tbody>
+      </table>
+
+      <p class="hint" style="margin:16px 0 10px">Sub-etapas da Fase 1 - <b style="color:var(--accent)">clica numa etapa para abrir a lista de compras</b></p>
+
+      <div class="etapa" data-etapa="1.1">
+        <div class="ehead"><span class="en">1.1</span><span class="ef">Sofa + TV + iluminacao sala <span class="badge b-activa">actual</span></span><span class="ev">Jun - 500 EUR</span><span class="echev"></span></div>
+        <div class="ebody"><table>
+          <tr data-price="150" data-key="sofa"><td><input type="checkbox"></td><td>Sofa 2-3 lugares (2a mao)</td><td class="num">150</td><td>OLX/Marketplace</td></tr>
+          <tr data-price="120" data-key="tv"><td><input type="checkbox"></td><td>Televisao</td><td class="num">120</td><td>OLX/Worten</td></tr>
+          <tr data-price="20" data-key="cand1"><td><input type="checkbox"></td><td>Candeeiro de tecto sala</td><td class="num">20</td><td>IKEA/Leroy</td></tr>
+          <tr data-price="25" data-key="cand2"><td><input type="checkbox"></td><td>Candeeiro de pe/mesa</td><td class="num">25</td><td>IKEA</td></tr>
+        </table></div>
+      </div>
+
+      <div class="etapa" data-etapa="1.2">
+        <div class="ehead"><span class="en">1.2</span><span class="ef">Tapete + iluminacao quarto + roupa de cama</span><span class="ev">Jul - 200 EUR</span><span class="echev"></span></div>
+        <div class="ebody"><table>
+          <tr data-price="40" data-key="tapete"><td><input type="checkbox"></td><td>Tapete sala</td><td class="num">40</td><td>IKEA</td></tr>
+          <tr data-price="40" data-key="iluqua"><td><input type="checkbox"></td><td>Iluminacao quarto</td><td class="num">40</td><td>IKEA</td></tr>
+          <tr data-price="30" data-key="roupa"><td><input type="checkbox"></td><td>Roupa de cama extra</td><td class="num">30</td><td>IKEA/Continente</td></tr>
+        </table></div>
+      </div>
+
+      <div class="etapa" data-etapa="1.3">
+        <div class="ehead"><span class="en">1.3</span><span class="ef">Microondas + kit cozinha basico</span><span class="ev">Ago - 200 EUR</span><span class="echev"></span></div>
+        <div class="ebody"><table>
+          <tr data-price="60" data-key="micro"><td><input type="checkbox"></td><td>Microondas</td><td class="num">60</td><td>Worten/Media Markt</td></tr>
+          <tr data-price="40" data-key="panelas"><td><input type="checkbox"></td><td>Conjunto de panelas (3+)</td><td class="num">40</td><td>IKEA/Continente</td></tr>
+          <tr data-price="40" data-key="louca"><td><input type="checkbox"></td><td>Pratos/copos/talheres</td><td class="num">40</td><td>IKEA</td></tr>
+        </table></div>
+      </div>
+
+      <div class="etapa" data-etapa="1.4">
+        <div class="ehead"><span class="en">1.4</span><span class="ef">Utensilios + limpeza + ferro</span><span class="ev">Set - 200 EUR</span><span class="echev"></span></div>
+        <div class="ebody"><table>
+          <tr data-price="30" data-key="utens"><td><input type="checkbox"></td><td>Utensilios de cozinha</td><td class="num">30</td><td>IKEA</td></tr>
+          <tr data-price="40" data-key="limpeza"><td><input type="checkbox"></td><td>Kit de limpeza casa</td><td class="num">40</td><td>Continente</td></tr>
+          <tr data-price="35" data-key="ferro"><td><input type="checkbox"></td><td>Ferro + tabua</td><td class="num">35</td><td>Worten</td></tr>
+        </table></div>
+      </div>
+
+      <div class="etapa" data-etapa="1.5">
+        <div class="ehead"><span class="en">1.5</span><span class="ef">Cortinas + almofadas + itens em falta</span><span class="ev">Out - 200 EUR</span><span class="echev"></span></div>
+        <div class="ebody"><table>
+          <tr data-price="60" data-key="cortinas"><td><input type="checkbox"></td><td>Cortinas/blackout</td><td class="num">60</td><td>IKEA</td></tr>
+          <tr data-price="30" data-key="almof"><td><input type="checkbox"></td><td>Almofadas decorativas</td><td class="num">30</td><td>IKEA</td></tr>
+        </table></div>
+      </div>
+
+      <div class="etot"><span>Total estimado das compras da Fase 1</span><b>760 EUR</b></div>
+    </div>
+  </section>
+
+  <!-- LISTA MOBILIA E CASA -->
+  <section id="s-mobilia">
+    <div class="shead"><h2><span class="dot"></span>Lista de compras - Mobilia e casa</h2><button class="tog" aria-label="Minimizar"></button></div>
+    <div class="sbody">
+      <p class="hint">Produtos encontrados, com foto, loja, preco e link direto. Encontraste algo? Manda o link ao OTIS que eu adiciono aqui com a foto e o preco.</p>
+      <div class="prodgrid" id="prodgrid"></div>
+      <div class="evcity" style="margin-top:18px">Por encontrar</div>
+      <ul class="weeklist">
+        <li>Candeeiro de pe (sala)</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- INVENTARIO -->
+  <section id="s-inv">
+    <div class="shead"><h2><span class="dot"></span>Inventario - o que falta</h2><button class="tog" aria-label="Minimizar"></button></div>
+    <div class="sbody">
+      <p class="hint">Por prioridade. Tica para riscar o que ja resolveste.</p>
+      <div class="two">
+        <table id="invA">
+          <thead><tr><th></th><th>Item</th><th>Prio.</th></tr></thead>
+          <tbody>
+            <tr><td><input type="checkbox"></td><td>Sofa</td><td><span class="badge b-alta">Alta</span></td></tr>
+            <tr><td><input type="checkbox"></td><td>Televisao</td><td><span class="badge b-alta">Alta</span></td></tr>
+            <tr><td><input type="checkbox"></td><td>Iluminacao sala</td><td><span class="badge b-alta">Alta</span></td></tr>
+            <tr><td><input type="checkbox"></td><td>Microondas</td><td><span class="badge b-alta">Alta</span></td></tr>
+            <tr><td><input type="checkbox"></td><td>Panelas/frigideiras</td><td><span class="badge b-alta">Alta</span></td></tr>
+            <tr><td><input type="checkbox"></td><td>Facas + tabua</td><td><span class="badge b-alta">Alta</span></td></tr>
+            <tr><td><input type="checkbox"></td><td>Pratos/copos/talheres</td><td><span class="badge b-alta">Alta</span></td></tr>
+            <tr><td><input type="checkbox"></td><td>Internet</td><td><span class="badge b-alta">Alta</span></td></tr>
+            <tr><td><input type="checkbox"></td><td>Kit limpeza + aspirador</td><td><span class="badge b-alta">Alta</span></td></tr>
+            <tr><td><input type="checkbox"></td><td>Tapete sala</td><td><span class="badge b-media">Media</span></td></tr>
+            <tr><td><input type="checkbox"></td><td>Cortinas sala + quarto</td><td><span class="badge b-media">Media</span></td></tr>
+            <tr><td><input type="checkbox"></td><td>Iluminacao quarto</td><td><span class="badge b-media">Media</span></td></tr>
+          </tbody>
+        </table>
+        <table id="invB">
+          <thead><tr><th></th><th>Item</th><th>Prio.</th></tr></thead>
+          <tbody>
+            <tr><td><input type="checkbox"></td><td>2o jogo roupa de cama</td><td><span class="badge b-media">Media</span></td></tr>
+            <tr><td><input type="checkbox"></td><td>Chaleira electrica</td><td><span class="badge b-media">Media</span></td></tr>
+            <tr><td><input type="checkbox"></td><td>Utensilios cozinha</td><td><span class="badge b-media">Media</span></td></tr>
+            <tr><td><input type="checkbox"></td><td>Tigelas/escorredor</td><td><span class="badge b-media">Media</span></td></tr>
+            <tr><td><input type="checkbox"></td><td>Caixote do lixo</td><td><span class="badge b-media">Media</span></td></tr>
+            <tr><td><input type="checkbox"></td><td>Cesto roupa suja</td><td><span class="badge b-media">Media</span></td></tr>
+            <tr><td><input type="checkbox"></td><td>Ferro + tabua engomar</td><td><span class="badge b-media">Media</span></td></tr>
+            <tr><td><input type="checkbox"></td><td>Extensoes/regletas</td><td><span class="badge b-media">Media</span></td></tr>
+            <tr><td><input type="checkbox"></td><td>Cabides (20+)</td><td><span class="badge b-media">Media</span></td></tr>
+            <tr><td><input type="checkbox"></td><td>Almofadas decorativas</td><td><span class="badge b-baixa">Baixa</span></td></tr>
+            <tr><td><input type="checkbox"></td><td>Torradeira</td><td><span class="badge b-baixa">Baixa</span></td></tr>
+            <tr><td><input type="checkbox"></td><td>Acessorios + organizacao WC</td><td><span class="badge b-baixa">Baixa</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="legend">Ja existe: mesa+cadeiras, movel TV, cama+colchao, guarda-roupa, comoda, mesas cabeceira, frigorifico, fogao, maquina lavar, toalhas, estores, 1 jogo roupa de cama.</p>
+    </div>
+  </section>
+
+  <!-- SMART HOME -->
+  <section id="s-smart">
+    <div class="shead"><h2><span class="dot"></span>Smart home</h2><button class="tog" aria-label="Minimizar"></button></div>
+    <div class="sbody">
+      <p class="hint">Projecto paralelo, por camadas.</p>
+      <table>
+        <tbody>
+          <tr><td>Pre-requisito</td><td>Internet instalada (bloqueia tudo)</td></tr>
+          <tr><td>Ecossistema</td><td><span class="badge b-media">A definir</span> Alexa ou Google Home</td></tr>
+          <tr><td>Orcamento base</td><td>100-150 EUR (hub + lampadas + tomadas)</td></tr>
+          <tr><td>Regra</td><td>So apos internet estavel; preferir Matter</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    Ficheiro local. So a meteorologia usa a internet (open-meteo.com, apenas as coordenadas de Viana). Marcacoes e seccoes ficam guardadas neste navegador.<br>
+    <span style="display:inline-block;margin-top:10px"><button class="reset" id="resetBtn">Repor marcacoes e seccoes</button></span>
+    <div style="margin-top:10px">OTIS - Organizational Task &amp; Intelligence System - assistente pessoal do Daniel</div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  // animacao de arranque estilo JARVIS + som sintetizado (corre sempre que abres/refrescas)
+  (function(){
+    var boot=document.getElementById("boot"); if(!boot)return;
+    var st=document.getElementById("bootStatus");
+    var msgs=["A iniciar nucleo OTIS...","A ligar ao Google Calendar...","A obter meteorologia...","Bem-vindo, Daniel. Sistema online."];
+    var k=0,iv=setInterval(function(){if(st)st.textContent=msgs[k++]||"Sistema online.";if(k>=msgs.length)clearInterval(iv);},620);
+    // som de arranque (Web Audio - sem ficheiro). So toca apos um gesto do utilizador (regra dos browsers).
+    var soou=false;
+    function otisSom(){
+      if(soou)return; soou=true;
+      try{
+        var Ctx=window.AudioContext||window.webkitAudioContext; if(!Ctx)return;
+        var ac=new Ctx(); if(ac.state==="suspended"){ac.resume();}
+        var t=ac.currentTime;
+        var o=ac.createOscillator(),g=ac.createGain();
+        o.type="sawtooth";o.frequency.setValueAtTime(160,t);o.frequency.exponentialRampToValueAtTime(880,t+0.5);
+        g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(0.07,t+0.1);g.gain.exponentialRampToValueAtTime(0.0001,t+0.6);
+        o.connect(g).connect(ac.destination);o.start(t);o.stop(t+0.65);
+        [[660,0.55],[990,0.72]].forEach(function(p){
+          var oo=ac.createOscillator(),gg=ac.createGain();oo.type="sine";oo.frequency.value=p[0];
+          gg.gain.setValueAtTime(0.0001,t+p[1]);gg.gain.exponentialRampToValueAtTime(0.12,t+p[1]+0.03);gg.gain.exponentialRampToValueAtTime(0.0001,t+p[1]+0.2);
+          oo.connect(gg).connect(ac.destination);oo.start(t+p[1]);oo.stop(t+p[1]+0.22);
+        });
+        var pd=ac.createOscillator(),pg=ac.createGain();pd.type="triangle";pd.frequency.value=110;
+        pg.gain.setValueAtTime(0.0001,t);pg.gain.exponentialRampToValueAtTime(0.05,t+0.2);pg.gain.exponentialRampToValueAtTime(0.0001,t+1.1);
+        pd.connect(pg).connect(ac.destination);pd.start(t);pd.stop(t+1.2);
+      }catch(e){}
+    }
+    function onGesto(){otisSom();["pointerdown","keydown"].forEach(function(ev){document.removeEventListener(ev,onGesto);});}
+    ["pointerdown","keydown"].forEach(function(ev){document.addEventListener(ev,onGesto);});
+    function fechar(){boot.classList.add("hide");setTimeout(function(){if(boot&&boot.parentNode)boot.parentNode.removeChild(boot);},700);}
+    var to=setTimeout(fechar,2800);
+    boot.addEventListener("click",function(){clearTimeout(to);clearInterval(iv);otisSom();fechar();});
+  })();
+  var dias=["domingo","segunda-feira","terca-feira","quarta-feira","quinta-feira","sexta-feira","sabado"];
+  var meses=["Janeiro","Fevereiro","Marco","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+  var now=new Date();
+  document.getElementById("data").innerHTML="<b>"+dias[now.getDay()]+", "+now.getDate()+" de "+meses[now.getMonth()]+" "+now.getFullYear()+"</b>";
+  var d=new Date(now); var add=(4-d.getDay()+7)%7; if(add===0&&now.getHours()>=22)add=7;
+  d.setDate(d.getDate()+add);
+  document.getElementById("prox").textContent="Proxima quinta de compras: "+d.getDate()+" "+meses[d.getMonth()].slice(0,3);
+
+  // calendario semanal navegavel + meteorologia (open-meteo)
+  var wd=now.getDay(); // 0 dom ... 6 sab
+  var rotina={
+    1:"Sem tarefa fixa - planear a semana",
+    2:"Sem tarefa fixa",
+    3:"Rever lista de compras - 20:00",
+    4:"Compras de supermercado - 18:00",
+    5:"Ver agenda cultural (Viana/Porto) - 18:00",
+    6:"Cultura + ir buscar itens OLX",
+    0:"Cultura / descanso"
+  };
+  var nomes={1:"Segunda",2:"Terca",3:"Quarta",4:"Quinta",5:"Sexta",6:"Sabado",0:"Domingo"};
+  var baseMonday=new Date(now); baseMonday.setHours(0,0,0,0);
+  baseMonday.setDate(now.getDate()+(wd===0?-6:1-wd));
+  var weekOffset=0;
+  var wxDaily={};
+  function pad(n){return(n<10?"0":"")+n;}
+  function dkey(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());}
+  function wxClass(c){
+    if(c===0)return"wx-sun";
+    if(c===1||c===2)return"wx-part";
+    if(c===3)return"wx-cloud";
+    if(c===45||c===48)return"wx-fog";
+    if((c>=51&&c<=67)||(c>=80&&c<=82))return"wx-rain";
+    if((c>=71&&c<=77)||c===85||c===86)return"wx-snow";
+    if(c>=95)return"wx-storm";
+    return"wx-cloud";
+  }
+  function wxIco(c){return '<span class="wx '+wxClass(c)+'"><i></i></span>';}
+  function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+  // eventos do Google Calendar (snapshot sincronizado a 14 Jun 2026, intervalo 8-22 Jun)
+  var calEvents = {
+    "2026-06-08":["09:00 In Bound Leads","09:30 Daily kick-off","09:45 Novos RNAL/RNET","10:45 Call Backs/ Follow Ups","12:15 Cold Calling Session","14:15 1:1 Daniel","14:30 In Bound Leads","14:45 FreeStyle (Call Backs/Follow Ups/Cold Calling)","16:30 Project Tony Stark","18:00 Nati"],
+    "2026-06-09":["09:00 In Bound Leads","09:30 Daily kick-off","09:45 Novos RNAL/RNET","10:45 Call Backs/ Follow Ups","11:00 Rua Fernão Martins da Costa 86","12:15 Cold Calling Session","14:30 In Bound Leads","14:45 FreeStyle (Call Backs/Follow Ups/Cold Calling)","16:30 Project Tony Stark"],
+    "2026-06-10":["09:00 In Bound Leads","09:45 Novos RNAL/RNET","10:45 Call Backs/ Follow Ups","12:15 Cold Calling Session","14:30 In Bound Leads","14:45 FreeStyle (Call Backs/Follow Ups/Cold Calling)","16:30 Project Tony Stark"],
+    "2026-06-11":["09:00 In Bound Leads","09:30 Daily kick-off","09:45 Novos RNAL/RNET","10:45 Call Backs/ Follow Ups","12:15 Cold Calling Session","13:00 Almoço de Equipa -Tragam fome e boa disposição","14:30 In Bound Leads","14:45 FreeStyle (Call Backs/Follow Ups/Cold Calling)","16:30 Project Tony Stark"],
+    "2026-06-12":["09:00 In Bound Leads","09:30 Daily kick-off","09:45 Novos RNAL/RNET","10:00 Bruno Pinho","10:45 Call Backs/ Follow Ups","11:00 Meeting CLS 19 Apts","12:00 Paulo Vidal","12:15 Cold Calling Session","14:30 In Bound Leads","14:45 FreeStyle (Call Backs/Follow Ups/Cold Calling)","16:30 Project Tony Stark"],
+    "2026-06-15":["dia inteiro - Etapa 1.1: Sofa + TV + iluminacao sala (500 EUR)","09:00 In Bound Leads","09:30 Daily kick-off","09:45 Novos RNAL/RNET","10:45 Call Backs/ Follow Ups","12:15 Cold Calling Session","14:30 In Bound Leads","14:45 FreeStyle (Call Backs/Follow Ups/Cold Calling)","16:30 Project Tony Stark","18:00 Nati"],
+    "2026-06-16":["09:00 In Bound Leads","09:30 Daily kick-off","09:45 Novos RNAL/RNET","10:45 Call Backs/ Follow Ups","12:15 Cold Calling Session","14:30 In Bound Leads","14:45 FreeStyle (Call Backs/Follow Ups/Cold Calling)","16:30 Project Tony Stark"],
+    "2026-06-17":["09:00 In Bound Leads","09:30 Daily kick-off","09:45 Novos RNAL/RNET","10:45 Call Backs/ Follow Ups","12:15 Cold Calling Session","14:30 In Bound Leads","14:45 FreeStyle (Call Backs/Follow Ups/Cold Calling)","16:00 Ana Guedes","16:30 Project Tony Stark","20:00 OTIS: rever lista de compras"],
+    "2026-06-18":["09:00 In Bound Leads","09:30 Daily kick-off","09:45 Novos RNAL/RNET","10:45 Call Backs/ Follow Ups","12:15 Cold Calling Session","14:30 In Bound Leads","14:45 FreeStyle (Call Backs/Follow Ups/Cold Calling)","16:30 Project Tony Stark","18:00 Compras de supermercado"],
+    "2026-06-19":["09:00 In Bound Leads","09:30 Daily kick-off","09:45 Novos RNAL/RNET","10:45 Call Backs/ Follow Ups","12:15 Cold Calling Session","14:30 In Bound Leads","14:45 FreeStyle (Call Backs/Follow Ups/Cold Calling)","16:30 Project Tony Stark","18:00 Ver agenda cultural (Viana/Porto)"],
+    "2026-06-22":["09:00 In Bound Leads","09:30 Daily kick-off","09:45 Novos RNAL/RNET","10:45 Call Backs/ Follow Ups","12:15 Cold Calling Session","14:30 In Bound Leads","14:45 FreeStyle (Call Backs/Follow Ups/Cold Calling)","16:30 Project Tony Stark"]
+  };
+  var agendaMode=localStorage.getItem("jarvis:agenda")||"work";
+  function evCat(t){return /OTIS|supermercado|agenda cultural|Etapa 1|Nati|F1|Mundial|GP /i.test(t)?"life":"work";}
+  function renderWeek(){
+    var mon=new Date(baseMonday); mon.setDate(baseMonday.getDate()+weekOffset*7);
+    var whtml="";
+    [1,2,3,4,5,6,0].forEach(function(di){
+      var off=(di===0?6:di-1);
+      var dt=new Date(mon); dt.setDate(mon.getDate()+off);
+      var isToday=(dt.getFullYear()===now.getFullYear()&&dt.getMonth()===now.getMonth()&&dt.getDate()===now.getDate());
+      var w=wxDaily[dkey(dt)];
+      var wx=w?'<div class="dwx">'+wxIco(w.code)+'<span><b>'+w.max+'&deg;</b> / '+w.min+'&deg;</span></div>':'';
+      var evs=calEvents[dkey(dt)];
+      if(evs){evs=evs.filter(function(x){return evCat(x)===agendaMode;});}
+      var evh=(evs&&evs.length)?'<ul class="devs">'+evs.map(function(x){return '<li>'+esc(x)+'</li>';}).join("")+'</ul>':'<div class="noev">Sem eventos</div>';
+      whtml+='<div class="day'+(isToday?" today":"")+'"><div class="d">'+nomes[di]+' '+dt.getDate()+'</div>'+wx+evh+'</div>';
+    });
+    document.getElementById("weekcal").innerHTML=whtml;
+    var end=new Date(mon); end.setDate(mon.getDate()+6);
+    document.getElementById("weekRange").textContent=mon.getDate()+" "+meses[mon.getMonth()].slice(0,3)+" - "+end.getDate()+" "+meses[end.getMonth()].slice(0,3)+" "+end.getFullYear();
+    document.getElementById("rotinaHint").textContent=(weekOffset===0?"Esta semana. ":"")+"Agenda "+(agendaMode==="work"?"Iron Man (trabalho)":"Tony Stark (pessoal)")+" - Google Calendar (8-22 Jun). Setas para mudar de semana; hoje em destaque.";
+  }
+  document.getElementById("weekPrev").addEventListener("click",function(){weekOffset--;renderWeek();});
+  document.getElementById("weekNext").addEventListener("click",function(){weekOffset++;renderWeek();});
+  document.getElementById("weekToday").addEventListener("click",function(){weekOffset=0;renderWeek();});
+  function setAgenda(m){agendaMode=m;localStorage.setItem("jarvis:agenda",m);document.querySelectorAll(".agbtn").forEach(function(b){b.classList.toggle("active",b.getAttribute("data-mode")===m);});renderWeek();}
+  document.querySelectorAll(".agbtn").forEach(function(b){b.addEventListener("click",function(){setAgenda(b.getAttribute("data-mode"));});});
+  setAgenda(agendaMode);
+  // obter meteorologia (Praia da Amorosa) e voltar a desenhar a semana
+  fetch("https://api.open-meteo.com/v1/forecast?latitude=41.66&longitude=-8.81&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Europe%2FLisbon&forecast_days=14")
+    .then(function(r){return r.json();})
+    .then(function(j){
+      if(j.daily&&j.daily.time){for(var i=0;i<j.daily.time.length;i++){wxDaily[j.daily.time[i]]={code:j.daily.weathercode[i],max:Math.round(j.daily.temperature_2m_max[i]),min:Math.round(j.daily.temperature_2m_min[i])};}}
+      var wn=document.getElementById("wxNow");
+      if(wn&&j.current_weather){wn.innerHTML=wxIco(j.current_weather.weathercode)+'<span>'+Math.round(j.current_weather.temperature)+'&deg;</span>';}
+      renderWeek();
+    })
+    .catch(function(){var wn=document.getElementById("wxNow");if(wn)wn.innerHTML='<span style="color:var(--muted);font-weight:400;font-size:12px">meteo indisponivel</span>';});
+
+  // barra de acesso: copiar comando para a sessao do OTIS
+  var ci=document.getElementById("cmdInput"), cc=document.getElementById("cmdCopy");
+  function copyCmd(){
+    var v=ci.value.trim(); if(!v)return;
+    var done=function(){var o=cc.textContent;cc.textContent="Copiado!";setTimeout(function(){cc.textContent=o},1200);};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(v).then(done).catch(function(){ci.select();document.execCommand("copy");done();});}
+    else{ci.select();document.execCommand("copy");done();}
+  }
+  cc.addEventListener("click",copyCmd);
+  ci.addEventListener("keydown",function(e){if(e.key==="Enter")copyCmd();});
+
+  var TOTAL=2700;
+  var fmt=function(n){return n.toLocaleString("pt-PT")};
+
+  // --- Minimizar seccoes ---
+  document.querySelectorAll("section").forEach(function(sec){
+    var head=sec.querySelector(".shead");
+    var key="jarvis:collapse:"+sec.id;
+    if(sec.id==="s-orcamento"){ sec.classList.add("collapsed"); } // sempre fechado por defeito
+    else if(localStorage.getItem(key)==="1"){ sec.classList.add("collapsed"); }
+    head.addEventListener("click",function(){
+      sec.classList.toggle("collapsed");
+      if(sec.id!=="s-orcamento"){ // orcamento nao guarda estado: volta a fechar ao recarregar
+        localStorage.setItem(key,sec.classList.contains("collapsed")?"1":"0");
+      }
+      syncToggleAll();
+    });
+  });
+  var btnAll=document.getElementById("toggleAll");
+  function syncToggleAll(){
+    var secs=document.querySelectorAll("section");
+    var allCol=Array.prototype.every.call(secs,function(s){return s.classList.contains("collapsed")});
+    btnAll.textContent=allCol?"Expandir tudo":"Minimizar tudo";
+  }
+  btnAll.addEventListener("click",function(){
+    var secs=document.querySelectorAll("section");
+    var allCol=Array.prototype.every.call(secs,function(s){return s.classList.contains("collapsed")});
+    secs.forEach(function(s){
+      if(allCol)s.classList.remove("collapsed");else s.classList.add("collapsed");
+      if(s.id!=="s-orcamento")localStorage.setItem("jarvis:collapse:"+s.id,allCol?"0":"1");
+    });
+    syncToggleAll();
+  });
+  syncToggleAll();
+
+  // --- Acordeao das etapas (compras) ---
+  document.querySelectorAll(".etapa").forEach(function(et){
+    var head=et.querySelector(".ehead");
+    var key="jarvis:etapa:"+et.getAttribute("data-etapa");
+    if(localStorage.getItem(key)==="1")et.classList.add("open");
+    head.addEventListener("click",function(){
+      et.classList.toggle("open");
+      localStorage.setItem(key,et.classList.contains("open")?"1":"0");
+    });
+  });
+
+  // --- Checkboxes de compras (por chave estavel) ---
+  function updateBudget(){
+    var gasto=0;
+    document.querySelectorAll("tr[data-price]").forEach(function(tr){
+      var cb=tr.querySelector("input[type=checkbox]");
+      if(cb&&cb.checked)gasto+=parseInt(tr.getAttribute("data-price"))||0;
+    });
+    var resto=TOTAL-gasto;
+    document.getElementById("gastoVal").innerHTML=fmt(gasto)+" <small>EUR</small>";
+    document.getElementById("restoVal").innerHTML=fmt(resto)+" <small>EUR</small>";
+    var pct=Math.min(100,Math.round(gasto/TOTAL*100));
+    document.getElementById("barFill").style.width=pct+"%";
+    document.getElementById("barLeft").textContent=fmt(gasto)+" EUR gastos ("+pct+"%)";
+    document.getElementById("barRight").textContent=fmt(resto)+" EUR por usar";
+  }
+  (function(){
+    var saved=JSON.parse(localStorage.getItem("jarvis:buy")||"{}");
+    document.querySelectorAll("tr[data-price]").forEach(function(tr){
+      var cb=tr.querySelector("input[type=checkbox]"); if(!cb)return;
+      var k=tr.getAttribute("data-key");
+      if(saved[k]){cb.checked=true;tr.classList.add("done");}
+      cb.addEventListener("change",function(){
+        tr.classList.toggle("done",cb.checked);
+        var s=JSON.parse(localStorage.getItem("jarvis:buy")||"{}");
+        s[k]=cb.checked; localStorage.setItem("jarvis:buy",JSON.stringify(s));
+        updateBudget();
+      });
+    });
+  })();
+
+  // --- Checkboxes do inventario ---
+  function persistInv(tableId,key){
+    var rows=document.querySelectorAll("#"+tableId+" tbody tr");
+    var saved=JSON.parse(localStorage.getItem(key)||"[]");
+    rows.forEach(function(tr,i){
+      var cb=tr.querySelector("input[type=checkbox]"); if(!cb)return;
+      if(saved[i]){cb.checked=true;tr.classList.add("done");}
+      cb.addEventListener("change",function(){
+        tr.classList.toggle("done",cb.checked);
+        var st=[];document.querySelectorAll("#"+tableId+" tbody tr").forEach(function(r){
+          var c=r.querySelector("input[type=checkbox]");st.push(c?c.checked:false);});
+        localStorage.setItem(key,JSON.stringify(st));
+      });
+    });
+  }
+  persistInv("invA","jarvis:invA");
+  persistInv("invB","jarvis:invB");
+  updateBudget();
+
+  // lista de compras de mobilia e casa (produtos com foto/preco/link)
+  var mobilia=[
+    {name:"JÄRRESTAD Pufe c/ arrumação, Djuparp azul escuro", store:"IKEA", price:"69,99 EUR", url:"https://www.ikea.com/pt/pt/p/jaerrestad-pufe-c-arrumacao-djuparp-azul-escuro-10570245/", img:"https://www.ikea.com/pt/pt/images/products/jaerrestad-pufe-c-arrumacao-djuparp-azul-escuro__1320776_pe941352_s5.jpg?f=u"},
+    {name:"DYVLINGE Poltrona giratória, Kelinge laranja", store:"IKEA", price:"199 EUR", url:"https://www.ikea.com/pt/pt/p/dyvlinge-poltrona-giratoria-kelinge-laranja-00581918/", img:"https://www.ikea.com/pt/pt/images/products/dyvlinge-poltrona-giratoria-kelinge-laranja__1322501_pe942192_s5.jpg?f=u"},
+    {name:"VARMBLIXT Candeeiro LED mesa/parede, laranja vidro redondo 30 cm", store:"IKEA", price:"59,99 EUR", url:"https://www.ikea.com/pt/pt/p/varmblixt-candeeiro-led-de-mesa-parede-laranja-vidro-redondo-80499199/", img:"https://www.ikea.com/pt/pt/images/products/varmblixt-candeeiro-led-de-mesa-parede-laranja-vidro-redondo__1116616_pe872535_s5.jpg"},
+    {name:"SPETSBOJ Candeeiro de mesa, regulável, amarelo 22 cm", store:"IKEA", price:"9,99 EUR", url:"https://www.ikea.com/pt/pt/p/spetsboj-candeeiro-de-mesa-intensidade-regulavel-amarelo-40549403/", img:"https://www.ikea.com/pt/pt/images/products/spetsboj-candeeiro-de-mesa-intensidade-regulavel-amarelo__1355566_pe953171_s5.jpg?f=u"},
+    {name:"RÅSKOG/NORRÅVA Carrinho c/ tampa, verm. acastanhado", store:"IKEA", price:"37,99 EUR", url:"https://www.ikea.com/pt/pt/p/raskog-norrava-carrinho-c-tampa-verm-acastanhado-s99622236/", img:"https://www.ikea.com/pt/pt/images/products/raskog-norrava-carrinho-c-tampa-verm-acastanhado__1515754_pe1011568_s5.jpg?f=u"}
+  ];
+  (function(){
+    var grid=document.getElementById("prodgrid"); if(!grid)return;
+    var saved=JSON.parse(localStorage.getItem("jarvis:mobilia")||"{}");
+    if(!mobilia.length){grid.innerHTML='<p class="noev">Ainda sem produtos. Manda um link ao OTIS.</p>';return;}
+    grid.innerHTML=mobilia.map(function(p){
+      var b=saved[p.url]?" bought":"";
+      return '<div class="prod'+b+'" data-url="'+p.url+'">'+
+        '<a class="ph" href="'+p.url+'" target="_blank" rel="noopener"><img src="'+p.img+'" alt="" loading="lazy" onerror="this.parentNode.innerHTML=\'<div style=&quot;display:flex;align-items:center;justify-content:center;height:100%;color:#8696ab;font-size:11px&quot;>sem foto</div>\'"></a>'+
+        '<div class="info"><div class="pn">'+esc(p.name)+'</div>'+
+        '<div class="meta"><span class="store">'+esc(p.store)+'</span><span class="price">'+esc(p.price)+'</span></div></div>'+
+        '<a class="buy" href="'+p.url+'" target="_blank" rel="noopener">Ver / comprar</a>'+
+        '<label class="chk"><input type="checkbox"'+(saved[p.url]?" checked":"")+'> comprado</label>'+
+      '</div>';
+    }).join("");
+    grid.querySelectorAll(".prod").forEach(function(card){
+      var cb=card.querySelector("input[type=checkbox]"), url=card.getAttribute("data-url");
+      cb.addEventListener("change",function(){
+        card.classList.toggle("bought",cb.checked);
+        var s=JSON.parse(localStorage.getItem("jarvis:mobilia")||"{}");
+        if(cb.checked){s[url]=true;}else{delete s[url];}
+        localStorage.setItem("jarvis:mobilia",JSON.stringify(s));
+      });
+    });
+  })();
+
+  document.getElementById("resetBtn").addEventListener("click",function(){
+    if(confirm("Repor marcacoes e seccoes minimizadas?")){
+      Object.keys(localStorage).forEach(function(k){if(k.indexOf("jarvis:")===0)localStorage.removeItem(k)});
+      location.reload();
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -678,7 +678,7 @@
     document.getElementById("weekcal").innerHTML=whtml;
     var end=new Date(mon); end.setDate(mon.getDate()+6);
     document.getElementById("weekRange").textContent=mon.getDate()+" "+meses[mon.getMonth()].slice(0,3)+" - "+end.getDate()+" "+meses[end.getMonth()].slice(0,3)+" "+end.getFullYear();
-    document.getElementById("rotinaHint").textContent=(weekOffset===0?"Esta semana. ":"")+"Agenda "+(agendaMode==="work"?"Iron Man (trabalho)":"Tony Stark (pessoal)")+(gToken?" - Google Calendar live":" - liga o Google (botao em cima) para a agenda live")+". Setas para mudar de semana; hoje em destaque.";
+    document.getElementById("rotinaHint").textContent="";
   }
   document.getElementById("weekPrev").addEventListener("click",function(){weekOffset--;renderWeek();});
   document.getElementById("weekNext").addEventListener("click",function(){weekOffset++;renderWeek();});
@@ -727,7 +727,8 @@
           }).catch(function(){});
         });
         Promise.all(jobs).then(function(){
-          Object.keys(calEvents).forEach(function(k){calEvents[k].sort(function(a,b){return a.t<b.t?-1:(a.t>b.t?1:0);});});
+          var total=0; Object.keys(calEvents).forEach(function(k){calEvents[k].sort(function(a,b){return a.t<b.t?-1:(a.t>b.t?1:0);});total+=calEvents[k].length;});
+          gSetBtn(cals.length+" cal / "+total+" ev",true);
           renderWeek();
         });
       })

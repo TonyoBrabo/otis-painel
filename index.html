@@ -373,6 +373,8 @@
         <li>28 Jun - GP da Austria (Spielberg)</li>
         <li>5 Jul - GP da Gra-Bretanha (Silverstone)</li>
         <li>19 Jul - GP da Belgica (Spa)</li>
+      </ul>
+      <ul class="weeklist" id="f1rest" style="display:none">
         <li>26 Jul - GP da Hungria (Budapeste)</li>
         <li>23 Ago - GP dos Paises Baixos (Zandvoort)</li>
         <li>6 Set - GP de Italia (Monza)</li>
@@ -386,6 +388,7 @@
         <li>29 Nov - GP do Catar (Lusail)</li>
         <li>6 Dez - GP de Abu Dhabi (Yas Marina)</li>
       </ul>
+      <button class="ghost" id="f1toggle">Ver as outras corridas (+12)</button>
       <p class="upd">Datas das corridas (domingo); qualificacao no dia anterior. Tudo no teu calendario (Tony Stark). Horas exatas em <a href="https://f1calendar.com/" target="_blank" rel="noopener">f1calendar.com</a>.</p>
     </div>
   </section>
@@ -807,11 +810,19 @@
     "Tudo sob controlo, Senhor. Ou pelo menos e o que diremos a todos.",
     "Recomendo beber agua e, ja agora, conquistar o mundo com elegancia."
   ];
+  function pickVoz(){
+    var vs=speechSynthesis.getVoices()||[];
+    function find(re){for(var i=0;i<vs.length;i++){var s=(vs[i].name||"")+" "+(vs[i].lang||"");if(re.test(s))return vs[i];}return null;}
+    return find(/Google.*(portug|pt[-_])/i)||find(/Microsoft.*(Portug|pt[-_])/i)||find(/pt[-_]PT/i)||find(/Portug/i)||find(/pt[-_]BR/i)||null;
+  }
   function falarBomDia(){
     if(!("speechSynthesis" in window)){alert("O teu browser nao suporta voz.");return;}
-    var hora=now.getHours();
-    var saud=hora<12?"Bom dia":(hora<20?"Boa tarde":"Boa noite");
-    var txt=saud+", Senhor Daniel. ";
+    var hora=new Date().getHours();
+    var saud;
+    if(hora<12) saud="Bom dia, Senhor Daniel.";
+    else if(hora<21) saud="Boa tarde, Senhor Daniel.";
+    else { saud="Boa noite, "+(Math.random()<0.5?"meu garanhao":"meu pirocudo")+"."; }
+    var txt=saud+" ";
     if(!gToken){ txt+="Ainda nao estou ligado ao seu calendario. Ligue o Google, se for do seu agrado. "; }
     else {
       var evs=(calEvents[dkey(now)]||[]);
@@ -823,11 +834,11 @@
     }
     txt+=" "+frasesDia[Math.floor(Math.random()*frasesDia.length)];
     var u=new SpeechSynthesisUtterance(txt);
-    u.lang="pt-PT"; u.rate=0.98; u.pitch=1.0;
-    var vs=(speechSynthesis.getVoices()||[]).filter(function(v){return /pt-PT|pt_PT|Portug/i.test((v.lang||"")+(v.name||""));});
-    if(vs[0])u.voice=vs[0];
+    var v=pickVoz(); if(v){u.voice=v;u.lang=v.lang;} else {u.lang="pt-PT";}
+    u.rate=0.95; u.pitch=1.0;
     speechSynthesis.cancel(); speechSynthesis.speak(u);
   }
+  if("speechSynthesis" in window){ speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged=function(){speechSynthesis.getVoices();}; }
   var bd=document.getElementById("bomDia"); if(bd){bd.addEventListener("click",falarBomDia);}
 
   // obter meteorologia (Praia da Amorosa) e voltar a desenhar a semana
@@ -1019,6 +1030,9 @@
       return '<div class="film"><img class="fp" src="'+f.p+'" alt="" loading="lazy" onerror="this.style.display=\'none\'"><div class="fi"><div class="ft">'+esc(f.t)+'</div><div class="fs">'+esc(f.s)+'</div></div></div>';
     }).join("");
   });
+
+  var f1t=document.getElementById("f1toggle"), f1r=document.getElementById("f1rest");
+  if(f1t&&f1r){ f1t.addEventListener("click",function(){ var aberto=f1r.style.display!=="none"; f1r.style.display=aberto?"none":"block"; f1t.textContent=aberto?"Ver as outras corridas (+12)":"Ver menos"; }); }
 
   document.getElementById("resetBtn").addEventListener("click",function(){
     if(confirm("Repor marcacoes e seccoes minimizadas?")){

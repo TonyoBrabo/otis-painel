@@ -257,6 +257,13 @@
   .prod .chk{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);padding:8px 11px;cursor:pointer;user-select:none}
   .prod.bought{opacity:.5}
   .prod.bought .pn{text-decoration:line-through}
+  /* cinema - filmes por shopping */
+  .films{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:10px;margin-bottom:6px}
+  .film{background:var(--panel2);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .film .fp{display:block;width:100%;aspect-ratio:2/3;object-fit:cover;background:#0a0f15}
+  .film .fi{padding:7px 8px}
+  .film .ft{font-weight:700;font-size:11.5px;line-height:1.2;margin-bottom:3px}
+  .film .fs{color:var(--muted);font-size:10.5px;line-height:1.4}
   @media(max-width:560px){.ev{grid-template-columns:54px 1fr}.ev .evp{grid-column:2;text-align:left}}
 
   footer{color:var(--muted);font-size:12px;text-align:center;margin-top:26px}
@@ -360,13 +367,6 @@
       </ul>
       <p class="upd">Atualizado a 13 Jun 2026. Confirma data, hora e preco na bilheteira antes de ires. Bilhetes do Coliseu tambem na <a href="https://www.bol.pt" target="_blank" rel="noopener">BOL</a>.</p>
 
-      <div class="evcity" style="margin-top:18px">Cinema</div>
-      <p class="hint">Viana ja nao tem cinema (a Cineplace fechou no inicio de 2026). Os mais proximos sao em Braga e Matosinhos. Clica para as sessoes e horarios atualizados:</p>
-      <div style="display:flex;flex-wrap:wrap;gap:8px">
-        <a class="barbtn" href="https://bragaparque.pt/cinema/" target="_blank" rel="noopener">NOS Braga Parque</a>
-        <a class="barbtn" href="https://cinecartaz.publico.pt/cinema/zon-lusomundo-norteshopping-17583" target="_blank" rel="noopener">NOS NorteShopping</a>
-        <a class="barbtn" href="https://filmspot.pt/cinema/cinemas-nos-mar-shopping-matosinhos-49/" target="_blank" rel="noopener">NOS MAR Shopping</a>
-      </div>
 
       <div class="evcity" style="margin-top:18px">Formula 1 2026 - proximas corridas</div>
       <ul class="weeklist">
@@ -387,6 +387,20 @@
         <li>6 Dez - GP de Abu Dhabi (Yas Marina)</li>
       </ul>
       <p class="upd">Datas das corridas (domingo); qualificacao no dia anterior. Tudo no teu calendario (Tony Stark). Horas exatas em <a href="https://f1calendar.com/" target="_blank" rel="noopener">f1calendar.com</a>.</p>
+    </div>
+  </section>
+
+  <!-- CINEMA -->
+  <section id="s-cinema">
+    <div class="shead"><h2><span class="dot"></span>Cinema - Braga e Matosinhos</h2><button class="tog" aria-label="Minimizar"></button></div>
+    <div class="sbody">
+      <p class="hint">Viana ja nao tem cinema. Sessoes de hoje/fim de semana (snapshot de 14 Jun) nos 3 cinemas mais proximos. Clica no nome do cinema para horarios e bilhetes sempre atualizados.</p>
+      <div class="evcity"><a href="https://filmspot.pt/cinema/cinemas-nos-braga-parque-25/" target="_blank" rel="noopener">NOS Braga Parque</a> <span class="km">~45 km</span></div>
+      <div class="films" id="cine-braga"></div>
+      <div class="evcity" style="margin-top:14px"><a href="https://filmspot.pt/cinema/cinemas-nos-norteshopping-matosinhos-35/" target="_blank" rel="noopener">NOS NorteShopping</a> <span class="km">~65 km</span></div>
+      <div class="films" id="cine-norte"></div>
+      <div class="evcity" style="margin-top:14px"><a href="https://filmspot.pt/cinema/cinemas-nos-mar-shopping-matosinhos-49/" target="_blank" rel="noopener">NOS MAR Shopping</a> <span class="km">~65 km</span></div>
+      <div class="films" id="cine-mar"></div>
     </div>
   </section>
 
@@ -964,6 +978,47 @@
       });
     });
   })();
+
+  // cinema - filmes/sessoes por shopping (snapshot 14 Jun 2026)
+  var PB="https://filmspot.com.pt/images/filmes/posters/thumb/";
+  var cinema={
+    "cine-braga":[
+      {t:"18 buracos para o paraiso",s:"20:40, 23:20",p:PB+"1441488_pt.jpg"},
+      {t:"Backrooms - O Labirinto",s:"14:20, 16:40, 19:00, 22:00, 00:20",p:PB+"1083381_pt.jpg"},
+      {t:"Baleia Assassina",s:"20:50, 23:30",p:PB+"1412598_pt.jpg"},
+      {t:"Bichos a Bordo (VP)",s:"11:20, 14:10, 16:30",p:PB+"1107216_pt.jpg"},
+      {t:"Michael",s:"13:00, 15:40, 18:20, 21:10, 23:50",p:PB+"936075_pt.jpg"},
+      {t:"Mumbo Jumbo (VP)",s:"11:00, 13:50, 16:05, 18:10",p:PB+"1218067_pt.jpg"},
+      {t:"O Dia da Revelacao",s:"14:00, 17:20, 21:00, 00:15",p:PB+"1275779_pt.jpg"},
+      {t:"Scary Movie: What's Up?",s:"13:20, 16:00, 18:40, 21:30, 00:00",p:PB+"1273221_pt.jpg"}
+    ],
+    "cine-norte":[
+      {t:"Backrooms - O Labirinto",s:"13:40, 16:20, 19:00, 21:50, 00:30",p:PB+"1083381_pt.jpg"},
+      {t:"Baleia Assassina",s:"19:10, 21:40, 00:25",p:PB+"1412598_pt.jpg"},
+      {t:"Bichos a Bordo",s:"10:40, 13:20, 15:30, 18:00",p:PB+"1107216_pt.jpg"},
+      {t:"Masters of the Universe",s:"12:35, 15:20, 18:10, 21:00, 00:00",p:PB+"454639_pt.jpg"},
+      {t:"Mumbo Jumbo",s:"11:20, 14:30, 16:50",p:PB+"1218067_pt.jpg"},
+      {t:"O Dia da Revelacao",s:"14:05, 17:15, 20:30, 23:50",p:PB+"1275779_pt.jpg"},
+      {t:"O Diabo Veste Prada 2",s:"12:30, 15:10, 17:50, 20:40, 23:30",p:PB+"1314481_pt.jpg"},
+      {t:"Scary Movie: What's Up?",s:"13:40, 16:00, 18:40, 21:30, 00:10",p:PB+"1273221_pt.jpg"}
+    ],
+    "cine-mar":[
+      {t:"Backrooms - O Labirinto",s:"13:40, 16:00, 18:20, 21:00, 23:20",p:PB+"1083381_pt.jpg"},
+      {t:"Bichos a Bordo (VP)",s:"10:40, 13:20, 15:30, 18:00",p:PB+"1107216_pt.jpg"},
+      {t:"Masters of the Universe",s:"14:10, 17:30, 20:40, 23:40",p:PB+"454639_pt.jpg"},
+      {t:"Michael",s:"12:40, 15:40, 18:50, 22:00",p:PB+"936075_pt.jpg"},
+      {t:"O Dia da Revelacao",s:"13:00, 16:30, 20:00, 23:30",p:PB+"1275779_pt.jpg"},
+      {t:"O Diabo Veste Prada 2",s:"13:10, 15:50, 18:40, 21:30",p:PB+"1314481_pt.jpg"},
+      {t:"Scary Movie: What's Up?",s:"12:50, 15:20, 17:50, 21:20, 23:50",p:PB+"1273221_pt.jpg"},
+      {t:"Toy Story 5 (estreia 18 Jun)",s:"12:20, 15:00, 17:40, 20:10, 22:50",p:PB+"1084244_pt.jpg"}
+    ]
+  };
+  Object.keys(cinema).forEach(function(id){
+    var el=document.getElementById(id); if(!el)return;
+    el.innerHTML=cinema[id].map(function(f){
+      return '<div class="film"><img class="fp" src="'+f.p+'" alt="" loading="lazy" onerror="this.style.display=\'none\'"><div class="fi"><div class="ft">'+esc(f.t)+'</div><div class="fs">'+esc(f.s)+'</div></div></div>';
+    }).join("");
+  });
 
   document.getElementById("resetBtn").addEventListener("click",function(){
     if(confirm("Repor marcacoes e seccoes minimizadas?")){

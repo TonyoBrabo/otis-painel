@@ -268,6 +268,17 @@
   .films{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:9px;margin-bottom:6px}
   .film{background:var(--panel2);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:block;text-decoration:none;color:inherit}
   .film:hover{border-color:var(--accent)}
+  /* inventario - opcoes de compra */
+  .invopts{display:flex;flex-wrap:wrap;gap:8px;padding:2px 0 6px}
+  .invopts a{font-size:12px;background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:5px 10px;color:var(--accent);text-decoration:none}
+  .invopts a:hover{border-color:var(--accent)}
+  #invA td:nth-child(2),#invB td:nth-child(2){cursor:pointer}
+  /* player de musica */
+  .ytrow{display:flex;gap:8px;margin-bottom:10px}
+  .ytrow input{flex:1;background:var(--panel2);border:1px solid var(--line);border-radius:8px;color:var(--txt);padding:8px 10px;font-size:13px;font-family:inherit}
+  .ytrow input:focus{outline:none;border-color:var(--accent)}
+  .ytwrap{position:relative;width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#000}
+  .ytwrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
   .film .fp{display:block;width:100%;aspect-ratio:2/3;object-fit:cover;background:#0a0f15}
   .film .fi{padding:7px 8px}
   .film .ft{font-weight:700;font-size:11.5px;line-height:1.2;margin-bottom:3px}
@@ -404,12 +415,15 @@
       <ul class="weeklist">
         <li>20-28 Jun - Rock in Rio Lisboa (Parque Tejo, Lisboa)</li>
         <li>9-11 Jul - NOS Alive (Alges, Lisboa)</li>
+        <li>Jul (a confirmar) - FMM Festival Musicas do Mundo (Sines)</li>
+        <li>inicio Ago (a confirmar) - Neopop (Viana do Castelo)</li>
         <li>12-15 Ago - Vodafone Paredes de Coura (perto de Viana)</li>
         <li>18-22 Ago - CA Vilar de Mouros (Caminha, ao lado)</li>
+        <li>~20-24 Ago (a confirmar) - Festas da Agonia (Viana do Castelo)</li>
         <li>28-30 Ago - MEO Kalorama (Bela Vista, Lisboa)</li>
         <li>5 Set - Super Bock Super Rock: The Weeknd (Restelo, Lisboa)</li>
       </ul>
-      <p class="upd">Os de Coura e Vilar de Mouros sao mesmo ao pe de ti. Bilhetes em <a href="https://www.bol.pt" target="_blank" rel="noopener">BOL</a> e <a href="https://ticketline.sapo.pt" target="_blank" rel="noopener">Ticketline</a>.</p>
+      <p class="upd">Ordenado por data de inicio. Datas de FMM Sines, Neopop e Festas da Agonia ainda por confirmar (pesquisa atingiu o limite; confirmo mais logo). Coura, Vilar de Mouros, Neopop e Agonia sao no Minho, ao pe de ti. Bilhetes em <a href="https://www.bol.pt" target="_blank" rel="noopener">BOL</a> e <a href="https://ticketline.sapo.pt" target="_blank" rel="noopener">Ticketline</a>.</p>
     </div>
   </section>
 
@@ -631,6 +645,19 @@
         <li>Cozinhar em batch ao domingo (arroz, frango, legumes)</li>
       </ul>
       <p class="upd">Plano do Carlos Gil (via Gustavo), Abr 2026, v1.0. Semanas 1-2 tecnica; 3-4 carga progressiva (+2.5kg compostos); reavaliar apos 4 semanas. Metricas a segunda em jejum: peso, cintura, peito, braco, fotos.</p>
+    </div>
+  </section>
+
+  <!-- MUSICA -->
+  <section id="s-musica">
+    <div class="shead"><h2><span class="dot"></span>Musica</h2><button class="tog" aria-label="Minimizar"></button></div>
+    <div class="sbody">
+      <p class="hint">Cola um link do YouTube (video ou playlist) e carrega Tocar. E o player do YouTube - o YouTube Music com a tua conta nao da numa pagina (limitacao do YouTube).</p>
+      <div class="ytrow">
+        <input id="ytUrl" placeholder="Cola um link do YouTube...">
+        <button class="barbtn" id="ytPlay">Tocar</button>
+      </div>
+      <div class="ytwrap"><iframe id="ytFrame" src="" title="Player de musica" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
     </div>
   </section>
 
@@ -1084,6 +1111,44 @@
 
   var f1t=document.getElementById("f1toggle"), f1r=document.getElementById("f1rest");
   if(f1t&&f1r){ f1t.addEventListener("click",function(){ var aberto=f1r.style.display!=="none"; f1r.style.display=aberto?"none":"block"; f1t.textContent=aberto?"Ver as outras corridas (+12)":"Ver menos"; }); }
+
+  // --- Inventario: 2 opcoes de compra ao clicar (usa wishlist quando possivel) ---
+  function buyOptions(item){
+    var opts=[]; var low=item.toLowerCase();
+    var words=low.split(/[ /+()]+/).filter(function(w){return w.length>3;});
+    mobilia.forEach(function(p){
+      if(opts.length>=2)return;
+      var pn=p.name.toLowerCase();
+      if(words.some(function(w){return pn.indexOf(w)>=0;})) opts.push({label:"★ "+p.name+" - "+p.price, url:p.url});
+    });
+    var slug=low.replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+    if(opts.length<2) opts.push({label:"OLX (2a mao)", url:"https://www.olx.pt/ads/q-"+slug+"/"});
+    if(opts.length<2) opts.push({label:"IKEA / lojas", url:"https://www.ikea.com/pt/pt/search/?q="+encodeURIComponent(item)});
+    return opts;
+  }
+  document.querySelectorAll("#invA tbody tr, #invB tbody tr").forEach(function(tr){
+    var td=tr.children[1]; if(!td)return;
+    td.title="Ver onde comprar";
+    td.addEventListener("click",function(){
+      var nxt=tr.nextElementSibling;
+      if(nxt&&nxt.classList.contains("optrow")){ nxt.remove(); return; }
+      var opts=buyOptions(td.textContent.trim());
+      var r=document.createElement("tr"); r.className="optrow";
+      r.innerHTML='<td></td><td colspan="2"><div class="invopts">'+opts.map(function(o){return '<a href="'+o.url+'" target="_blank" rel="noopener">'+esc(o.label)+'</a>';}).join("")+'</div></td>';
+      tr.parentNode.insertBefore(r, tr.nextSibling);
+    });
+  });
+
+  // --- Player de musica (YouTube) ---
+  (function(){
+    var fr=document.getElementById("ytFrame"), inp=document.getElementById("ytUrl"), btn=document.getElementById("ytPlay");
+    if(!fr)return;
+    function emb(u){ if(!u)return ""; var vid="",list=""; var m=u.match(/[?&]v=([\w-]{6,})/); if(m)vid=m[1]; var b=u.match(/youtu\.be\/([\w-]{6,})/); if(b)vid=b[1]; var e=u.match(/embed\/([\w-]{6,})/); if(e)vid=e[1]; var l=u.match(/[?&]list=([\w-]+)/); if(l)list=l[1]; if(vid&&list)return "https://www.youtube.com/embed/"+vid+"?list="+list; if(list)return "https://www.youtube.com/embed/videoseries?list="+list; if(vid)return "https://www.youtube.com/embed/"+vid; return ""; }
+    function load(u){ var x=emb(u); if(x){fr.src=x; localStorage.setItem("jarvis:yt",u);} else { alert("Link do YouTube nao reconhecido."); } }
+    if(btn)btn.addEventListener("click",function(){load(inp.value.trim());});
+    if(inp)inp.addEventListener("keydown",function(e){if(e.key==="Enter")load(inp.value.trim());});
+    var sv=localStorage.getItem("jarvis:yt"); if(sv){inp.value=sv; var x=emb(sv); if(x)fr.src=x;}
+  })();
 
   document.getElementById("resetBtn").addEventListener("click",function(){
     if(confirm("Repor marcacoes e seccoes minimizadas?")){

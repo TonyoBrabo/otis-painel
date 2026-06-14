@@ -712,7 +712,7 @@
     });
     try{ gTokenClient.requestAccessToken({prompt:""}); }catch(e){}
   }
-  function gConnect(){ if(gTokenClient){ gTokenClient.requestAccessToken({prompt:"consent"}); } else { gInit(); } }
+  function gConnect(){ if(gTokenClient){ gTokenClient.requestAccessToken({prompt:"select_account consent"}); } else { gInit(); } }
   function fetchCalLive(){
     if(!gToken)return;
     var tMin=new Date(now); tMin.setDate(tMin.getDate()-35); tMin.setHours(0,0,0,0);

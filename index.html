@@ -657,20 +657,8 @@
   }
   function wxIco(c){return '<span class="wx '+wxClass(c)+'"><i></i></span>';}
   function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
-  // eventos do Google Calendar (snapshot sincronizado a 14 Jun 2026, intervalo 8-22 Jun)
-  var calEvents = {
-    "2026-06-08":["09:00 In Bound Leads","09:30 Daily kick-off","09:45 Novos RNAL/RNET","10:45 Call Backs/ Follow Ups","12:15 Cold Calling Session","14:15 1:1 Daniel","14:30 In Bound Leads","14:45 FreeStyle (Call Backs/Follow Ups/Cold Calling)","16:30 Project Tony Stark","18:00 Nati"],
-    "2026-06-09":["09:00 In Bound Leads","09:30 Daily kick-off","09:45 Novos RNAL/RNET","10:45 Call Backs/ Follow Ups","11:00 Rua Fernão Martins da Costa 86","12:15 Cold Calling Session","14:30 In Bound Leads","14:45 FreeStyle (Call Backs/Follow Ups/Cold Calling)","16:30 Project Tony Stark"],
-    "2026-06-10":["09:00 In Bound Leads","09:45 Novos RNAL/RNET","10:45 Call Backs/ Follow Ups","12:15 Cold Calling Session","14:30 In Bound Leads","14:45 FreeStyle (Call Backs/Follow Ups/Cold Calling)","16:30 Project Tony Stark"],
-    "2026-06-11":["09:00 In Bound Leads","09:30 Daily kick-off","09:45 Novos RNAL/RNET","10:45 Call Backs/ Follow Ups","12:15 Cold Calling Session","13:00 Almoço de Equipa -Tragam fome e boa disposição","14:30 In Bound Leads","14:45 FreeStyle (Call Backs/Follow Ups/Cold Calling)","16:30 Project Tony Stark"],
-    "2026-06-12":["09:00 In Bound Leads","09:30 Daily kick-off","09:45 Novos RNAL/RNET","10:00 Bruno Pinho","10:45 Call Backs/ Follow Ups","11:00 Meeting CLS 19 Apts","12:00 Paulo Vidal","12:15 Cold Calling Session","14:30 In Bound Leads","14:45 FreeStyle (Call Backs/Follow Ups/Cold Calling)","16:30 Project Tony Stark"],
-    "2026-06-15":["dia inteiro - Etapa 1.1: Sofa + TV + iluminacao sala (500 EUR)","09:00 In Bound Leads","09:30 Daily kick-off","09:45 Novos RNAL/RNET","10:45 Call Backs/ Follow Ups","12:15 Cold Calling Session","14:30 In Bound Leads","14:45 FreeStyle (Call Backs/Follow Ups/Cold Calling)","16:30 Project Tony Stark","18:00 Nati"],
-    "2026-06-16":["09:00 In Bound Leads","09:30 Daily kick-off","09:45 Novos RNAL/RNET","10:45 Call Backs/ Follow Ups","12:15 Cold Calling Session","14:30 In Bound Leads","14:45 FreeStyle (Call Backs/Follow Ups/Cold Calling)","16:30 Project Tony Stark"],
-    "2026-06-17":["09:00 In Bound Leads","09:30 Daily kick-off","09:45 Novos RNAL/RNET","10:45 Call Backs/ Follow Ups","12:15 Cold Calling Session","14:30 In Bound Leads","14:45 FreeStyle (Call Backs/Follow Ups/Cold Calling)","16:00 Ana Guedes","16:30 Project Tony Stark","20:00 OTIS: rever lista de compras"],
-    "2026-06-18":["09:00 In Bound Leads","09:30 Daily kick-off","09:45 Novos RNAL/RNET","10:45 Call Backs/ Follow Ups","12:15 Cold Calling Session","14:30 In Bound Leads","14:45 FreeStyle (Call Backs/Follow Ups/Cold Calling)","16:30 Project Tony Stark","18:00 Compras de supermercado"],
-    "2026-06-19":["09:00 In Bound Leads","09:30 Daily kick-off","09:45 Novos RNAL/RNET","10:45 Call Backs/ Follow Ups","12:15 Cold Calling Session","14:30 In Bound Leads","14:45 FreeStyle (Call Backs/Follow Ups/Cold Calling)","16:30 Project Tony Stark","18:00 Ver agenda cultural (Viana/Porto)"],
-    "2026-06-22":["09:00 In Bound Leads","09:30 Daily kick-off","09:45 Novos RNAL/RNET","10:45 Call Backs/ Follow Ups","12:15 Cold Calling Session","14:30 In Bound Leads","14:45 FreeStyle (Call Backs/Follow Ups/Cold Calling)","16:30 Project Tony Stark"]
-  };
+  // eventos: preenchidos LIVE a partir do Google Calendar apos login (ver fetchCalLive)
+  var calEvents = {};
   var agendaMode=localStorage.getItem("jarvis:agenda")||"work";
   function evCat(t){return /OTIS|supermercado|agenda cultural|Etapa 1|Nati|F1|Mundial|GP /i.test(t)?"life":"work";}
   function renderWeek(){
@@ -683,8 +671,8 @@
       var w=wxDaily[dkey(dt)];
       var wx=w?'<div class="dwx">'+wxIco(w.code)+'<span><b>'+w.max+'&deg;</b> / '+w.min+'&deg;</span></div>':'';
       var evs=calEvents[dkey(dt)];
-      if(evs){evs=evs.filter(function(x){return evCat(x)===agendaMode;});}
-      var evh=(evs&&evs.length)?'<ul class="devs">'+evs.map(function(x){return '<li>'+esc(x)+'</li>';}).join("")+'</ul>':'<div class="noev">Sem eventos</div>';
+      if(evs){evs=evs.filter(function(e){return e.c===agendaMode;});}
+      var evh=(evs&&evs.length)?'<ul class="devs">'+evs.map(function(e){return '<li>'+esc(e.t)+'</li>';}).join("")+'</ul>':'<div class="noev">'+(gToken?"Sem eventos":"Liga o Google")+'</div>';
       whtml+='<div class="day'+(isToday?" today":"")+'"><div class="d">'+nomes[di]+' '+dt.getDate()+'</div>'+wx+evh+'</div>';
     });
     document.getElementById("weekcal").innerHTML=whtml;
@@ -717,21 +705,31 @@
     if(!gToken)return;
     var tMin=new Date(now); tMin.setDate(tMin.getDate()-35); tMin.setHours(0,0,0,0);
     var tMax=new Date(now); tMax.setDate(tMax.getDate()+220);
-    var url="https://www.googleapis.com/calendar/v3/calendars/primary/events?singleEvents=true&orderBy=startTime&maxResults=2500&timeMin="+encodeURIComponent(tMin.toISOString())+"&timeMax="+encodeURIComponent(tMax.toISOString());
-    fetch(url,{headers:{Authorization:"Bearer "+gToken}})
+    var H={Authorization:"Bearer "+gToken};
+    fetch("https://www.googleapis.com/calendar/v3/users/me/calendarList",{headers:H})
       .then(function(r){return r.json();})
-      .then(function(j){
-        if(!j.items)return;
+      .then(function(cl){
+        var cals=(cl.items||[]).filter(function(c){return c.id&&c.id.indexOf("#holiday")<0&&c.id.indexOf("#contacts")<0;});
+        if(!cals.length){cals=[{id:"primary"}];}
         calEvents={};
-        j.items.forEach(function(ev){
-          if(ev.status==="cancelled"||!ev.start)return;
-          var key,label;
-          if(ev.start.dateTime){var dd=new Date(ev.start.dateTime);key=dkey(dd);label=pad(dd.getHours())+":"+pad(dd.getMinutes())+" "+(ev.summary||"(sem titulo)");}
-          else if(ev.start.date){key=ev.start.date.substring(0,10);label="dia inteiro - "+(ev.summary||"(sem titulo)");}
-          else return;
-          (calEvents[key]=calEvents[key]||[]).push(label);
+        var jobs=cals.map(function(c){
+          var cat=/portugalactive/i.test(c.id)?"work":"life";
+          var url="https://www.googleapis.com/calendar/v3/calendars/"+encodeURIComponent(c.id)+"/events?singleEvents=true&orderBy=startTime&maxResults=2500&timeMin="+encodeURIComponent(tMin.toISOString())+"&timeMax="+encodeURIComponent(tMax.toISOString());
+          return fetch(url,{headers:H}).then(function(r){return r.json();}).then(function(j){
+            (j.items||[]).forEach(function(ev){
+              if(ev.status==="cancelled"||!ev.start)return;
+              var key,t;
+              if(ev.start.dateTime){var dd=new Date(ev.start.dateTime);key=dkey(dd);t=pad(dd.getHours())+":"+pad(dd.getMinutes())+" "+(ev.summary||"(sem titulo)");}
+              else if(ev.start.date){key=ev.start.date.substring(0,10);t="dia inteiro - "+(ev.summary||"(sem titulo)");}
+              else return;
+              (calEvents[key]=calEvents[key]||[]).push({t:t,c:cat});
+            });
+          }).catch(function(){});
         });
-        renderWeek();
+        Promise.all(jobs).then(function(){
+          Object.keys(calEvents).forEach(function(k){calEvents[k].sort(function(a,b){return a.t<b.t?-1:(a.t>b.t?1:0);});});
+          renderWeek();
+        });
       })
       .catch(function(){ gSetBtn("Erro - tenta de novo",false); });
   }

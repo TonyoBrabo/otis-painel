@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JARVIS - Painel do Daniel</title>
+<title>OTIS - Painel</title>
 <style>
   :root{
     --bg:#0b0f14; --panel:#111824; --panel2:#0e141d; --line:#1e2937;
@@ -170,6 +170,7 @@
   .barbtn{background:var(--accent);color:#04222a;border:none;border-radius:8px;padding:8px 12px;
     font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;text-decoration:none;display:inline-block}
   .barbtn.alt{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+  .barbtn.on{background:var(--accent2);color:#04231a;border-color:var(--accent2)}
   .barbtn:hover{opacity:.88}
   @media(max-width:600px){.otisbar{flex-wrap:wrap}.otisbar input{order:5;flex-basis:100%}}
   /* navegacao do calendario semanal */
@@ -267,6 +268,7 @@
     border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer}
   .reset:hover{color:var(--txt);border-color:var(--accent)}
 </style>
+<script src="https://accounts.google.com/gsi/client" async></script>
 </head>
 <body>
 
@@ -287,6 +289,7 @@
     <span class="lbl">OTIS</span>
     <input id="cmdInput" placeholder="Escreve um comando (ex: dia, lista leite, eventos) e copia para a sessao">
     <button class="barbtn" id="cmdCopy">Copiar comando</button>
+    <button class="barbtn alt" id="gBtn">Ligar Google</button>
     <a class="barbtn alt" id="openChat" href="https://claude.ai" target="_blank" rel="noopener">Abrir conversa</a>
   </div>
 
@@ -577,7 +580,7 @@
   </section>
 
   <footer>
-    Ficheiro local. So a meteorologia usa a internet (open-meteo.com, apenas as coordenadas de Viana). Marcacoes e seccoes ficam guardadas neste navegador.<br>
+    App online. Le o teu Google Calendar (via login Google) e a meteorologia (open-meteo) em direto. Marcacoes e seccoes ficam guardadas neste navegador.<br>
     <span style="display:inline-block;margin-top:10px"><button class="reset" id="resetBtn">Repor marcacoes e seccoes</button></span>
     <div style="margin-top:10px">OTIS - Organizational Task &amp; Intelligence System - assistente pessoal do Daniel</div>
   </footer>
@@ -691,7 +694,7 @@
     document.getElementById("weekcal").innerHTML=whtml;
     var end=new Date(mon); end.setDate(mon.getDate()+6);
     document.getElementById("weekRange").textContent=mon.getDate()+" "+meses[mon.getMonth()].slice(0,3)+" - "+end.getDate()+" "+meses[end.getMonth()].slice(0,3)+" "+end.getFullYear();
-    document.getElementById("rotinaHint").textContent=(weekOffset===0?"Esta semana. ":"")+"Agenda "+(agendaMode==="work"?"Iron Man (trabalho)":"Tony Stark (pessoal)")+" - Google Calendar (8-22 Jun). Setas para mudar de semana; hoje em destaque.";
+    document.getElementById("rotinaHint").textContent=(weekOffset===0?"Esta semana. ":"")+"Agenda "+(agendaMode==="work"?"Iron Man (trabalho)":"Tony Stark (pessoal)")+(gToken?" - Google Calendar live":" - liga o Google (botao em cima) para a agenda live")+". Setas para mudar de semana; hoje em destaque.";
   }
   document.getElementById("weekPrev").addEventListener("click",function(){weekOffset--;renderWeek();});
   document.getElementById("weekNext").addEventListener("click",function(){weekOffset++;renderWeek();});
@@ -699,6 +702,46 @@
   function setAgenda(m){agendaMode=m;localStorage.setItem("jarvis:agenda",m);document.querySelectorAll(".agbtn").forEach(function(b){b.classList.toggle("active",b.getAttribute("data-mode")===m);});renderWeek();}
   document.querySelectorAll(".agbtn").forEach(function(b){b.addEventListener("click",function(){setAgenda(b.getAttribute("data-mode"));});});
   setAgenda(agendaMode);
+
+  // --- Google Calendar LIVE (login via Google Identity Services) ---
+  var CLIENT_ID="618422129659-47tlddt4lpr0qagcqtjk8d4god6lvpor.apps.googleusercontent.com";
+  var GSCOPE="https://www.googleapis.com/auth/calendar.readonly";
+  var gToken=null, gTokenClient=null;
+  function gSetBtn(txt,on){var b=document.getElementById("gBtn");if(b){b.textContent=txt;b.classList.toggle("on",!!on);}}
+  function gInit(){
+    if(!(window.google&&google.accounts&&google.accounts.oauth2)){return setTimeout(gInit,300);}
+    gTokenClient=google.accounts.oauth2.initTokenClient({
+      client_id:CLIENT_ID, scope:GSCOPE,
+      callback:function(resp){ if(resp&&resp.access_token){ gToken=resp.access_token; gSetBtn("Google ligado",true); fetchCalLive(); } }
+    });
+    try{ gTokenClient.requestAccessToken({prompt:""}); }catch(e){}
+  }
+  function gConnect(){ if(gTokenClient){ gTokenClient.requestAccessToken({prompt:"consent"}); } else { gInit(); } }
+  function fetchCalLive(){
+    if(!gToken)return;
+    var tMin=new Date(now); tMin.setDate(tMin.getDate()-35); tMin.setHours(0,0,0,0);
+    var tMax=new Date(now); tMax.setDate(tMax.getDate()+220);
+    var url="https://www.googleapis.com/calendar/v3/calendars/primary/events?singleEvents=true&orderBy=startTime&maxResults=2500&timeMin="+encodeURIComponent(tMin.toISOString())+"&timeMax="+encodeURIComponent(tMax.toISOString());
+    fetch(url,{headers:{Authorization:"Bearer "+gToken}})
+      .then(function(r){return r.json();})
+      .then(function(j){
+        if(!j.items)return;
+        calEvents={};
+        j.items.forEach(function(ev){
+          if(ev.status==="cancelled"||!ev.start)return;
+          var key,label;
+          if(ev.start.dateTime){var dd=new Date(ev.start.dateTime);key=dkey(dd);label=pad(dd.getHours())+":"+pad(dd.getMinutes())+" "+(ev.summary||"(sem titulo)");}
+          else if(ev.start.date){key=ev.start.date.substring(0,10);label="dia inteiro - "+(ev.summary||"(sem titulo)");}
+          else return;
+          (calEvents[key]=calEvents[key]||[]).push(label);
+        });
+        renderWeek();
+      })
+      .catch(function(){ gSetBtn("Erro - tenta de novo",false); });
+  }
+  var gBel=document.getElementById("gBtn"); if(gBel){gBel.addEventListener("click",gConnect);}
+  gInit();
+
   // obter meteorologia (Praia da Amorosa) e voltar a desenhar a semana
   fetch("https://api.open-meteo.com/v1/forecast?latitude=41.66&longitude=-8.81&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Europe%2FLisbon&forecast_days=14")
     .then(function(r){return r.json();})

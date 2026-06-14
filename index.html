@@ -221,7 +221,7 @@
   .boot-title{font-size:34px;font-weight:800;letter-spacing:9px;color:#e8feff;text-shadow:0 0 20px var(--accent);animation:bootflick 1.7s ease both}
   .boot-sub{font-size:11px;letter-spacing:3px;color:var(--accent2);text-transform:uppercase}
   .boot-bar{width:230px;height:4px;border-radius:3px;background:#0b2a30;overflow:hidden}
-  .boot-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));animation:bootfill 2.3s ease forwards}
+  .boot-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));animation:bootfill 4.7s ease forwards}
   .boot-status{font-size:12px;color:var(--muted);font-family:Consolas,monospace;height:15px}
   @keyframes bootfill{to{width:100%}}
   @keyframes bootflick{0%{opacity:0}10%{opacity:1}13%{opacity:.3}18%{opacity:1}55%{opacity:1}58%{opacity:.5}62%{opacity:1}100%{opacity:1}}
@@ -589,8 +589,8 @@
   (function(){
     var boot=document.getElementById("boot"); if(!boot)return;
     var st=document.getElementById("bootStatus");
-    var msgs=["A iniciar nucleo OTIS...","A ligar ao Google Calendar...","A obter meteorologia...","Bem-vindo, Daniel. Sistema online."];
-    var k=0,iv=setInterval(function(){if(st)st.textContent=msgs[k++]||"Sistema online.";if(k>=msgs.length)clearInterval(iv);},620);
+    var msgs=["A iniciar nucleo OTIS...","A ligar ao Google Calendar...","A obter meteorologia...","A carregar a tua agenda...","A sincronizar tudo...","Bem-vindo, Daniel. Sistema online."];
+    var k=0,iv=setInterval(function(){if(st)st.textContent=msgs[k++]||"Sistema online.";if(k>=msgs.length)clearInterval(iv);},820);
     // som de arranque (Web Audio - sem ficheiro). So toca apos um gesto do utilizador (regra dos browsers).
     var soou=false;
     function otisSom(){
@@ -616,7 +616,7 @@
     function onGesto(){otisSom();["pointerdown","keydown"].forEach(function(ev){document.removeEventListener(ev,onGesto);});}
     ["pointerdown","keydown"].forEach(function(ev){document.addEventListener(ev,onGesto);});
     function fechar(){boot.classList.add("hide");setTimeout(function(){if(boot&&boot.parentNode)boot.parentNode.removeChild(boot);},700);}
-    var to=setTimeout(fechar,2800);
+    var to=setTimeout(fechar,5000);
     boot.addEventListener("click",function(){clearTimeout(to);clearInterval(iv);otisSom();fechar();});
   })();
   var dias=["domingo","segunda-feira","terca-feira","quarta-feira","quinta-feira","sexta-feira","sabado"];

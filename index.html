@@ -286,6 +286,7 @@
     <input id="cmdInput" placeholder="Escreve um comando (ex: dia, lista leite, eventos) e copia para a sessao">
     <button class="barbtn" id="cmdCopy">Copiar comando</button>
     <button class="barbtn alt" id="gBtn">Ligar Google</button>
+    <button class="barbtn alt" id="bomDia">Bom dia</button>
     <a class="barbtn alt" id="openChat" href="https://claude.ai" target="_blank" rel="noopener">Abrir conversa</a>
   </div>
 
@@ -736,6 +737,39 @@
   }
   var gBel=document.getElementById("gBtn"); if(gBel){gBel.addEventListener("click",gConnect);}
   gInit();
+
+  // --- Voz "Bom dia" estilo mordomo (cordial mas divertido) ---
+  var frasesDia=[
+    "Como sempre, eu trato dos pormenores; o Senhor trata do charme.",
+    "Sugiro cafe primeiro, decisoes importantes depois. Por experiencia propria.",
+    "Se hoje algo correr menos bem, fingimos os dois que foi de proposito.",
+    "O dia esta servido. Tente nao o entornar antes do almoco.",
+    "Um cavalheiro nunca tem pressa, apenas uma pontualidade impecavel.",
+    "Tudo sob controlo, Senhor. Ou pelo menos e o que diremos a todos.",
+    "Recomendo beber agua e, ja agora, conquistar o mundo com elegancia."
+  ];
+  function falarBomDia(){
+    if(!("speechSynthesis" in window)){alert("O teu browser nao suporta voz.");return;}
+    var hora=now.getHours();
+    var saud=hora<12?"Bom dia":(hora<20?"Boa tarde":"Boa noite");
+    var txt=saud+", Senhor Daniel. ";
+    if(!gToken){ txt+="Ainda nao estou ligado ao seu calendario. Ligue o Google, se for do seu agrado. "; }
+    else {
+      var evs=(calEvents[dkey(now)]||[]);
+      if(!evs.length){ txt+="Nao tem compromissos para hoje. Um dia livre, a aproveitar com classe. "; }
+      else {
+        txt+="Hoje tem "+evs.length+(evs.length===1?" compromisso":" compromissos")+". ";
+        evs.slice(0,8).forEach(function(e){ txt+=e.t.replace("dia inteiro - ","durante o dia, ")+". "; });
+      }
+    }
+    txt+=" "+frasesDia[Math.floor(Math.random()*frasesDia.length)];
+    var u=new SpeechSynthesisUtterance(txt);
+    u.lang="pt-PT"; u.rate=0.98; u.pitch=1.0;
+    var vs=(speechSynthesis.getVoices()||[]).filter(function(v){return /pt-PT|pt_PT|Portug/i.test((v.lang||"")+(v.name||""));});
+    if(vs[0])u.voice=vs[0];
+    speechSynthesis.cancel(); speechSynthesis.speak(u);
+  }
+  var bd=document.getElementById("bomDia"); if(bd){bd.addEventListener("click",falarBomDia);}
 
   // obter meteorologia (Praia da Amorosa) e voltar a desenhar a semana
   fetch("https://api.open-meteo.com/v1/forecast?latitude=41.66&longitude=-8.81&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Europe%2FLisbon&forecast_days=14")

@@ -279,6 +279,15 @@
   .ytrow input:focus{outline:none;border-color:var(--accent)}
   .ytwrap{position:relative;width:100%;max-width:280px;aspect-ratio:16/9;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#000}
   .ytwrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  /* chat OTIS */
+  .otischat{margin-bottom:16px;max-height:55vh;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
+  .omsg{border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13.5px;line-height:1.5;white-space:pre-wrap}
+  .ouser{background:var(--panel2);align-self:flex-end;max-width:85%}
+  .obot{background:rgba(57,197,207,.06);border-color:rgba(57,197,207,.25);align-self:flex-start;max-width:92%;position:relative;padding-right:30px}
+  .obot.mini .otxt{display:none}
+  .obot.mini{padding-bottom:9px}
+  .omin{position:absolute;top:6px;right:8px;width:20px;height:20px;border:1px solid var(--line);background:var(--panel2);color:var(--muted);border-radius:5px;cursor:pointer;font-size:14px;line-height:18px;text-align:center;padding:0}
+  .omin:hover{color:var(--accent);border-color:var(--accent)}
   .film .fp{display:block;width:100%;aspect-ratio:2/3;object-fit:cover;background:#0a0f15}
   .film .fi{padding:7px 8px}
   .film .ft{font-weight:700;font-size:11.5px;line-height:1.2;margin-bottom:3px}
@@ -309,12 +318,12 @@
   <!-- BARRA DE ACESSO AO OTIS -->
   <div class="otisbar">
     <span class="lbl">OTIS</span>
-    <input id="cmdInput" placeholder="Escreve um comando (ex: dia, lista leite, eventos) e copia para a sessao">
-    <button class="barbtn" id="cmdCopy">Copiar comando</button>
+    <input id="cmdInput" placeholder="Pergunta ao OTIS... (Enter envia)">
+    <button class="barbtn" id="cmdCopy">Enviar</button>
     <button class="barbtn alt" id="gBtn">Ligar Google</button>
     <button class="barbtn alt" id="bomDia">Bom dia</button>
-    <a class="barbtn alt" id="openChat" href="https://claude.ai" target="_blank" rel="noopener">Abrir conversa</a>
   </div>
+  <div id="otisChat" class="otischat" style="display:none"></div>
 
   <header class="top">
     <div class="brand">
@@ -893,16 +902,30 @@
     })
     .catch(function(){var wn=document.getElementById("wxNow");if(wn)wn.innerHTML='<span style="color:var(--muted);font-weight:400;font-size:12px">meteo indisponivel</span>';});
 
-  // barra de acesso: copiar comando para a sessao do OTIS
-  var ci=document.getElementById("cmdInput"), cc=document.getElementById("cmdCopy");
-  function copyCmd(){
-    var v=ci.value.trim(); if(!v)return;
-    var done=function(){var o=cc.textContent;cc.textContent="Copiado!";setTimeout(function(){cc.textContent=o},1200);};
-    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(v).then(done).catch(function(){ci.select();document.execCommand("copy");done();});}
-    else{ci.select();document.execCommand("copy");done();}
+  // --- Chat OTIS (via /api/chat) ---
+  var ci=document.getElementById("cmdInput"), cc=document.getElementById("cmdCopy"), chatBox=document.getElementById("otisChat");
+  var chatHistory=[];
+  function addMsg(role,text){
+    if(!chatBox)return null;
+    chatBox.style.display="block";
+    var d=document.createElement("div"); d.className="omsg "+(role==="user"?"ouser":"obot");
+    if(role==="bot"){
+      d.innerHTML='<button class="omin" title="Minimizar">&ndash;</button><div class="otxt">'+esc(text)+'</div>';
+      d.querySelector(".omin").addEventListener("click",function(){d.classList.toggle("mini");this.innerHTML=d.classList.contains("mini")?"+":"&ndash;";});
+    } else { d.innerHTML='<div class="otxt">'+esc(text)+'</div>'; }
+    chatBox.appendChild(d); chatBox.scrollTop=chatBox.scrollHeight; return d;
   }
-  cc.addEventListener("click",copyCmd);
-  ci.addEventListener("keydown",function(e){if(e.key==="Enter")copyCmd();});
+  function sendChat(){
+    if(!ci)return; var v=ci.value.trim(); if(!v)return; ci.value="";
+    addMsg("user",v);
+    var b=addMsg("bot","..."); var bt=b?b.querySelector(".otxt"):null;
+    fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:v,history:chatHistory})})
+      .then(function(r){return r.json();})
+      .then(function(j){ var t=(j&&j.reply)||"(sem resposta)"; if(bt)bt.textContent=t; chatHistory.push({role:"user",content:v}); chatHistory.push({role:"assistant",content:t}); if(chatHistory.length>20)chatHistory=chatHistory.slice(-20); })
+      .catch(function(){ if(bt)bt.textContent="(erro de ligacao - confirma que ja publicaste e que a chave esta na Vercel)"; });
+  }
+  if(cc)cc.addEventListener("click",sendChat);
+  if(ci)ci.addEventListener("keydown",function(e){if(e.key==="Enter")sendChat();});
 
   var TOTAL=2700;
   var fmt=function(n){return n.toLocaleString("pt-PT")};

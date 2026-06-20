@@ -494,19 +494,10 @@
       <div class="ptabs">
         <button class="ptab-btn active" data-tab="fases">Fases</button>
         <button class="ptab-btn" data-tab="compras">Compras</button>
+        <button class="ptab-btn" data-tab="faltam">O que falta</button>
       </div>
       <div class="ptab" id="ptab-fases">
-      <table>
-        <thead><tr><th>Fase</th><th>Descricao</th><th>Periodo</th><th class="num">Orcamento</th><th>Estado</th></tr></thead>
-        <tbody>
-          <tr><td>1</td><td>Mobilar o apartamento</td><td>Jun-Out 2026</td><td class="num">1.300</td><td><span class="badge b-activa">Activa</span></td></tr>
-          <tr><td>2</td><td>Renovar casa de banho</td><td>Inicio 2027</td><td class="num">1.500-2.500</td><td><span class="badge b-fut">Futura</span></td></tr>
-          <tr><td>3</td><td>Renovar cozinha</td><td>Meados-fim 2027</td><td class="num">2.000-3.500</td><td><span class="badge b-fut">Futura</span></td></tr>
-          <tr><td>4</td><td>Janelas vidro duplo</td><td>2028</td><td class="num">2.000-4.000</td><td><span class="badge b-fut">Futura</span></td></tr>
-        </tbody>
-      </table>
-
-      <p class="hint" style="margin:16px 0 10px">Sub-etapas da Fase 1 - <b style="color:var(--accent)">clica numa etapa para abrir a lista de compras</b></p>
+      <p class="hint" style="margin:0 0 10px">Sub-etapas da Fase 1 - <b style="color:var(--accent)">clica numa etapa para abrir a lista de compras</b></p>
 
       <div class="etapa" data-etapa="1.1">
         <div class="ehead"><span class="en">1.1</span><span class="ef">Sofa + TV + iluminacao sala <span class="badge b-activa">actual</span></span><span class="ev">Jun - 500 EUR</span><span class="echev"></span></div>
@@ -554,6 +545,15 @@
       </div>
 
       <div class="etot"><span>Total estimado das compras da Fase 1</span><b>760 EUR</b></div>
+      <table style="margin-top:18px">
+        <thead><tr><th>Fase</th><th>Descricao</th><th>Periodo</th><th class="num">Orcamento</th><th>Estado</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Mobilar o apartamento</td><td>Jun-Out 2026</td><td class="num">1.300</td><td><span class="badge b-activa">Activa</span></td></tr>
+          <tr><td>2</td><td>Renovar casa de banho</td><td>Inicio 2027</td><td class="num">1.500-2.500</td><td><span class="badge b-fut">Futura</span></td></tr>
+          <tr><td>3</td><td>Renovar cozinha</td><td>Meados-fim 2027</td><td class="num">2.000-3.500</td><td><span class="badge b-fut">Futura</span></td></tr>
+          <tr><td>4</td><td>Janelas vidro duplo</td><td>2028</td><td class="num">2.000-4.000</td><td><span class="badge b-fut">Futura</span></td></tr>
+        </tbody>
+      </table>
       </div>
       <div class="ptab" id="ptab-compras" style="display:none">
         <div class="evcity">Mercearia</div>
@@ -568,14 +568,8 @@
           <li>Candeeiro de pe (sala)</li>
         </ul>
       </div>
-    </div>
-  </section>
-
-  <!-- INVENTARIO -->
-  <section id="s-inv">
-    <div class="shead"><h2><span class="dot"></span>O que falta</h2><button class="tog" aria-label="Minimizar"></button></div>
-    <div class="sbody">
-      <p class="hint">Por prioridade. Tica para riscar o que ja resolveste.</p>
+      <div class="ptab" id="ptab-faltam" style="display:none">
+      <p class="hint">Por prioridade. Clica num item para 2 opcoes de compra. Tica para riscar o que ja resolveste.</p>
       <div class="two">
         <table id="invA">
           <thead><tr><th></th><th>Item</th><th>Prio.</th></tr></thead>
@@ -613,6 +607,7 @@
         </table>
       </div>
       <p class="legend">Ja existe: mesa+cadeiras, movel TV, cama+colchao, guarda-roupa, comoda, mesas cabeceira, frigorifico, fogao, maquina lavar, toalhas, estores, 1 jogo roupa de cama.</p>
+      </div>
     </div>
   </section>
 
@@ -967,7 +962,7 @@
   function addWishlist(item){ var ul=document.getElementById("wishlist"); if(!ul||!item)return; var li=document.createElement("li"); li.textContent=item; ul.appendChild(li); var arr=JSON.parse(localStorage.getItem("jarvis:wish")||"[]"); arr.push(item); localStorage.setItem("jarvis:wish",JSON.stringify(arr)); }
   function doAction(a){
     if(!a||!a.type)return;
-    if(a.type==="open"){ var map={semana:"s-rotina",cultura:"s-cultura",cinema:"s-cinema",compras:"s-projecto",projeto:"s-projecto",fases:"s-projecto",finance:"s-finance",treino:"s-treino",musica:"s-musica",resumo:"s-resumo",inventario:"s-inv"}; var id=map[(a.section||"").toLowerCase()]; if(id){var s=document.getElementById(id); if(s){s.classList.remove("collapsed"); localStorage.setItem("jarvis:collapse:"+id,"0"); s.scrollIntoView({behavior:"smooth",block:"start"});}} }
+    if(a.type==="open"){ var map={semana:"s-rotina",cultura:"s-cultura",cinema:"s-cinema",compras:"s-projecto",projeto:"s-projecto",fases:"s-projecto",finance:"s-finance",treino:"s-treino",musica:"s-musica",resumo:"s-resumo",inventario:"s-projecto",faltam:"s-projecto"}; var id=map[(a.section||"").toLowerCase()]; if(id){var s=document.getElementById(id); if(s){s.classList.remove("collapsed"); localStorage.setItem("jarvis:collapse:"+id,"0"); s.scrollIntoView({behavior:"smooth",block:"start"});}} }
     else if(a.type==="wishlist"){ addWishlist(a.item); }
     else if(a.type==="groc"){ var gi=document.getElementById("grocInput"); if(gi&&a.item){ gi.value=a.item; gi.dispatchEvent(new KeyboardEvent("keydown",{key:"Enter"})); } }
   }
@@ -1309,9 +1304,7 @@
     btns.forEach(function(b){ b.addEventListener("click",function(){
       btns.forEach(function(x){x.classList.toggle("active",x===b);});
       var t=b.getAttribute("data-tab");
-      var f=document.getElementById("ptab-fases"), c=document.getElementById("ptab-compras");
-      if(f)f.style.display=(t==="fases")?"":"none";
-      if(c)c.style.display=(t==="compras")?"":"none";
+      document.querySelectorAll("#s-projecto .ptab").forEach(function(p){ p.style.display=(p.id==="ptab-"+t)?"":"none"; });
     });});
   })();
 

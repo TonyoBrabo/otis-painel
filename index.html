@@ -166,6 +166,7 @@
   .grocs li.done .gt{text-decoration:line-through;opacity:.5}
   .grocs .gx{cursor:pointer;color:var(--muted);width:18px;height:18px;border:1px solid var(--line);border-radius:5px;text-align:center;line-height:16px;font-size:12px;flex:0 0 auto}
   .grocs .gx:hover{color:var(--alta);border-color:var(--alta)}
+  .grsec{font-size:11.5px;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.4px;margin:12px 0 2px}
   /* barra de topo - acesso ao OTIS */
   .otispanel{position:sticky;top:0;z-index:30;background:rgba(11,15,20,.95);backdrop-filter:blur(8px);
     border:1px solid var(--line);border-radius:12px;margin-bottom:16px;overflow:hidden}
@@ -547,8 +548,8 @@
     <div class="shead"><h2><span class="dot"></span>Lista de compras</h2><button class="tog" aria-label="Minimizar"></button></div>
     <div class="sbody">
       <div class="evcity">Mercearia</div>
-      <div class="grocrow"><input id="grocInput" placeholder="Adicionar item e Enter..."></div>
-      <ul class="grocs" id="grocList"></ul>
+      <div class="grocrow"><input id="grocInput" placeholder="Adicionar item e Enter (vai para a seccao certa)..."></div>
+      <div id="grocList"></div>
 
       <div class="evcity" style="margin-top:18px">Casa &amp; Co.</div>
       <p class="hint">Produtos com foto, preco e link. Manda-me um link que eu adiciono. Por baixo, o que falta encontrar.</p>
@@ -1203,14 +1204,48 @@
     var sv=localStorage.getItem("jarvis:yt"); if(sv){inp.value=sv;}
   })();
 
-  // --- Mercearia (lista editavel) ---
+  // --- Mercearia (agrupada por seccao, template lista_compras.md) ---
   (function(){
-    var inp=document.getElementById("grocInput"), ul=document.getElementById("grocList");
-    if(!ul)return;
-    function save(){ var arr=[]; ul.querySelectorAll("li").forEach(function(li){arr.push({t:li.getAttribute("data-t"),d:li.classList.contains("done")});}); localStorage.setItem("jarvis:groc",JSON.stringify(arr)); }
-    function add(t,done){ if(!t)return; var li=document.createElement("li"); li.setAttribute("data-t",t); if(done)li.classList.add("done"); li.innerHTML='<span class="gx" title="Remover">&times;</span><span class="gt"></span>'; li.querySelector(".gt").textContent=t; li.querySelector(".gt").addEventListener("click",function(){li.classList.toggle("done");save();}); li.querySelector(".gx").addEventListener("click",function(){li.remove();save();}); ul.appendChild(li); }
-    (JSON.parse(localStorage.getItem("jarvis:groc")||"[]")).forEach(function(o){add(o.t,o.d);});
-    if(inp)inp.addEventListener("keydown",function(e){if(e.key==="Enter"){var t=inp.value.trim(); if(t){add(t,false); inp.value=""; save();}}});
+    var inp=document.getElementById("grocInput"), box=document.getElementById("grocList");
+    if(!box)return;
+    var ORDER=["Frescos","Lacticinios e ovos","Mercearia","Bebidas","Congelados","Higiene pessoal","Limpeza da casa","Outros"];
+    function gsec(t){
+      t=(t||"").toLowerCase();
+      var map=[
+        ["Lacticinios e ovos",["leite","iogurte","queijo","manteiga","natas","ovo"]],
+        ["Bebidas",["agua","água","sumo","refrigerante","cerveja","vinho","coca","cola"]],
+        ["Congelados",["congelad","gelado","douradinho","pizza"]],
+        ["Higiene pessoal",["champo","champô","gel de banho","sabonete","pasta de dente","escova de dente","desodoriz","papel higien","penso"]],
+        ["Limpeza da casa",["detergente","lixivia","lixívia","esfregao","esfregão","saco do lixo","sacos do lixo","amaciador","lava-tudo"]],
+        ["Mercearia",["massa","esparguete","arroz","feijao","feijão","grao","grão","conserva","atum","azeite","oleo","óleo","sal","acucar","açucar","farinha","cereais","bolacha","cafe","café","cha","chá","molho","tempero"]],
+        ["Frescos",["fruta","legume","maca","maçã","banana","laranja","tomate","alface","cebola","batata","cenoura","carne","frango","peru","porco","bife","peixe","bacalhau","salmao","salmão","pao","pão","alho","brocolo","brócolo"]]
+      ];
+      for(var i=0;i<map.length;i++){for(var j=0;j<map[i][1].length;j++){if(t.indexOf(map[i][1][j])>=0)return map[i][0];}}
+      return "Outros";
+    }
+    var items=JSON.parse(localStorage.getItem("jarvis:groc")||"[]").map(function(o){ if(!o.sec)o.sec=gsec(o.t); return o; });
+    function save(){ localStorage.setItem("jarvis:groc",JSON.stringify(items)); }
+    function render(){
+      box.innerHTML="";
+      ORDER.forEach(function(sec){
+        var its=items.filter(function(o){return o.sec===sec;});
+        if(!its.length)return;
+        var h=document.createElement("div"); h.className="grsec"; h.textContent=sec; box.appendChild(h);
+        var ul=document.createElement("ul"); ul.className="grocs";
+        its.forEach(function(o){
+          var li=document.createElement("li"); if(o.d)li.classList.add("done");
+          li.innerHTML='<span class="gx" title="Remover">&times;</span><span class="gt"></span>';
+          li.querySelector(".gt").textContent=o.t;
+          li.querySelector(".gt").addEventListener("click",function(){o.d=!o.d; save(); render();});
+          li.querySelector(".gx").addEventListener("click",function(){items.splice(items.indexOf(o),1); save(); render();});
+          ul.appendChild(li);
+        });
+        box.appendChild(ul);
+      });
+    }
+    function add(t){ if(!t)return; items.push({t:t,sec:gsec(t),d:false}); save(); render(); }
+    if(inp)inp.addEventListener("keydown",function(e){if(e.key==="Enter"){var t=inp.value.trim(); if(t){add(t); inp.value="";}}});
+    render();
   })();
 
   document.getElementById("resetBtn").addEventListener("click",function(){

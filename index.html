@@ -319,9 +319,8 @@
   <div class="otisbar">
     <span class="lbl">OTIS</span>
     <input id="cmdInput" placeholder="Pergunta ao OTIS... (Enter envia)">
-    <button class="barbtn" id="cmdCopy">Enviar</button>
     <button class="barbtn alt" id="gBtn">Ligar Google</button>
-    <button class="barbtn alt" id="bomDia">Bom dia</button>
+    <button class="barbtn alt" id="bomDia" title="Bom dia (voz)">&#9835;</button>
   </div>
   <div id="otisChat" class="otischat" style="display:none"></div>
 
@@ -663,10 +662,9 @@
   <section id="s-musica">
     <div class="shead"><h2><span class="dot"></span>Musica</h2><button class="tog" aria-label="Minimizar"></button></div>
     <div class="sbody">
-      <p class="hint">Cola um link do YouTube (video ou playlist) e carrega Tocar. E o player do YouTube - o YouTube Music com a tua conta nao da numa pagina (limitacao do YouTube).</p>
+      <p class="hint">Cola um link do YouTube (video ou playlist) e carrega Enter. E o player do YouTube - o YouTube Music com a tua conta nao da numa pagina (limitacao do YouTube).</p>
       <div class="ytrow">
-        <input id="ytUrl" placeholder="Cola um link do YouTube...">
-        <button class="barbtn" id="ytPlay">Tocar</button>
+        <input id="ytUrl" placeholder="Cola um link do YouTube e carrega Enter...">
       </div>
       <div class="ytwrap"><iframe id="ytFrame" src="" title="Player de musica" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
     </div>

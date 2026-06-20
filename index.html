@@ -167,6 +167,10 @@
   .grocs .gx{cursor:pointer;color:var(--muted);width:18px;height:18px;border:1px solid var(--line);border-radius:5px;text-align:center;line-height:16px;font-size:12px;flex:0 0 auto}
   .grocs .gx:hover{color:var(--alta);border-color:var(--alta)}
   .grsec{font-size:11.5px;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.4px;margin:12px 0 2px}
+  /* finance - drag & drop de ficheiros */
+  .findrop{border:2px dashed var(--line);border-radius:12px;padding:22px;text-align:center;color:var(--muted);font-size:13px;cursor:pointer;transition:border-color .15s,color .15s}
+  .findrop:hover,.findrop.over{border-color:var(--accent);color:var(--accent)}
+  .finresult{margin-top:12px;display:flex;flex-direction:column;gap:8px}
   /* barra de topo - acesso ao OTIS */
   .otispanel{position:sticky;top:0;z-index:30;background:rgba(11,15,20,.95);backdrop-filter:blur(8px);
     border:1px solid var(--line);border-radius:12px;margin-bottom:16px;overflow:hidden}
@@ -685,6 +689,16 @@
         <input id="ytUrl" placeholder="Cola um link do YouTube e carrega Enter...">
       </div>
       <div class="ytwrap" style="display:none"><iframe id="ytFrame" src="" title="Player de musica" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+    </div>
+  </section>
+
+  <!-- FINANCE -->
+  <section id="s-finance">
+    <div class="shead"><h2><span class="dot"></span>Finance</h2><button class="tog" aria-label="Minimizar"></button></div>
+    <div class="sbody">
+      <p class="hint" id="finNote">Contabilista: Sr. Nando. (Ainda nao tenho a info da conversa - cola aqui ou larga os ficheiros em baixo.)</p>
+      <div class="findrop" id="finDrop">Larga aqui ficheiros (txt, csv, json) e o OTIS analisa-os. Ou clica para escolher.</div>
+      <div class="finresult" id="finResult"></div>
     </div>
   </section>
 
@@ -1246,6 +1260,32 @@
     function add(t){ if(!t)return; items.push({t:t,sec:gsec(t),d:false}); save(); render(); }
     if(inp)inp.addEventListener("keydown",function(e){if(e.key==="Enter"){var t=inp.value.trim(); if(t){add(t); inp.value="";}}});
     render();
+  })();
+
+  // --- Finance: drag & drop de ficheiros para o OTIS analisar ---
+  (function(){
+    var drop=document.getElementById("finDrop"), res=document.getElementById("finResult");
+    if(!drop)return;
+    function stop(e){e.preventDefault();e.stopPropagation();}
+    ["dragenter","dragover"].forEach(function(ev){drop.addEventListener(ev,function(e){stop(e);drop.classList.add("over");});});
+    ["dragleave"].forEach(function(ev){drop.addEventListener(ev,function(e){stop(e);drop.classList.remove("over");});});
+    drop.addEventListener("drop",function(e){stop(e);drop.classList.remove("over"); if(e.dataTransfer&&e.dataTransfer.files)handle(e.dataTransfer.files);});
+    drop.addEventListener("click",function(){var i=document.createElement("input");i.type="file";i.multiple=true;i.onchange=function(){handle(i.files);};i.click();});
+    function bubble(t){var d=document.createElement("div");d.className="omsg obot";d.textContent=t;res.appendChild(d);return d;}
+    function handle(files){
+      Array.prototype.forEach.call(files,function(f){
+        var ext=(f.name.split(".").pop()||"").toLowerCase();
+        if(["txt","csv","tsv","json","md","log"].indexOf(ext)<0){ bubble(f.name+": tipo ."+ext+" - por agora so leio texto/CSV/JSON aqui. PDF e Excel ainda nao consigo abrir no painel; cola o conteudo no chat ou exporta para CSV."); return; }
+        var rd=new FileReader();
+        rd.onload=function(){
+          var b=bubble("A analisar "+f.name+"...");
+          fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:"Analisa este ficheiro do contabilista (Sr. Nando) chamado '"+f.name+"'. Da um resumo util e accionavel em PT-PT: numeros-chave, datas/prazos, e o que o Daniel deve fazer. Conteudo:\n\n"+String(rd.result).slice(0,12000)})})
+            .then(function(r){return r.json();}).then(function(j){ b.textContent=(j&&j.reply)||"(sem resposta)"; })
+            .catch(function(){ b.textContent="(erro - o chat esta ligado? a chave esta na Vercel?)"; });
+        };
+        rd.readAsText(f);
+      });
+    }
   })();
 
   document.getElementById("resetBtn").addEventListener("click",function(){

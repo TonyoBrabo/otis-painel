@@ -156,9 +156,9 @@
   .weeklist li{margin:7px 0}
   .weeklist a{font-weight:600}
   /* barra de topo - acesso ao OTIS */
-  .otisbar{position:sticky;top:0;z-index:30;display:flex;gap:8px;align-items:center;
-    background:rgba(11,15,20,.93);backdrop-filter:blur(8px);border:1px solid var(--line);
-    border-radius:12px;padding:8px 10px;margin-bottom:16px}
+  .otispanel{position:sticky;top:0;z-index:30;background:rgba(11,15,20,.95);backdrop-filter:blur(8px);
+    border:1px solid var(--line);border-radius:12px;margin-bottom:16px;overflow:hidden}
+  .otisbar{display:flex;gap:8px;align-items:center;padding:8px 10px}
   .otisbar .lbl{font-weight:800;letter-spacing:1px;color:var(--accent);padding:0 4px;font-size:14px}
   .otisbar input{flex:1;min-width:120px;background:var(--panel2);border:1px solid var(--line);
     border-radius:8px;color:var(--txt);padding:8px 10px;font-size:13px;font-family:inherit}
@@ -247,6 +247,8 @@
   .devs li:last-child{border-bottom:none}
   .devs li::before{content:"";position:absolute;left:0;top:8px;width:4px;height:4px;border-radius:50%;background:var(--accent)}
   .noev{font-size:11.5px;color:var(--muted);margin-top:8px;font-style:italic}
+  .devs li.trk{cursor:pointer}
+  .devs li.trk:hover{color:var(--accent)}
   .day.today{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 8px 22px rgba(57,197,207,.18)}
   /* lista de compras - mobilia e casa */
   .prodgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px;margin-top:4px}
@@ -280,7 +282,7 @@
   .ytwrap{position:relative;width:100%;max-width:280px;aspect-ratio:16/9;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#000}
   .ytwrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
   /* chat OTIS */
-  .otischat{margin-bottom:16px;max-height:55vh;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
+  .otischat{border-top:1px solid var(--line);max-height:50vh;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:10px}
   .omsg{border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13.5px;line-height:1.5;white-space:pre-wrap}
   .ouser{background:var(--panel2);align-self:flex-end;max-width:85%}
   .obot{background:rgba(57,197,207,.06);border-color:rgba(57,197,207,.25);align-self:flex-start;max-width:92%;position:relative;padding-right:30px}
@@ -316,13 +318,14 @@
 <div class="wrap">
 
   <!-- BARRA DE ACESSO AO OTIS -->
-  <div class="otisbar">
-    <span class="lbl">OTIS</span>
-    <input id="cmdInput" placeholder="Pergunta ao OTIS... (Enter envia)">
-    <button class="barbtn alt" id="gBtn">Ligar Google</button>
-    <button class="barbtn alt" id="bomDia" title="Bom dia (voz)">&#9835;</button>
+  <div class="otispanel">
+    <div class="otisbar">
+      <span class="lbl">OTIS</span>
+      <input id="cmdInput" placeholder="Pergunta ao OTIS... (Enter envia)">
+      <button class="barbtn alt" id="bomDia" title="Bom dia (voz)">&#9835;</button>
+    </div>
+    <div id="otisChat" class="otischat" style="display:none"></div>
   </div>
-  <div id="otisChat" class="otischat" style="display:none"></div>
 
   <header class="top">
     <div class="brand">
@@ -666,7 +669,7 @@
       <div class="ytrow">
         <input id="ytUrl" placeholder="Cola um link do YouTube e carrega Enter...">
       </div>
-      <div class="ytwrap"><iframe id="ytFrame" src="" title="Player de musica" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+      <div class="ytwrap" style="display:none"><iframe id="ytFrame" src="" title="Player de musica" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
     </div>
   </section>
 
@@ -783,7 +786,7 @@
       var wx=w?'<div class="dwx">'+wxIco(w.code)+'<span><b>'+w.max+'&deg;</b> / '+w.min+'&deg;</span></div>':'';
       var evs=calEvents[dkey(dt)];
       if(evs&&agendaMode!=="all"){evs=evs.filter(function(e){return e.c===agendaMode;});}
-      var evh=(evs&&evs.length)?'<ul class="devs">'+evs.map(function(e){return '<li>'+esc(e.t)+'</li>';}).join("")+'</ul>':'<div class="noev">'+(gToken?"Sem eventos":"Liga o Google")+'</div>';
+      var evh=(evs&&evs.length)?'<ul class="devs">'+evs.map(function(e){var tk=/treino|cardio/i.test(e.t)?' class="trk"':'';return '<li'+tk+'>'+esc(e.t)+'</li>';}).join("")+'</ul>':'<div class="noev">'+(gToken?"Sem eventos":"a ligar...")+'</div>';
       whtml+='<div class="day'+(isToday?" today":"")+'"><div class="d">'+nomes[di]+' '+dt.getDate()+'</div>'+wx+evh+'</div>';
     });
     document.getElementById("weekcal").innerHTML=whtml;
@@ -794,6 +797,10 @@
   document.getElementById("weekPrev").addEventListener("click",function(){weekOffset--;renderWeek();});
   document.getElementById("weekNext").addEventListener("click",function(){weekOffset++;renderWeek();});
   document.getElementById("weekToday").addEventListener("click",function(){weekOffset=0;renderWeek();});
+  document.getElementById("weekcal").addEventListener("click",function(e){
+    var li=e.target&&(e.target.classList&&e.target.classList.contains("trk")?e.target:(e.target.closest?e.target.closest("li.trk"):null));
+    if(li){var s=document.getElementById("s-treino"); if(s){s.classList.remove("collapsed"); localStorage.setItem("jarvis:collapse:s-treino","0"); s.scrollIntoView({behavior:"smooth",block:"start"});}}
+  });
   function setAgenda(m){agendaMode=m;localStorage.setItem("jarvis:agenda",m);document.querySelectorAll(".agbtn").forEach(function(b){b.classList.toggle("active",b.getAttribute("data-mode")===m);});renderWeek();}
   document.querySelectorAll(".agbtn").forEach(function(b){b.addEventListener("click",function(){setAgenda(b.getAttribute("data-mode"));});});
   setAgenda(agendaMode);
@@ -1167,10 +1174,10 @@
     var fr=document.getElementById("ytFrame"), inp=document.getElementById("ytUrl"), btn=document.getElementById("ytPlay");
     if(!fr)return;
     function emb(u){ if(!u)return ""; var vid="",list=""; var m=u.match(/[?&]v=([\w-]{6,})/); if(m)vid=m[1]; var b=u.match(/youtu\.be\/([\w-]{6,})/); if(b)vid=b[1]; var e=u.match(/embed\/([\w-]{6,})/); if(e)vid=e[1]; var l=u.match(/[?&]list=([\w-]+)/); if(l)list=l[1]; if(vid&&list)return "https://www.youtube.com/embed/"+vid+"?list="+list; if(list)return "https://www.youtube.com/embed/videoseries?list="+list; if(vid)return "https://www.youtube.com/embed/"+vid; return ""; }
-    function load(u){ var x=emb(u); if(x){fr.src=x; localStorage.setItem("jarvis:yt",u);} else { alert("Link do YouTube nao reconhecido."); } }
+    function load(u){ var x=emb(u); if(x){fr.src=x; var w=document.querySelector("#s-musica .ytwrap"); if(w)w.style.display="block"; localStorage.setItem("jarvis:yt",u);} else { alert("Link do YouTube nao reconhecido."); } }
     if(btn)btn.addEventListener("click",function(){load(inp.value.trim());});
     if(inp)inp.addEventListener("keydown",function(e){if(e.key==="Enter")load(inp.value.trim());});
-    var sv=localStorage.getItem("jarvis:yt"); if(sv){inp.value=sv; var x=emb(sv); if(x)fr.src=x;}
+    var sv=localStorage.getItem("jarvis:yt"); if(sv){inp.value=sv;}
   })();
 
   document.getElementById("resetBtn").addEventListener("click",function(){

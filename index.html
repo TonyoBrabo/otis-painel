@@ -320,7 +320,6 @@
   <!-- BARRA DE ACESSO AO OTIS -->
   <div class="otispanel">
     <div class="otisbar">
-      <span class="lbl">OTIS</span>
       <input id="cmdInput" placeholder="Pergunta ao OTIS... (Enter envia)">
       <button class="barbtn alt" id="bomDia" title="Bom dia (voz)">&#9835;</button>
     </div>
@@ -344,7 +343,7 @@
 
   <!-- ROTINA SEMANAL (destaque, primeiro) -->
   <section id="s-rotina" class="feature">
-    <div class="shead"><h2><span class="dot"></span>Rotina semanal</h2><button class="tog" aria-label="Minimizar"></button></div>
+    <div class="shead"><h2><span class="dot"></span>A minha semana</h2><button class="tog" aria-label="Minimizar"></button></div>
     <div class="sbody">
       <div class="weeknav">
         <button class="navb" id="weekPrev" aria-label="Semana anterior"></button>
@@ -364,7 +363,7 @@
 
   <!-- AGENDA CULTURAL -->
   <section id="s-cultura">
-    <div class="shead"><h2><span class="dot"></span>Agenda cultural - Viana e Porto</h2><button class="tog" aria-label="Minimizar"></button></div>
+    <div class="shead"><h2><span class="dot"></span>Agenda cultural</h2><button class="tog" aria-label="Minimizar"></button></div>
     <div class="sbody">
       <p class="hint">Dividida por cidade. Em baixo, o que esta a decorrer na proxima semana com link para bilhetes.</p>
       <div class="two">
@@ -539,7 +538,7 @@
       <p class="hint">Produtos encontrados, com foto, loja, preco e link direto. Encontraste algo? Manda o link ao OTIS que eu adiciono aqui com a foto e o preco.</p>
       <div class="prodgrid" id="prodgrid"></div>
       <div class="evcity" style="margin-top:18px">Por encontrar</div>
-      <ul class="weeklist">
+      <ul class="weeklist" id="wishlist">
         <li>Candeeiro de pe (sala)</li>
       </ul>
     </div>
@@ -665,7 +664,6 @@
   <section id="s-musica">
     <div class="shead"><h2><span class="dot"></span>Musica</h2><button class="tog" aria-label="Minimizar"></button></div>
     <div class="sbody">
-      <p class="hint">Cola um link do YouTube (video ou playlist) e carrega Enter. E o player do YouTube - o YouTube Music com a tua conta nao da numa pagina (limitacao do YouTube).</p>
       <div class="ytrow">
         <input id="ytUrl" placeholder="Cola um link do YouTube e carrega Enter...">
       </div>
@@ -920,17 +918,25 @@
     } else { d.innerHTML='<div class="otxt">'+esc(text)+'</div>'; }
     chatBox.appendChild(d); chatBox.scrollTop=chatBox.scrollHeight; return d;
   }
+  function addWishlist(item){ var ul=document.getElementById("wishlist"); if(!ul||!item)return; var li=document.createElement("li"); li.textContent=item; ul.appendChild(li); var arr=JSON.parse(localStorage.getItem("jarvis:wish")||"[]"); arr.push(item); localStorage.setItem("jarvis:wish",JSON.stringify(arr)); }
+  function doAction(a){
+    if(!a||!a.type)return;
+    if(a.type==="open"){ var map={semana:"s-rotina",cultura:"s-cultura",cinema:"s-cinema",compras:"s-mobilia",treino:"s-treino",musica:"s-musica",resumo:"s-resumo",inventario:"s-inv"}; var id=map[(a.section||"").toLowerCase()]; if(id){var s=document.getElementById(id); if(s){s.classList.remove("collapsed"); localStorage.setItem("jarvis:collapse:"+id,"0"); s.scrollIntoView({behavior:"smooth",block:"start"});}} }
+    else if(a.type==="wishlist"){ addWishlist(a.item); }
+  }
+  function execActions(text){ var m=text.match(/<<ACTION\s*(\{[\s\S]*?\})\s*>>/); if(m){ try{ doAction(JSON.parse(m[1])); }catch(e){} return text.replace(m[0],"").trim(); } return text; }
   function sendChat(){
     if(!ci)return; var v=ci.value.trim(); if(!v)return; ci.value="";
     addMsg("user",v);
     var b=addMsg("bot","..."); var bt=b?b.querySelector(".otxt"):null;
     fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:v,history:chatHistory})})
       .then(function(r){return r.json();})
-      .then(function(j){ var t=(j&&j.reply)||"(sem resposta)"; if(bt)bt.textContent=t; chatHistory.push({role:"user",content:v}); chatHistory.push({role:"assistant",content:t}); if(chatHistory.length>20)chatHistory=chatHistory.slice(-20); })
+      .then(function(j){ var t=(j&&j.reply)||"(sem resposta)"; var shown=execActions(t); if(bt)bt.textContent=shown; chatHistory.push({role:"user",content:v}); chatHistory.push({role:"assistant",content:shown}); if(chatHistory.length>20)chatHistory=chatHistory.slice(-20); })
       .catch(function(){ if(bt)bt.textContent="(erro de ligacao - confirma que ja publicaste e que a chave esta na Vercel)"; });
   }
   if(cc)cc.addEventListener("click",sendChat);
   if(ci)ci.addEventListener("keydown",function(e){if(e.key==="Enter")sendChat();});
+  (function(){ var ul=document.getElementById("wishlist"); if(!ul)return; var arr=JSON.parse(localStorage.getItem("jarvis:wish")||"[]"); arr.forEach(function(it){var li=document.createElement("li"); li.textContent=it; ul.appendChild(li);}); })();
 
   var TOTAL=2700;
   var fmt=function(n){return n.toLocaleString("pt-PT")};
@@ -1173,7 +1179,7 @@
   (function(){
     var fr=document.getElementById("ytFrame"), inp=document.getElementById("ytUrl"), btn=document.getElementById("ytPlay");
     if(!fr)return;
-    function emb(u){ if(!u)return ""; var vid="",list=""; var m=u.match(/[?&]v=([\w-]{6,})/); if(m)vid=m[1]; var b=u.match(/youtu\.be\/([\w-]{6,})/); if(b)vid=b[1]; var e=u.match(/embed\/([\w-]{6,})/); if(e)vid=e[1]; var l=u.match(/[?&]list=([\w-]+)/); if(l)list=l[1]; if(vid&&list)return "https://www.youtube.com/embed/"+vid+"?list="+list; if(list)return "https://www.youtube.com/embed/videoseries?list="+list; if(vid)return "https://www.youtube.com/embed/"+vid; return ""; }
+    function emb(u){ if(!u)return ""; var vid="",list=""; var m=u.match(/[?&]v=([\w-]{6,})/); if(m)vid=m[1]; var b=u.match(/youtu\.be\/([\w-]{6,})/); if(b)vid=b[1]; var e=u.match(/embed\/([\w-]{6,})/); if(e)vid=e[1]; var l=u.match(/[?&]list=([\w-]+)/); if(l)list=l[1]; if(vid&&list)return "https://www.youtube.com/embed/"+vid+"?list="+list+"&autoplay=1"; if(list)return "https://www.youtube.com/embed/videoseries?list="+list+"&autoplay=1"; if(vid)return "https://www.youtube.com/embed/"+vid+"?autoplay=1"; return ""; }
     function load(u){ var x=emb(u); if(x){fr.src=x; var w=document.querySelector("#s-musica .ytwrap"); if(w)w.style.display="block"; localStorage.setItem("jarvis:yt",u);} else { alert("Link do YouTube nao reconhecido."); } }
     if(btn)btn.addEventListener("click",function(){load(inp.value.trim());});
     if(inp)inp.addEventListener("keydown",function(e){if(e.key==="Enter")load(inp.value.trim());});

@@ -28,7 +28,8 @@ module.exports = async (req, res) => {
       "com calendario, compras, agenda cultural, cinema, treino e musica. Precos em euros, mercado portugues 2026. " +
       "Podes executar acoes no painel: quando o utilizador pedir para abrir/mostrar uma seccao, ou para adicionar algo a lista do que falta encontrar, " +
       "termina a tua resposta com UMA linha sozinha, no fim, neste formato exato: <<ACTION {\"type\":\"open\",\"section\":\"treino\"}>> " +
-      "ou <<ACTION {\"type\":\"wishlist\",\"item\":\"candeeiro de pe\"}>>. Seccoes validas: semana, cultura, cinema, compras, treino, musica, resumo, inventario. " +
+      "ou <<ACTION {\"type\":\"wishlist\",\"item\":\"candeeiro de pe\"}>> ou <<ACTION {\"type\":\"groc\",\"item\":\"leite\"}>> para adicionar a mercearia (supermercado). " +
+      "Seccoes validas: semana, cultura, cinema, compras, treino, musica, resumo, inventario. " +
       "Nao expliques esta sintaxe ao utilizador nem a uses sem ser pedido.";
 
     const r = await fetch("https://api.anthropic.com/v1/messages", {

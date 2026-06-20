@@ -155,6 +155,17 @@
   .weeklist{margin:8px 0 0;padding-left:18px;font-size:13px}
   .weeklist li{margin:7px 0}
   .weeklist a{font-weight:600}
+  /* mercearia */
+  .grocrow{margin-bottom:8px}
+  .grocrow input{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:8px;color:var(--txt);padding:8px 10px;font-size:13px;font-family:inherit}
+  .grocrow input:focus{outline:none;border-color:var(--accent)}
+  .grocs{list-style:none;margin:0;padding:0;font-size:13px}
+  .grocs li{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(30,41,55,.5)}
+  .grocs li:last-child{border-bottom:none}
+  .grocs .gt{cursor:pointer;flex:1}
+  .grocs li.done .gt{text-decoration:line-through;opacity:.5}
+  .grocs .gx{cursor:pointer;color:var(--muted);width:18px;height:18px;border:1px solid var(--line);border-radius:5px;text-align:center;line-height:16px;font-size:12px;flex:0 0 auto}
+  .grocs .gx:hover{color:var(--alta);border-color:var(--alta)}
   /* barra de topo - acesso ao OTIS */
   .otispanel{position:sticky;top:0;z-index:30;background:rgba(11,15,20,.95);backdrop-filter:blur(8px);
     border:1px solid var(--line);border-radius:12px;margin-bottom:16px;overflow:hidden}
@@ -533,11 +544,16 @@
 
   <!-- LISTA MOBILIA E CASA -->
   <section id="s-mobilia">
-    <div class="shead"><h2><span class="dot"></span>Lista de compras - Mobilia e casa</h2><button class="tog" aria-label="Minimizar"></button></div>
+    <div class="shead"><h2><span class="dot"></span>Lista de compras</h2><button class="tog" aria-label="Minimizar"></button></div>
     <div class="sbody">
-      <p class="hint">Produtos encontrados, com foto, loja, preco e link direto. Encontraste algo? Manda o link ao OTIS que eu adiciono aqui com a foto e o preco.</p>
+      <div class="evcity">Mercearia</div>
+      <div class="grocrow"><input id="grocInput" placeholder="Adicionar item e Enter..."></div>
+      <ul class="grocs" id="grocList"></ul>
+
+      <div class="evcity" style="margin-top:18px">Casa &amp; Co.</div>
+      <p class="hint">Produtos com foto, preco e link. Manda-me um link que eu adiciono. Por baixo, o que falta encontrar.</p>
       <div class="prodgrid" id="prodgrid"></div>
-      <div class="evcity" style="margin-top:18px">Por encontrar</div>
+      <div class="evcity" style="margin-top:14px">Por encontrar</div>
       <ul class="weeklist" id="wishlist">
         <li>Candeeiro de pe (sala)</li>
       </ul>
@@ -923,6 +939,7 @@
     if(!a||!a.type)return;
     if(a.type==="open"){ var map={semana:"s-rotina",cultura:"s-cultura",cinema:"s-cinema",compras:"s-mobilia",treino:"s-treino",musica:"s-musica",resumo:"s-resumo",inventario:"s-inv"}; var id=map[(a.section||"").toLowerCase()]; if(id){var s=document.getElementById(id); if(s){s.classList.remove("collapsed"); localStorage.setItem("jarvis:collapse:"+id,"0"); s.scrollIntoView({behavior:"smooth",block:"start"});}} }
     else if(a.type==="wishlist"){ addWishlist(a.item); }
+    else if(a.type==="groc"){ var gi=document.getElementById("grocInput"); if(gi&&a.item){ gi.value=a.item; gi.dispatchEvent(new KeyboardEvent("keydown",{key:"Enter"})); } }
   }
   function execActions(text){ var m=text.match(/<<ACTION\s*(\{[\s\S]*?\})\s*>>/); if(m){ try{ doAction(JSON.parse(m[1])); }catch(e){} return text.replace(m[0],"").trim(); } return text; }
   function sendChat(){
@@ -1184,6 +1201,16 @@
     if(btn)btn.addEventListener("click",function(){load(inp.value.trim());});
     if(inp)inp.addEventListener("keydown",function(e){if(e.key==="Enter")load(inp.value.trim());});
     var sv=localStorage.getItem("jarvis:yt"); if(sv){inp.value=sv;}
+  })();
+
+  // --- Mercearia (lista editavel) ---
+  (function(){
+    var inp=document.getElementById("grocInput"), ul=document.getElementById("grocList");
+    if(!ul)return;
+    function save(){ var arr=[]; ul.querySelectorAll("li").forEach(function(li){arr.push({t:li.getAttribute("data-t"),d:li.classList.contains("done")});}); localStorage.setItem("jarvis:groc",JSON.stringify(arr)); }
+    function add(t,done){ if(!t)return; var li=document.createElement("li"); li.setAttribute("data-t",t); if(done)li.classList.add("done"); li.innerHTML='<span class="gx" title="Remover">&times;</span><span class="gt"></span>'; li.querySelector(".gt").textContent=t; li.querySelector(".gt").addEventListener("click",function(){li.classList.toggle("done");save();}); li.querySelector(".gx").addEventListener("click",function(){li.remove();save();}); ul.appendChild(li); }
+    (JSON.parse(localStorage.getItem("jarvis:groc")||"[]")).forEach(function(o){add(o.t,o.d);});
+    if(inp)inp.addEventListener("keydown",function(e){if(e.key==="Enter"){var t=inp.value.trim(); if(t){add(t,false); inp.value=""; save();}}});
   })();
 
   document.getElementById("resetBtn").addEventListener("click",function(){

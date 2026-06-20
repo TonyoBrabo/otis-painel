@@ -212,6 +212,18 @@
   .ptab-btn{background:var(--panel2);color:var(--muted);border:none;padding:7px 16px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit}
   .ptab-btn+.ptab-btn{border-left:1px solid var(--line)}
   .ptab-btn.active{background:var(--accent);color:#04222a}
+  #gate{position:fixed;inset:0;z-index:1200;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 38%,#06222a,#04090f 70%)}
+  .gatebox{display:flex;flex-direction:column;align-items:center;gap:12px;width:270px;padding:0 16px}
+  .gate-logo{width:54px;height:54px;border-radius:50%;background:radial-gradient(circle,var(--accent),#0b3a40 70%);box-shadow:0 0 26px var(--accent);animation:gatePulse 2.4s ease-in-out infinite}
+  @keyframes gatePulse{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.08);opacity:1}}
+  .gate-t{font-size:28px;font-weight:800;letter-spacing:7px;color:#e8feff;text-shadow:0 0 16px var(--accent)}
+  .gate-sub{font-size:12px;color:var(--muted);letter-spacing:1px;margin-top:-6px}
+  .gatebox input[type=password]{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:9px;color:var(--txt);padding:11px 12px;font-size:14px;text-align:center}
+  .gatebox input[type=password]:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(0,200,220,.18)}
+  #gateBtn{width:100%;background:var(--accent);color:#04222a;border:none;border-radius:9px;padding:10px;font-size:14px;font-weight:700;cursor:pointer}
+  #gateBtn:hover{filter:brightness(1.08)}
+  .gate-rem{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:7px;cursor:pointer}
+  .gate-err{color:var(--alta,#ff6b6b);font-size:12px;min-height:15px;text-align:center}
   #weekcal{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}
   @keyframes spin{to{transform:rotate(360deg)}}
   /* meteorologia - icones animados em CSS */
@@ -334,6 +346,18 @@
   <div class="boot-bar"><i></i></div>
   <div class="boot-status" id="bootStatus">A iniciar...</div>
   <div class="boot-hint">clica para entrar com som</div>
+</div>
+
+<div id="gate">
+  <div class="gatebox">
+    <div class="gate-logo"></div>
+    <div class="gate-t">OTIS</div>
+    <div class="gate-sub">Acesso privado</div>
+    <input id="gatePw" type="password" placeholder="Palavra-passe" autocomplete="current-password">
+    <button id="gateBtn">Entrar</button>
+    <label class="gate-rem"><input type="checkbox" id="gateRem" checked> Lembrar neste dispositivo</label>
+    <div class="gate-err" id="gateErr"></div>
+  </div>
 </div>
 
 <div class="wrap">
@@ -489,7 +513,7 @@
 
   <!-- PROJECTO: FASES + COMPRAS (unificado) -->
   <section id="s-projecto">
-    <div class="shead"><h2><span class="dot"></span>Projeto</h2><button class="tog" aria-label="Minimizar"></button></div>
+    <div class="shead"><h2><span class="dot"></span>Projeto Casa</h2><button class="tog" aria-label="Minimizar"></button></div>
     <div class="sbody">
       <div class="ptabs">
         <button class="ptab-btn active" data-tab="fases">Fases</button>
@@ -772,6 +796,28 @@
     var to=setTimeout(fechar,5000);
     boot.addEventListener("click",function(){clearTimeout(to);clearInterval(iv);otisSom();fechar();});
   })();
+  // --- Gate de acesso privado (password verificada no servidor, lembrada no dispositivo) ---
+  (function(){
+    var gate=document.getElementById("gate"); if(!gate) return;
+    var err=document.getElementById("gateErr"), inp=document.getElementById("gatePw"),
+        btn=document.getElementById("gateBtn"), rem=document.getElementById("gateRem");
+    function unlock(){ gate.style.display="none"; if(gate.parentNode) gate.parentNode.removeChild(gate); }
+    function check(pw, fromUser){
+      fetch("/api/auth",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pw:pw})})
+        .then(function(r){return r.json();})
+        .then(function(j){
+          if(j&&j.ok){ if(fromUser&&rem&&rem.checked){ try{localStorage.setItem("otis:pw",pw);}catch(e){} } unlock(); }
+          else { gate.style.display="flex"; if(fromUser&&err){ err.textContent="Palavra-passe errada."; } if(inp){inp.value="";inp.focus();} }
+        })
+        .catch(function(){ unlock(); }); // sem servidor (ex: ficheiro local) nao bloqueia
+    }
+    var saved=""; try{ saved=localStorage.getItem("otis:pw")||""; }catch(e){}
+    check(saved, false); // se nao houver password no servidor, ou a guardada bater, entra direto
+    function submit(){ if(err)err.textContent=""; check(inp?inp.value:"", true); }
+    if(btn) btn.addEventListener("click",submit);
+    if(inp) inp.addEventListener("keydown",function(e){ if(e.key==="Enter") submit(); });
+  })();
+
   var dias=["domingo","segunda-feira","terca-feira","quarta-feira","quinta-feira","sexta-feira","sabado"];
   var meses=["Janeiro","Fevereiro","Marco","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
   var now=new Date();

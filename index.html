@@ -207,6 +207,11 @@
   section.dragging{opacity:.45}
   section.drop-before{box-shadow:0 -3px 0 0 var(--accent)}
   section.drop-after{box-shadow:0 3px 0 0 var(--accent)}
+  /* abas do Projeto */
+  .ptabs{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;margin-bottom:14px}
+  .ptab-btn{background:var(--panel2);color:var(--muted);border:none;padding:7px 16px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit}
+  .ptab-btn+.ptab-btn{border-left:1px solid var(--line)}
+  .ptab-btn.active{background:var(--accent);color:#04222a}
   #weekcal{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}
   @keyframes spin{to{transform:rotate(360deg)}}
   /* meteorologia - icones animados em CSS */
@@ -484,8 +489,13 @@
 
   <!-- PROJECTO: FASES + COMPRAS (unificado) -->
   <section id="s-projecto">
-    <div class="shead"><h2><span class="dot"></span>Fases do projecto e compras</h2><button class="tog" aria-label="Minimizar"></button></div>
+    <div class="shead"><h2><span class="dot"></span>Projeto</h2><button class="tog" aria-label="Minimizar"></button></div>
     <div class="sbody">
+      <div class="ptabs">
+        <button class="ptab-btn active" data-tab="fases">Fases</button>
+        <button class="ptab-btn" data-tab="compras">Compras</button>
+      </div>
+      <div class="ptab" id="ptab-fases">
       <table>
         <thead><tr><th>Fase</th><th>Descricao</th><th>Periodo</th><th class="num">Orcamento</th><th>Estado</th></tr></thead>
         <tbody>
@@ -544,24 +554,20 @@
       </div>
 
       <div class="etot"><span>Total estimado das compras da Fase 1</span><b>760 EUR</b></div>
-    </div>
-  </section>
+      </div>
+      <div class="ptab" id="ptab-compras" style="display:none">
+        <div class="evcity">Mercearia</div>
+        <div class="grocrow"><input id="grocInput" placeholder="Adicionar item e Enter (vai para a seccao certa)..."></div>
+        <div id="grocList"></div>
 
-  <!-- LISTA MOBILIA E CASA -->
-  <section id="s-mobilia">
-    <div class="shead"><h2><span class="dot"></span>Lista de compras</h2><button class="tog" aria-label="Minimizar"></button></div>
-    <div class="sbody">
-      <div class="evcity">Mercearia</div>
-      <div class="grocrow"><input id="grocInput" placeholder="Adicionar item e Enter (vai para a seccao certa)..."></div>
-      <div id="grocList"></div>
-
-      <div class="evcity" style="margin-top:18px">Casa &amp; Co.</div>
-      <p class="hint">Produtos com foto, preco e link. Manda-me um link que eu adiciono. Por baixo, o que falta encontrar.</p>
-      <div class="prodgrid" id="prodgrid"></div>
-      <div class="evcity" style="margin-top:14px">Por encontrar</div>
-      <ul class="weeklist" id="wishlist">
-        <li>Candeeiro de pe (sala)</li>
-      </ul>
+        <div class="evcity" style="margin-top:18px">Casa &amp; Co.</div>
+        <p class="hint">Produtos com foto, preco e link. Manda-me um link que eu adiciono. Por baixo, o que falta encontrar.</p>
+        <div class="prodgrid" id="prodgrid"></div>
+        <div class="evcity" style="margin-top:14px">Por encontrar</div>
+        <ul class="weeklist" id="wishlist">
+          <li>Candeeiro de pe (sala)</li>
+        </ul>
+      </div>
     </div>
   </section>
 
@@ -952,7 +958,7 @@
   function addWishlist(item){ var ul=document.getElementById("wishlist"); if(!ul||!item)return; var li=document.createElement("li"); li.textContent=item; ul.appendChild(li); var arr=JSON.parse(localStorage.getItem("jarvis:wish")||"[]"); arr.push(item); localStorage.setItem("jarvis:wish",JSON.stringify(arr)); }
   function doAction(a){
     if(!a||!a.type)return;
-    if(a.type==="open"){ var map={semana:"s-rotina",cultura:"s-cultura",cinema:"s-cinema",compras:"s-mobilia",treino:"s-treino",musica:"s-musica",resumo:"s-resumo",inventario:"s-inv"}; var id=map[(a.section||"").toLowerCase()]; if(id){var s=document.getElementById(id); if(s){s.classList.remove("collapsed"); localStorage.setItem("jarvis:collapse:"+id,"0"); s.scrollIntoView({behavior:"smooth",block:"start"});}} }
+    if(a.type==="open"){ var map={semana:"s-rotina",cultura:"s-cultura",cinema:"s-cinema",compras:"s-projecto",projeto:"s-projecto",fases:"s-projecto",finance:"s-finance",treino:"s-treino",musica:"s-musica",resumo:"s-resumo",inventario:"s-inv"}; var id=map[(a.section||"").toLowerCase()]; if(id){var s=document.getElementById(id); if(s){s.classList.remove("collapsed"); localStorage.setItem("jarvis:collapse:"+id,"0"); s.scrollIntoView({behavior:"smooth",block:"start"});}} }
     else if(a.type==="wishlist"){ addWishlist(a.item); }
     else if(a.type==="groc"){ var gi=document.getElementById("grocInput"); if(gi&&a.item){ gi.value=a.item; gi.dispatchEvent(new KeyboardEvent("keydown",{key:"Enter"})); } }
   }
@@ -1286,6 +1292,18 @@
         rd.readAsText(f);
       });
     }
+  })();
+
+  // --- Abas do Projeto (Fases | Compras) ---
+  (function(){
+    var btns=document.querySelectorAll("#s-projecto .ptab-btn"); if(!btns.length)return;
+    btns.forEach(function(b){ b.addEventListener("click",function(){
+      btns.forEach(function(x){x.classList.toggle("active",x===b);});
+      var t=b.getAttribute("data-tab");
+      var f=document.getElementById("ptab-fases"), c=document.getElementById("ptab-compras");
+      if(f)f.style.display=(t==="fases")?"":"none";
+      if(c)c.style.display=(t==="compras")?"":"none";
+    });});
   })();
 
   document.getElementById("resetBtn").addEventListener("click",function(){

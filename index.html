@@ -1396,8 +1396,6 @@
       var pn=p.name.toLowerCase();
       if(words.some(function(w){return pn.indexOf(w)>=0;})) opts.push({label:"★ "+p.name+" - "+p.price, url:p.url, img:p.img});
     });
-    var slug=low.replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
-    if(opts.length<2) opts.push({label:"IKEA / lojas", url:"https://www.ikea.com/pt/pt/search/?q="+encodeURIComponent(item)});
     return opts;
   }
   document.querySelectorAll("#invA tbody tr, #invB tbody tr").forEach(function(tr){

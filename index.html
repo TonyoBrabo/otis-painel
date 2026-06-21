@@ -298,6 +298,19 @@
   .wln{font-size:12px;padding:7px 9px 2px;line-height:1.25}
   .wlm{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:3px 9px 9px;font-size:11px;color:var(--muted)}
   .wlm b{color:var(--accent);font-size:12px;font-weight:700;text-align:right}
+  .wlact{display:flex;border-top:1px solid var(--line);margin-top:auto}
+  .wlact a{flex:1;text-align:center;padding:6px;font-size:13px;text-decoration:none;color:var(--muted)}
+  .wlact a+a{border-left:1px solid var(--line)}
+  .wlact a.wlbuy:hover{color:var(--accent2)}
+  .wlact a.wldel:hover{color:var(--alta,#ff8a8a)}
+  .wlcard.bought{opacity:.55}
+  .wlcard.bought .wln{text-decoration:line-through}
+  .wlcard.bought .wlbuy{color:var(--accent2)}
+  .treinoweek{display:flex;gap:6px;flex-wrap:wrap}
+  .tday{flex:1;min-width:58px;background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:8px 4px;color:var(--muted);font-family:inherit;font-size:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
+  .tday i{font-style:normal;color:var(--accent2);font-size:14px;min-height:16px;line-height:1}
+  .tday.done{border-color:var(--accent2);color:var(--txt);background:rgba(94,224,160,.08)}
+  .tday.today{box-shadow:0 0 0 2px rgba(57,197,207,.25);border-color:var(--accent)}
   .prod{background:var(--panel2);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
   .prod .ph{display:block;aspect-ratio:1/1;background:#0a0f15;overflow:hidden}
   .prod .ph img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .25s}
@@ -601,7 +614,6 @@
       <p class="hint" id="boughtEmpty">Ainda nada registado. Mete o visto num item e diz-me quanto foi - fica aqui o registo (eu nao compro nada, so anoto).</p>
       <ul class="weeklist" id="boughtList"></ul>
       <div class="etot" id="boughtTotalRow" style="display:none"><span>Total ja gasto (real)</span><b id="boughtTotal">0 EUR</b></div>
-      <p class="legend">Ja existe: mesa+cadeiras, movel TV, cama+colchao, guarda-roupa, comoda, mesas cabeceira, frigorifico, fogao, maquina lavar, toalhas, estores, 1 jogo roupa de cama. Internet 1GB instalada.</p>
       </div>
 
       <div class="ptab" id="ptab-mercearia" style="display:none">
@@ -624,70 +636,69 @@
   <section id="s-treino">
     <div class="shead"><h2><span class="dot"></span>Treino</h2><button class="tog" aria-label="Minimizar"></button></div>
     <div class="sbody">
-      <p class="hint">Fase 1 - Fundacao (semanas 1-4). Recomposicao corporal, 5-6x/semana, 07:15-08:15 no ginasio Axis (Viana). As sessoes estao no calendario (Tony Stark). Clica num exercicio para o video.</p>
+      <p class="hint">Calistenia em casa, sem equipamento. Comeca a 22 Jun. Clica num exercicio para ver um video. Marca o dia em baixo quando treinares.</p>
 
-      <div class="evcity">Estrutura semanal</div>
+      <div class="evcity">Treino feito esta semana</div>
+      <div id="treinoWeek" class="treinoweek"></div>
+
+      <div class="evcity" style="margin-top:16px">Seg - Push (peito / ombros / triceps)</div>
       <ul class="weeklist">
-        <li>Seg - Treino A: Push (peito/ombros/triceps) - 50-60 min</li>
-        <li>Ter - Cardio leve (caminhada/eliptica/bicicleta) - 25-30 min</li>
-        <li>Qua - Treino B: Pull (costas/biceps/abs) - 50-60 min</li>
-        <li>Qui - Treino C: Pernas + Core - 45-50 min</li>
-        <li>Sex - Treino D: Upper Hyper (peito/bracos/abs) - 50-60 min</li>
-        <li>Sab - Cardio / ativo - 30 min &nbsp;|&nbsp; Dom - Descanso</li>
+        <li><a href="https://www.youtube.com/results?search_query=como+fazer+flexoes+tecnica" target="_blank" rel="noopener">Flexoes</a> - 4 x 8-12</li>
+        <li><a href="https://www.youtube.com/results?search_query=incline+push+up+tutorial" target="_blank" rel="noopener">Flexoes inclinadas (maos numa mesa)</a> - 3 x 12</li>
+        <li><a href="https://www.youtube.com/results?search_query=pike+push+up+tutorial" target="_blank" rel="noopener">Pike push-up (ombros)</a> - 3 x 8-10</li>
+        <li><a href="https://www.youtube.com/results?search_query=tricep+dips+chair" target="_blank" rel="noopener">Dips numa cadeira (triceps)</a> - 3 x 10-12</li>
+        <li><a href="https://www.youtube.com/results?search_query=prancha+abdominal+como+fazer" target="_blank" rel="noopener">Prancha</a> - 3 x 40s</li>
       </ul>
 
-      <div class="evcity" style="margin-top:14px">Seg - A: Push</div>
+      <div class="evcity" style="margin-top:14px">Ter - Pernas</div>
       <ul class="weeklist">
-        <li>Supino plano c/ barra - 4x8-10 (90s)</li>
-        <li>Supino inclinado c/ halteres - 3x10-12 (75s)</li>
-        <li>Crossover cabos / aberturas - 3x12-15 (60s)</li>
-        <li>Press militar c/ halteres - 3x10-12 (75s)</li>
-        <li>Elevacoes laterais - 3x12-15 (60s)</li>
-        <li>Triceps polia (corda) - 3x12-15 (60s)</li>
-        <li>Fundos no banco (dips) - 2xMax (60s)</li>
+        <li><a href="https://www.youtube.com/results?search_query=agachamento+livre+tecnica" target="_blank" rel="noopener">Agachamento</a> - 4 x 15</li>
+        <li><a href="https://www.youtube.com/results?search_query=afundo+lunge+tecnica" target="_blank" rel="noopener">Afundo (lunge)</a> - 3 x 12/perna</li>
+        <li><a href="https://www.youtube.com/results?search_query=bulgarian+split+squat" target="_blank" rel="noopener">Agachamento bulgaro (pe numa cadeira)</a> - 3 x 10/perna</li>
+        <li><a href="https://www.youtube.com/results?search_query=ponte+de+gluteos" target="_blank" rel="noopener">Ponte de gluteos</a> - 3 x 15</li>
+        <li><a href="https://www.youtube.com/results?search_query=elevacao+de+gemeos+calf+raises" target="_blank" rel="noopener">Elevacao de gemeos</a> - 4 x 20</li>
+        <li><a href="https://www.youtube.com/results?search_query=wall+sit" target="_blank" rel="noopener">Wall sit (encostado a parede)</a> - 2 x 45s</li>
       </ul>
 
-      <div class="evcity" style="margin-top:14px">Qua - B: Pull</div>
+      <div class="evcity" style="margin-top:14px">Qua - Pull + Core (precisas de uma mesa resistente)</div>
       <ul class="weeklist">
-        <li>Puxada a frente (lat pulldown) - 4x8-10 (90s)</li>
-        <li>Remada c/ haltere (1 braco) - 3x10-12 (75s)</li>
-        <li>Remada sentado cabos - 3x10-12 (75s)</li>
-        <li>Face pulls - 3x15-20 (60s)</li>
-        <li>Curl barra EZ - 3x10-12 (60s)</li>
-        <li>Curl martelo (halteres) - 3x12-15 (60s)</li>
-        <li>Prancha frontal - 3x30-45s &nbsp;|&nbsp; Crunch polia alta - 3x15-20</li>
+        <li><a href="https://www.youtube.com/results?search_query=australian+row+under+table" target="_blank" rel="noopener">Remada australiana (debaixo da mesa)</a> - 4 x max</li>
+        <li><a href="https://www.youtube.com/results?search_query=superman+exercise" target="_blank" rel="noopener">Superman</a> - 3 x 15</li>
+        <li><a href="https://www.youtube.com/results?search_query=reverse+snow+angels+exercise" target="_blank" rel="noopener">Reverse snow angels</a> - 3 x 15</li>
+        <li><a href="https://www.youtube.com/results?search_query=leg+raises+tutorial" target="_blank" rel="noopener">Elevacao de pernas</a> - 3 x 12</li>
+        <li><a href="https://www.youtube.com/results?search_query=prancha+abdominal+como+fazer" target="_blank" rel="noopener">Prancha</a> - 3 x 40s</li>
       </ul>
 
-      <div class="evcity" style="margin-top:14px">Qui - C: Pernas + Core</div>
+      <div class="evcity" style="margin-top:14px">Qui - Core + Cardio</div>
       <ul class="weeklist">
-        <li>Agachamento c/ barra - 4x8-10 (120s)</li>
-        <li>Leg press - 3x10-12 (90s)</li>
-        <li>Extensao de pernas - 3x12-15 (60s)</li>
-        <li>Curl de pernas - 3x10-12 (60s)</li>
-        <li>Elevacao de gemeos - 4x15-20 (45s)</li>
-        <li>Prancha lateral - 2x30s/lado &nbsp;|&nbsp; Bicycle crunch - 3x20</li>
+        <li><a href="https://www.youtube.com/results?search_query=mountain+climbers" target="_blank" rel="noopener">Mountain climbers</a> - 4 x 30s</li>
+        <li><a href="https://www.youtube.com/results?search_query=bicycle+crunch" target="_blank" rel="noopener">Bicycle crunches</a> - 3 x 20</li>
+        <li><a href="https://www.youtube.com/results?search_query=hollow+hold" target="_blank" rel="noopener">Hollow hold</a> - 3 x 30s</li>
+        <li><a href="https://www.youtube.com/results?search_query=side+plank+prancha+lateral" target="_blank" rel="noopener">Prancha lateral</a> - 2 x 30s/lado</li>
+        <li><a href="https://www.youtube.com/results?search_query=burpees+tutorial" target="_blank" rel="noopener">Burpees</a> - 3 x 10</li>
       </ul>
 
-      <div class="evcity" style="margin-top:14px">Sex - D: Upper Hyper</div>
+      <div class="evcity" style="margin-top:14px">Sex - Full body (circuito, 3-4 voltas)</div>
       <ul class="weeklist">
-        <li>Supino inclinado c/ barra - 4x10-12 (75s)</li>
-        <li>Aberturas c/ halteres (plano) - 3x12-15 (60s)</li>
-        <li>Flexoes (push-ups) - 3xMax (60s)</li>
-        <li>Curl concentrado - 3x12-15 (60s)</li>
-        <li>Triceps extensao overhead - 3x12-15 (60s)</li>
-        <li>Superset: Curl + Tricep dip - 3x(12+12) (75s)</li>
-        <li>Ab wheel / rollout - 3x8-12 &nbsp;|&nbsp; Leg raise - 3x12-15</li>
+        <li><a href="https://www.youtube.com/results?search_query=burpees+tutorial" target="_blank" rel="noopener">Burpees</a> - 10</li>
+        <li><a href="https://www.youtube.com/results?search_query=jumping+jacks" target="_blank" rel="noopener">Jumping jacks</a> - 30</li>
+        <li><a href="https://www.youtube.com/results?search_query=jump+squat+agachamento+com+salto" target="_blank" rel="noopener">Agachamento com salto</a> - 15</li>
+        <li><a href="https://www.youtube.com/results?search_query=como+fazer+flexoes+tecnica" target="_blank" rel="noopener">Flexoes</a> - 10</li>
+        <li><a href="https://www.youtube.com/results?search_query=mountain+climbers" target="_blank" rel="noopener">Mountain climbers</a> - 30s</li>
       </ul>
 
-      <div class="evcity" style="margin-top:14px">Nutricao (2000-2200 kcal | 140-160g proteina)</div>
+      <div class="evcity" style="margin-top:14px">Sab - Cardio leve &nbsp;|&nbsp; Dom - Descanso</div>
       <ul class="weeklist">
-        <li>Proteina em TODAS as refeicoes; legumes/salada ao almoco e jantar</li>
-        <li>Azeite: 1 fio (medir); agua 2.5-3L/dia</li>
-        <li>Cerveja so ao sabado (max 3), zero durante a semana</li>
-        <li>Fome entre refeicoes: fruta ou iogurte, nunca pao/bolachas</li>
-        <li>Cozinhar em batch ao domingo (arroz, frango, legumes)</li>
+        <li>Sabado: caminhada rapida ou corrida 30-40 min</li>
+        <li>Domingo: descanso + alongamentos / mobilidade 10-15 min</li>
       </ul>
-      <p class="upd">Plano do Carlos Gil (via Gustavo), Abr 2026, v1.0. Semanas 1-2 tecnica; 3-4 carga progressiva (+2.5kg compostos); reavaliar apos 4 semanas. Metricas a segunda em jejum: peso, cintura, peito, braco, fotos.</p>
+
+      <div class="evcity" style="margin-top:14px">Nutricao</div>
+      <ul class="weeklist">
+        <li>Proteina em todas as refeicoes; legumes/salada ao almoco e jantar</li>
+        <li>Agua 2.5-3L/dia; alcool so ao fim de semana</li>
+        <li>Fome entre refeicoes: fruta ou iogurte</li>
+      </ul>
     </div>
   </section>
 
@@ -1168,9 +1179,9 @@
           if(nxt&&nxt.classList.contains("optrow")){ nxt.remove(); return; }
           var item=nameTd.textContent.trim(), opts=buyOptions(item);
           var r=document.createElement("tr"); r.className="optrow";
-          r.innerHTML='<td></td><td colspan="3"><div class="invopts">'+opts.map(function(o){ var im=o.img?'<img src="'+o.img+'" alt="" loading="lazy" onerror="this.remove()">':''; return '<a class="'+(o.img?"hasimg":"")+'" href="'+o.url+'" target="_blank" rel="noopener">'+im+'<span>'+esc(o.label)+'</span></a>'; }).join("")+'<a href="#" class="towish">+ guardar na wishlist</a></div></td>';
+          r.innerHTML='<td></td><td colspan="3"><div class="invopts">'+opts.map(function(o){ var im=o.img?'<img src="'+o.img+'" alt="" loading="lazy" onerror="this.remove()">':''; return '<a class="'+(o.img?"hasimg":"")+'" href="'+o.url+'" target="_blank" rel="noopener">'+im+'<span>'+esc(o.label)+'</span></a>'; }).join("")+'<a href="#" class="towish" title="Guardar na wishlist">+</a></div></td>';
           tr.parentNode.insertBefore(r, tr.nextSibling);
-          var tw=r.querySelector(".towish"); if(tw)tw.addEventListener("click",function(e){ e.preventDefault(); addWishlist(item); tw.textContent="guardado na wishlist"; tw.style.color="var(--muted)"; });
+          var tw=r.querySelector(".towish"); if(tw)tw.addEventListener("click",function(e){ e.preventDefault(); addWishlist(item); tw.textContent="✓"; tw.title="Guardado na wishlist"; tw.style.color="var(--accent2)"; });
         });
       }
       cb.addEventListener("change",function(){
@@ -1219,16 +1230,33 @@
     var grid=document.getElementById("wlGrid");
     if(grid){
       var cats=["Relogios","Guitarras","Facas","Vario"], html="";
+      var wdel; try{ wdel=JSON.parse(localStorage.getItem("jarvis:wldel")||"[]"); }catch(e){ wdel=[]; }
+      var wbgt; try{ wbgt=JSON.parse(localStorage.getItem("jarvis:wlbought")||"[]"); }catch(e){ wbgt=[]; }
       cats.forEach(function(cat){
-        var its=wlist.filter(function(w){return w.c===cat;}); if(!its.length)return;
+        var its=wlist.filter(function(w){return w.c===cat && wdel.indexOf(w.u)<0;}); if(!its.length)return;
         html+='<div class="evcity" style="margin-top:10px">'+esc(cat)+'</div><div class="wlgrid">';
         its.forEach(function(w){
           var ph=w.i?'<a class="wlph" href="'+w.u+'" target="_blank" rel="noopener"><img src="'+w.i+'" alt="" loading="lazy" onerror="this.parentNode.classList.add(\'noimg\');this.remove()"></a>':'<a class="wlph noimg" href="'+w.u+'" target="_blank" rel="noopener"></a>';
-          html+='<div class="wlcard">'+ph+'<div class="wln">'+esc(w.n)+'</div><div class="wlm"><span>'+esc(w.s)+'</span>'+(w.p?'<b>'+esc(w.p)+'</b>':'')+'</div></div>';
+          var bgt=wbgt.indexOf(w.u)>=0;
+          html+='<div class="wlcard'+(bgt?' bought':'')+'" data-u="'+esc(w.u)+'">'+ph+'<div class="wln">'+esc(w.n)+'</div><div class="wlm"><span>'+esc(w.s)+'</span>'+(w.p?'<b>'+esc(w.p)+'</b>':'')+'</div><div class="wlact"><a href="#" class="wlbuy" title="Comprado">&#10003;</a><a href="#" class="wldel" title="Eliminar">&#128465;</a></div></div>';
         });
         html+='</div>';
       });
       grid.innerHTML=html;
+      grid.querySelectorAll(".wlcard").forEach(function(card){
+        var u=card.getAttribute("data-u");
+        var bd=card.querySelector(".wlbuy"), dl=card.querySelector(".wldel");
+        if(bd)bd.addEventListener("click",function(e){ e.preventDefault();
+          var arr; try{arr=JSON.parse(localStorage.getItem("jarvis:wlbought")||"[]");}catch(x){arr=[];}
+          var k=arr.indexOf(u); if(k>=0){arr.splice(k,1);card.classList.remove("bought");} else {arr.push(u);card.classList.add("bought");}
+          localStorage.setItem("jarvis:wlbought",JSON.stringify(arr));
+        });
+        if(dl)dl.addEventListener("click",function(e){ e.preventDefault();
+          if(!confirm("Eliminar da wishlist?"))return;
+          var arr; try{arr=JSON.parse(localStorage.getItem("jarvis:wldel")||"[]");}catch(x){arr=[];}
+          if(arr.indexOf(u)<0)arr.push(u); localStorage.setItem("jarvis:wldel",JSON.stringify(arr)); card.remove();
+        });
+      });
     }
     var ul=document.getElementById("wishlist"), inp=document.getElementById("wishInput"); if(!ul)return;
     var arr; try{ arr=JSON.parse(localStorage.getItem("jarvis:wish")||"[]"); }catch(e){ arr=[]; }
@@ -1325,7 +1353,7 @@
     var el=document.getElementById(id); if(!el)return;
     var u=cineUrl[id]||"#";
     el.innerHTML=cinema[id].map(function(f){
-      var poster=f.p?'<img class="fp" src="'+f.p+'" alt="" loading="lazy" onerror="this.style.display=\'none\'">':'';
+      var poster=f.p?'<img class="fp" src="'+f.p+'" alt="" loading="lazy" onerror="this.closest(\'.film\').classList.add(\'noposter\')">':'';
       return '<a class="film" href="'+u+'" target="_blank" rel="noopener">'+poster+'<div class="fi"><div class="ft">'+esc(f.t)+'</div><div class="fs">'+esc(f.s)+'</div></div></a>';
     }).join("");
   });
@@ -1343,7 +1371,6 @@
       if(words.some(function(w){return pn.indexOf(w)>=0;})) opts.push({label:"★ "+p.name+" - "+p.price, url:p.url, img:p.img});
     });
     var slug=low.replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
-    if(opts.length<2) opts.push({label:"OLX (2a mao)", url:"https://www.olx.pt/ads/q-"+slug+"/"});
     if(opts.length<2) opts.push({label:"IKEA / lojas", url:"https://www.ikea.com/pt/pt/search/?q="+encodeURIComponent(item)});
     return opts;
   }
@@ -1500,6 +1527,23 @@
       var t=b.getAttribute("data-tab");
       document.querySelectorAll("#s-projecto .ptab").forEach(function(p){ p.style.display=(p.id==="ptab-"+t)?"":"none"; });
     });});
+  })();
+
+  // --- Treino: visto por dia (esta semana) ---
+  (function(){
+    var box=document.getElementById("treinoWeek"); if(!box)return;
+    var dias=["Seg","Ter","Qua","Qui","Sex","Sab","Dom"];
+    var d=new Date(), off=(d.getDay()+6)%7, mon=new Date(d); mon.setDate(d.getDate()-off);
+    var key="jarvis:treino:"+mon.getFullYear()+"-"+(mon.getMonth()+1)+"-"+mon.getDate();
+    var st; try{ st=JSON.parse(localStorage.getItem(key)||"{}"); }catch(e){ st={}; }
+    box.innerHTML="";
+    dias.forEach(function(dia,i){
+      var b=document.createElement("button");
+      b.className="tday"+(st[i]?" done":"")+(i===off?" today":"");
+      b.innerHTML="<span>"+dia+"</span><i>"+(st[i]?"✓":"")+"</i>";
+      b.addEventListener("click",function(){ st[i]=!st[i]; localStorage.setItem(key,JSON.stringify(st)); b.classList.toggle("done",!!st[i]); b.querySelector("i").textContent=st[i]?"✓":""; });
+      box.appendChild(b);
+    });
   })();
 
   document.getElementById("resetBtn").addEventListener("click",function(){

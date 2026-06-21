@@ -184,6 +184,8 @@
   .barbtn.alt{background:transparent;color:var(--accent);border:1px solid var(--accent)}
   .barbtn.on{background:var(--accent2);color:#04231a;border-color:var(--accent2)}
   .barbtn:hover{opacity:.88}
+  .vozsel{background:var(--panel2);border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:7px 6px;font-size:12px;max-width:130px}
+  .vozsel:focus{outline:none;border-color:var(--accent)}
   @media(max-width:600px){.otisbar{flex-wrap:wrap}.otisbar input{order:5;flex-basis:100%}}
   /* navegacao do calendario semanal */
   .weeknav{display:flex;align-items:center;gap:10px;margin-bottom:14px}
@@ -366,7 +368,9 @@
   <div class="otispanel">
     <div class="otisbar">
       <input id="cmdInput" placeholder="Pergunta ao OTIS... (Enter envia)">
+      <select id="vozSel" class="vozsel" title="Escolher voz" style="display:none"></select>
       <button class="barbtn alt" id="bomDia" title="Bom dia (voz)">&#9835;</button>
+      <button class="barbtn alt" id="btnRefresh" title="Actualizar OTIS">&#8635;</button>
     </div>
     <div id="otisChat" class="otischat" style="display:none"></div>
   </div>
@@ -505,7 +509,7 @@
       <div class="grid cards">
         <div class="card"><div class="k">Fase actual</div><div class="v">1 <small>de 4</small></div><div class="sub">Mobilar o apartamento</div></div>
         <div class="card"><div class="k">Etapa</div><div class="v">1.1</div><div class="sub">Sofa + TV + iluminacao sala</div></div>
-        <div class="card"><div class="k">Gasto estimado</div><div class="v" id="gastoVal">0 <small>EUR</small></div><div class="sub">itens marcados como comprados</div></div>
+        <div class="card"><div class="k">Ja gasto (real)</div><div class="v" id="gastoVal">0 <small>EUR</small></div><div class="sub">soma do que registaste em "Ja comprado"</div></div>
         <div class="card"><div class="k">Disponivel 1o ano</div><div class="v" id="restoVal">2.700 <small>EUR</small></div><div class="sub">total: 2.700 EUR</div></div>
       </div>
     </div>
@@ -517,8 +521,8 @@
     <div class="sbody">
       <div class="ptabs">
         <button class="ptab-btn active" data-tab="fases">Fases</button>
-        <button class="ptab-btn" data-tab="compras">Compras</button>
-        <button class="ptab-btn" data-tab="faltam">O que falta</button>
+        <button class="ptab-btn" data-tab="mercearia">Mercearia</button>
+        <button class="ptab-btn" data-tab="wishlist">Wishlist</button>
       </div>
       <div class="ptab" id="ptab-fases">
       <p class="hint" style="margin:0 0 10px">Sub-etapas da Fase 1 - <b style="color:var(--accent)">clica numa etapa para abrir a lista de compras</b></p>
@@ -530,6 +534,7 @@
           <tr data-price="120" data-key="tv"><td><input type="checkbox"></td><td>Televisao</td><td class="num">120</td><td>OLX/Worten</td></tr>
           <tr data-price="20" data-key="cand1"><td><input type="checkbox"></td><td>Candeeiro de tecto sala</td><td class="num">20</td><td>IKEA/Leroy</td></tr>
           <tr data-price="25" data-key="cand2"><td><input type="checkbox"></td><td>Candeeiro de pe/mesa</td><td class="num">25</td><td>IKEA</td></tr>
+          <tr data-price="15" data-key="extens"><td><input type="checkbox"></td><td>Extensoes / regletas</td><td class="num">15</td><td>Continente/Worten</td></tr>
         </table></div>
       </div>
 
@@ -538,7 +543,9 @@
         <div class="ebody"><table>
           <tr data-price="40" data-key="tapete"><td><input type="checkbox"></td><td>Tapete sala</td><td class="num">40</td><td>IKEA</td></tr>
           <tr data-price="40" data-key="iluqua"><td><input type="checkbox"></td><td>Iluminacao quarto</td><td class="num">40</td><td>IKEA</td></tr>
-          <tr data-price="30" data-key="roupa"><td><input type="checkbox"></td><td>Roupa de cama extra</td><td class="num">30</td><td>IKEA/Continente</td></tr>
+          <tr data-price="30" data-key="roupa"><td><input type="checkbox"></td><td>Roupa de cama extra (2o jogo)</td><td class="num">30</td><td>IKEA/Continente</td></tr>
+          <tr data-price="10" data-key="cabides"><td><input type="checkbox"></td><td>Cabides (20+)</td><td class="num">10</td><td>IKEA</td></tr>
+          <tr data-price="15" data-key="cesto"><td><input type="checkbox"></td><td>Cesto roupa suja</td><td class="num">15</td><td>IKEA</td></tr>
         </table></div>
       </div>
 
@@ -548,6 +555,10 @@
           <tr data-price="60" data-key="micro"><td><input type="checkbox"></td><td>Microondas</td><td class="num">60</td><td>Worten/Media Markt</td></tr>
           <tr data-price="40" data-key="panelas"><td><input type="checkbox"></td><td>Conjunto de panelas (3+)</td><td class="num">40</td><td>IKEA/Continente</td></tr>
           <tr data-price="40" data-key="louca"><td><input type="checkbox"></td><td>Pratos/copos/talheres</td><td class="num">40</td><td>IKEA</td></tr>
+          <tr data-price="25" data-key="facas"><td><input type="checkbox"></td><td>Facas + tabua de corte</td><td class="num">25</td><td>IKEA</td></tr>
+          <tr data-price="20" data-key="chaleira"><td><input type="checkbox"></td><td>Chaleira electrica</td><td class="num">20</td><td>Worten</td></tr>
+          <tr data-price="15" data-key="tigelas"><td><input type="checkbox"></td><td>Tigelas / escorredor</td><td class="num">15</td><td>IKEA</td></tr>
+          <tr data-price="20" data-key="torradeira"><td><input type="checkbox"></td><td>Torradeira</td><td class="num">20</td><td>Worten</td></tr>
         </table></div>
       </div>
 
@@ -556,7 +567,8 @@
         <div class="ebody"><table>
           <tr data-price="30" data-key="utens"><td><input type="checkbox"></td><td>Utensilios de cozinha</td><td class="num">30</td><td>IKEA</td></tr>
           <tr data-price="40" data-key="limpeza"><td><input type="checkbox"></td><td>Kit de limpeza casa</td><td class="num">40</td><td>Continente</td></tr>
-          <tr data-price="35" data-key="ferro"><td><input type="checkbox"></td><td>Ferro + tabua</td><td class="num">35</td><td>Worten</td></tr>
+          <tr data-price="35" data-key="ferro"><td><input type="checkbox"></td><td>Ferro + tabua de engomar</td><td class="num">35</td><td>Worten</td></tr>
+          <tr data-price="15" data-key="lixo"><td><input type="checkbox"></td><td>Caixote do lixo</td><td class="num">15</td><td>IKEA</td></tr>
         </table></div>
       </div>
 
@@ -568,69 +580,36 @@
         </table></div>
       </div>
 
-      <div class="etot"><span>Total estimado das compras da Fase 1</span><b>760 EUR</b></div>
+      <div class="etot"><span>Total estimado das compras da Fase 1</span><b>~895 EUR</b></div>
       <table style="margin-top:18px">
         <thead><tr><th>Fase</th><th>Descricao</th><th>Periodo</th><th class="num">Orcamento</th><th>Estado</th></tr></thead>
         <tbody>
           <tr><td>1</td><td>Mobilar o apartamento</td><td>Jun-Out 2026</td><td class="num">1.300</td><td><span class="badge b-activa">Activa</span></td></tr>
-          <tr><td>2</td><td>Renovar casa de banho</td><td>Inicio 2027</td><td class="num">1.500-2.500</td><td><span class="badge b-fut">Futura</span></td></tr>
+          <tr><td>2</td><td>Renovar casa de banho (+ acessorios WC)</td><td>Inicio 2027</td><td class="num">1.500-2.500</td><td><span class="badge b-fut">Futura</span></td></tr>
           <tr><td>3</td><td>Renovar cozinha</td><td>Meados-fim 2027</td><td class="num">2.000-3.500</td><td><span class="badge b-fut">Futura</span></td></tr>
           <tr><td>4</td><td>Janelas vidro duplo</td><td>2028</td><td class="num">2.000-4.000</td><td><span class="badge b-fut">Futura</span></td></tr>
         </tbody>
       </table>
-      </div>
-      <div class="ptab" id="ptab-compras" style="display:none">
-        <div class="evcity">Mercearia</div>
-        <div class="grocrow"><input id="grocInput" placeholder="Adicionar item e Enter (vai para a seccao certa)..."></div>
-        <div id="grocList"></div>
 
-        <div class="evcity" style="margin-top:18px">Casa &amp; Co.</div>
-        <p class="hint">Produtos com foto, preco e link. Manda-me um link que eu adiciono. Por baixo, o que falta encontrar.</p>
-        <div class="prodgrid" id="prodgrid"></div>
-        <div class="evcity" style="margin-top:14px">Por encontrar</div>
-        <ul class="weeklist" id="wishlist">
-          <li>Candeeiro de pe (sala)</li>
-        </ul>
+      <div class="evcity" style="margin-top:16px">Ja comprado</div>
+      <p class="hint" id="boughtEmpty">Ainda nada registado. Mete o visto num item e diz-me quanto foi - fica aqui o registo (eu nao compro nada, so anoto).</p>
+      <ul class="weeklist" id="boughtList"></ul>
+      <div class="etot" id="boughtTotalRow" style="display:none"><span>Total ja gasto (real)</span><b id="boughtTotal">0 EUR</b></div>
+      <p class="legend">Ja existe: mesa+cadeiras, movel TV, cama+colchao, guarda-roupa, comoda, mesas cabeceira, frigorifico, fogao, maquina lavar, toalhas, estores, 1 jogo roupa de cama. Internet 1GB instalada.</p>
       </div>
-      <div class="ptab" id="ptab-faltam" style="display:none">
-      <p class="hint">Por prioridade. Clica num item para 2 opcoes de compra. Tica para riscar o que ja resolveste.</p>
-      <div class="two">
-        <table id="invA">
-          <thead><tr><th></th><th>Item</th><th>Prio.</th></tr></thead>
-          <tbody>
-            <tr><td><input type="checkbox"></td><td>Sofa</td><td><span class="badge b-alta">Alta</span></td></tr>
-            <tr><td><input type="checkbox"></td><td>Televisao</td><td><span class="badge b-alta">Alta</span></td></tr>
-            <tr><td><input type="checkbox"></td><td>Iluminacao sala</td><td><span class="badge b-alta">Alta</span></td></tr>
-            <tr><td><input type="checkbox"></td><td>Microondas</td><td><span class="badge b-alta">Alta</span></td></tr>
-            <tr><td><input type="checkbox"></td><td>Panelas/frigideiras</td><td><span class="badge b-alta">Alta</span></td></tr>
-            <tr><td><input type="checkbox"></td><td>Facas + tabua</td><td><span class="badge b-alta">Alta</span></td></tr>
-            <tr><td><input type="checkbox"></td><td>Pratos/copos/talheres</td><td><span class="badge b-alta">Alta</span></td></tr>
-            <tr><td><input type="checkbox"></td><td>Internet</td><td><span class="badge b-alta">Alta</span></td></tr>
-            <tr><td><input type="checkbox"></td><td>Kit limpeza + aspirador</td><td><span class="badge b-alta">Alta</span></td></tr>
-            <tr><td><input type="checkbox"></td><td>Tapete sala</td><td><span class="badge b-media">Media</span></td></tr>
-            <tr><td><input type="checkbox"></td><td>Cortinas sala + quarto</td><td><span class="badge b-media">Media</span></td></tr>
-            <tr><td><input type="checkbox"></td><td>Iluminacao quarto</td><td><span class="badge b-media">Media</span></td></tr>
-          </tbody>
-        </table>
-        <table id="invB">
-          <thead><tr><th></th><th>Item</th><th>Prio.</th></tr></thead>
-          <tbody>
-            <tr><td><input type="checkbox"></td><td>2o jogo roupa de cama</td><td><span class="badge b-media">Media</span></td></tr>
-            <tr><td><input type="checkbox"></td><td>Chaleira electrica</td><td><span class="badge b-media">Media</span></td></tr>
-            <tr><td><input type="checkbox"></td><td>Utensilios cozinha</td><td><span class="badge b-media">Media</span></td></tr>
-            <tr><td><input type="checkbox"></td><td>Tigelas/escorredor</td><td><span class="badge b-media">Media</span></td></tr>
-            <tr><td><input type="checkbox"></td><td>Caixote do lixo</td><td><span class="badge b-media">Media</span></td></tr>
-            <tr><td><input type="checkbox"></td><td>Cesto roupa suja</td><td><span class="badge b-media">Media</span></td></tr>
-            <tr><td><input type="checkbox"></td><td>Ferro + tabua engomar</td><td><span class="badge b-media">Media</span></td></tr>
-            <tr><td><input type="checkbox"></td><td>Extensoes/regletas</td><td><span class="badge b-media">Media</span></td></tr>
-            <tr><td><input type="checkbox"></td><td>Cabides (20+)</td><td><span class="badge b-media">Media</span></td></tr>
-            <tr><td><input type="checkbox"></td><td>Almofadas decorativas</td><td><span class="badge b-baixa">Baixa</span></td></tr>
-            <tr><td><input type="checkbox"></td><td>Torradeira</td><td><span class="badge b-baixa">Baixa</span></td></tr>
-            <tr><td><input type="checkbox"></td><td>Acessorios + organizacao WC</td><td><span class="badge b-baixa">Baixa</span></td></tr>
-          </tbody>
-        </table>
+
+      <div class="ptab" id="ptab-mercearia" style="display:none">
+        <div class="evcity">Mercearia</div>
+        <p class="hint">Lista de supermercado (quinta-feira). Escreve um item e Enter - vai para a seccao certa.</p>
+        <div class="grocrow"><input id="grocInput" placeholder="Adicionar item e Enter..."></div>
+        <div id="grocList"></div>
       </div>
-      <p class="legend">Ja existe: mesa+cadeiras, movel TV, cama+colchao, guarda-roupa, comoda, mesas cabeceira, frigorifico, fogao, maquina lavar, toalhas, estores, 1 jogo roupa de cama.</p>
+
+      <div class="ptab" id="ptab-wishlist" style="display:none">
+        <div class="evcity">Wishlist</div>
+        <p class="hint">Desejos pessoais e alternativas que decidiste nao comprar (compraste o sofa? manda as outras opcoes para aqui). Escreve e Enter para adicionar.</p>
+        <div class="grocrow"><input id="wishInput" placeholder="Adicionar desejo e Enter..."></div>
+        <ul class="weeklist" id="wishlist"></ul>
       </div>
     </div>
   </section>
@@ -950,10 +929,23 @@
     "Tudo sob controlo, Senhor. Ou pelo menos e o que diremos a todos.",
     "Recomendo beber agua e, ja agora, conquistar o mundo com elegancia."
   ];
+  function allVozPt(){ var vs=speechSynthesis.getVoices()||[]; return vs.filter(function(v){return /(portug|pt[-_])/i.test((v.name||"")+" "+(v.lang||""));}); }
   function pickVoz(){
     var vs=speechSynthesis.getVoices()||[];
+    var saved=localStorage.getItem("otis:voz");
+    if(saved){ for(var k=0;k<vs.length;k++){ if(vs[k].name===saved) return vs[k]; } }
     function find(re){for(var i=0;i<vs.length;i++){var s=(vs[i].name||"")+" "+(vs[i].lang||"");if(re.test(s))return vs[i];}return null;}
-    return find(/Google.*(portug|pt[-_])/i)||find(/Microsoft.*(Portug|pt[-_])/i)||find(/pt[-_]PT/i)||find(/Portug/i)||find(/pt[-_]BR/i)||null;
+    // preferir voz masculina PT (mordomo); depois Google/Microsoft PT, etc.
+    return find(/(Duarte|Raul|Antonio|Joao).*(portug|pt[-_])/i)||find(/Google.*(portug|pt[-_])/i)||find(/Microsoft.*(Portug|pt[-_])/i)||find(/pt[-_]PT/i)||find(/Portug/i)||find(/pt[-_]BR/i)||null;
+  }
+  function fillVozSel(){
+    var sel=document.getElementById("vozSel"); if(!sel)return;
+    var pts=allVozPt(); if(!pts.length)return;
+    var pv=pickVoz(); var cur=localStorage.getItem("otis:voz")||(pv&&pv.name)||"";
+    sel.innerHTML="";
+    pts.forEach(function(v){ var o=document.createElement("option"); o.value=v.name; o.textContent=(v.name||"").replace(/Microsoft|Online|\(Natural\)/g,"").trim()+" ("+v.lang+")"; if(v.name===cur)o.selected=true; sel.appendChild(o); });
+    sel.style.display="";
+    sel.onchange=function(){ localStorage.setItem("otis:voz",sel.value); var u=new SpeechSynthesisUtterance("Voz alterada. Assim esta melhor, Senhor Daniel?"); var v=pickVoz(); if(v){u.voice=v;u.lang=v.lang;} u.rate=0.95; speechSynthesis.cancel(); speechSynthesis.speak(u); };
   }
   function falarBomDia(){
     if(!("speechSynthesis" in window)){alert("O teu browser nao suporta voz.");return;}
@@ -978,8 +970,9 @@
     u.rate=0.95; u.pitch=1.0;
     speechSynthesis.cancel(); speechSynthesis.speak(u);
   }
-  if("speechSynthesis" in window){ speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged=function(){speechSynthesis.getVoices();}; }
+  if("speechSynthesis" in window){ speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged=function(){speechSynthesis.getVoices();fillVozSel();}; setTimeout(fillVozSel,300); }
   var bd=document.getElementById("bomDia"); if(bd){bd.addEventListener("click",falarBomDia);}
+  var rb=document.getElementById("btnRefresh"); if(rb){rb.addEventListener("click",function(){location.reload();});}
 
   // obter meteorologia (Praia da Amorosa) e voltar a desenhar a semana
   fetch("https://api.open-meteo.com/v1/forecast?latitude=41.66&longitude=-8.81&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Europe%2FLisbon&forecast_days=14")
@@ -1101,53 +1094,92 @@
     });
   });
 
-  // --- Checkboxes de compras (por chave estavel) ---
+  // --- Itens das etapas: visto -> "quanto foi?" -> Ja comprado (+ opcoes e wishlist) ---
+  function getBought(){ try{return JSON.parse(localStorage.getItem("jarvis:bought")||"{}");}catch(e){return {};} }
+  function setBought(b){ localStorage.setItem("jarvis:bought",JSON.stringify(b)); }
+
   function updateBudget(){
-    var gasto=0;
-    document.querySelectorAll("tr[data-price]").forEach(function(tr){
-      var cb=tr.querySelector("input[type=checkbox]");
-      if(cb&&cb.checked)gasto+=parseInt(tr.getAttribute("data-price"))||0;
-    });
-    var resto=TOTAL-gasto;
-    document.getElementById("gastoVal").innerHTML=fmt(gasto)+" <small>EUR</small>";
-    document.getElementById("restoVal").innerHTML=fmt(resto)+" <small>EUR</small>";
+    var b=getBought(), gasto=0;
+    Object.keys(b).forEach(function(k){ var p=parseFloat(b[k].price); if(!isNaN(p))gasto+=p; });
+    gasto=Math.round(gasto); var resto=TOTAL-gasto;
+    var gv=document.getElementById("gastoVal"); if(gv)gv.innerHTML=fmt(gasto)+" <small>EUR</small>";
+    var rv=document.getElementById("restoVal"); if(rv)rv.innerHTML=fmt(resto)+" <small>EUR</small>";
     var pct=Math.min(100,Math.round(gasto/TOTAL*100));
     var bf=document.getElementById("barFill"); if(bf)bf.style.width=pct+"%";
     var bl=document.getElementById("barLeft"); if(bl)bl.textContent=fmt(gasto)+" EUR gastos ("+pct+"%)";
     var br2=document.getElementById("barRight"); if(br2)br2.textContent=fmt(resto)+" EUR por usar";
   }
-  (function(){
-    var saved=JSON.parse(localStorage.getItem("jarvis:buy")||"{}");
-    document.querySelectorAll("tr[data-price]").forEach(function(tr){
-      var cb=tr.querySelector("input[type=checkbox]"); if(!cb)return;
-      var k=tr.getAttribute("data-key");
-      if(saved[k]){cb.checked=true;tr.classList.add("done");}
-      cb.addEventListener("change",function(){
-        tr.classList.toggle("done",cb.checked);
-        var s=JSON.parse(localStorage.getItem("jarvis:buy")||"{}");
-        s[k]=cb.checked; localStorage.setItem("jarvis:buy",JSON.stringify(s));
-        updateBudget();
+
+  function renderBought(){
+    var b=getBought(), ul=document.getElementById("boughtList"); if(!ul)return;
+    var keys=Object.keys(b); ul.innerHTML=""; var tot=0, anyPrice=false;
+    keys.forEach(function(k){
+      var it=b[k], p=parseFloat(it.price), priceTxt;
+      if(it.price==="-"){ priceTxt='<span style="color:var(--accent2)">resolvido</span>'; }
+      else if(!isNaN(p)){ tot+=p; anyPrice=true; priceTxt=fmt(p)+" EUR"; }
+      else { priceTxt='<a href="#" data-price-k="'+esc(k)+'" style="color:var(--alta,#ff8a8a)">preco por registar</a>'; }
+      var li=document.createElement("li");
+      li.innerHTML='<span>'+esc(it.name)+'</span><b style="float:right">'+priceTxt+' <a href="#" data-undo="'+esc(k)+'" title="Desfazer" style="color:var(--muted);margin-left:8px">desfazer</a></b>';
+      ul.appendChild(li);
+    });
+    var empty=document.getElementById("boughtEmpty"); if(empty)empty.style.display=keys.length?"none":"";
+    var trow=document.getElementById("boughtTotalRow"), tt=document.getElementById("boughtTotal");
+    if(trow)trow.style.display=anyPrice?"":"none"; if(tt)tt.textContent=fmt(Math.round(tot))+" EUR";
+    ul.querySelectorAll("a[data-undo]").forEach(function(a){
+      a.addEventListener("click",function(e){ e.preventDefault(); var k=a.getAttribute("data-undo"); var bb=getBought(); delete bb[k]; setBought(bb);
+        var row=document.querySelector('.etapa tr[data-key="'+k+'"]'); if(row){ row.style.display=""; var c=row.querySelector("input[type=checkbox]"); if(c)c.checked=false; row.classList.remove("done"); }
+        renderBought(); updateBudget();
       });
     });
-  })();
-
-  // --- Checkboxes do inventario ---
-  function persistInv(tableId,key){
-    var rows=document.querySelectorAll("#"+tableId+" tbody tr");
-    var saved=JSON.parse(localStorage.getItem(key)||"[]");
-    rows.forEach(function(tr,i){
-      var cb=tr.querySelector("input[type=checkbox]"); if(!cb)return;
-      if(saved[i]){cb.checked=true;tr.classList.add("done");}
-      cb.addEventListener("change",function(){
-        tr.classList.toggle("done",cb.checked);
-        var st=[];document.querySelectorAll("#"+tableId+" tbody tr").forEach(function(r){
-          var c=r.querySelector("input[type=checkbox]");st.push(c?c.checked:false);});
-        localStorage.setItem(key,JSON.stringify(st));
+    ul.querySelectorAll("a[data-price-k]").forEach(function(a){
+      a.addEventListener("click",function(e){ e.preventDefault(); var k=a.getAttribute("data-price-k"); var bb=getBought(); if(!bb[k])return;
+        var ans=prompt("Quanto foi \""+bb[k].name+"\"? (EUR)", bb[k].est||""); if(ans===null)return;
+        bb[k].price=ans.trim().replace(",","."); setBought(bb); renderBought(); updateBudget();
       });
     });
   }
-  persistInv("invA","jarvis:invA");
-  persistInv("invB","jarvis:invB");
+
+  (function(){
+    var b=getBought();
+    // Internet ja resolvida (1GB) -> entra logo no "Ja comprado"
+    if(!localStorage.getItem("jarvis:boughtSeed")){ if(!b.internet){ b.internet={name:"Internet 1GB (instalada)",price:"-"}; setBought(b); } localStorage.setItem("jarvis:boughtSeed","1"); }
+    document.querySelectorAll(".etapa tr[data-key]").forEach(function(tr){
+      var cb=tr.querySelector("input[type=checkbox]"); if(!cb)return;
+      var k=tr.getAttribute("data-key"), nameTd=tr.children[1];
+      if(getBought()[k]){ tr.style.display="none"; cb.checked=true; }
+      if(nameTd){ nameTd.style.cursor="pointer"; nameTd.title="Ver onde comprar";
+        nameTd.addEventListener("click",function(){
+          var nxt=tr.nextElementSibling;
+          if(nxt&&nxt.classList.contains("optrow")){ nxt.remove(); return; }
+          var item=nameTd.textContent.trim(), opts=buyOptions(item);
+          var r=document.createElement("tr"); r.className="optrow";
+          r.innerHTML='<td></td><td colspan="3"><div class="invopts">'+opts.map(function(o){return '<a href="'+o.url+'" target="_blank" rel="noopener">'+esc(o.label)+'</a>';}).join("")+'<a href="#" class="towish">+ guardar na wishlist</a></div></td>';
+          tr.parentNode.insertBefore(r, tr.nextSibling);
+          var tw=r.querySelector(".towish"); if(tw)tw.addEventListener("click",function(e){ e.preventDefault(); addWishlist(item); tw.textContent="guardado na wishlist"; tw.style.color="var(--muted)"; });
+        });
+      }
+      cb.addEventListener("change",function(){
+        if(cb.checked){
+          var nome=nameTd?nameTd.textContent.trim():k, est=tr.getAttribute("data-price")||"";
+          var ans=prompt("Compraste \""+nome+"\". Quanto foi? (EUR)\nDeixa vazio para registar depois.", est);
+          if(ans===null){ cb.checked=false; return; }
+          var bb=getBought(); bb[k]={name:nome, price:(ans.trim()===""?"":ans.trim().replace(",",".")), est:est}; setBought(bb);
+          tr.classList.add("done"); tr.style.display="none";
+          renderBought(); updateBudget();
+        }
+      });
+    });
+    renderBought();
+  })();
+
+  // --- Wishlist (desejos + alternativas nao compradas) ---
+  (function(){
+    var ul=document.getElementById("wishlist"), inp=document.getElementById("wishInput"); if(!ul)return;
+    var arr; try{ arr=JSON.parse(localStorage.getItem("jarvis:wish")||"null"); }catch(e){ arr=null; }
+    if(arr===null){ arr=["Aspirador","Candeeiro de pe (sala)"]; localStorage.setItem("jarvis:wish",JSON.stringify(arr)); }
+    ul.innerHTML=""; arr.forEach(function(it){ var li=document.createElement("li"); li.textContent=it; ul.appendChild(li); });
+    if(inp)inp.addEventListener("keydown",function(e){ if(e.key==="Enter"&&inp.value.trim()){ addWishlist(inp.value.trim()); inp.value=""; } });
+  })();
   updateBudget();
 
   // lista de compras de mobilia e casa (produtos com foto/preco/link)

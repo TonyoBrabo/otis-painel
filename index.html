@@ -614,6 +614,10 @@
       <p class="hint" id="boughtEmpty">Ainda nada registado. Mete o visto num item e diz-me quanto foi - fica aqui o registo (eu nao compro nada, so anoto).</p>
       <ul class="weeklist" id="boughtList"></ul>
       <div class="etot" id="boughtTotalRow" style="display:none"><span>Total ja gasto (real)</span><b id="boughtTotal">0 EUR</b></div>
+
+      <div class="evcity" style="margin-top:16px">Compras de casa (produtos)</div>
+      <p class="hint">Opcoes reais para mobilar, com foto e preco. Clica para abrir; visto marca comprado, caixote remove.</p>
+      <div id="casaGrid"></div>
       </div>
 
       <div class="ptab" id="ptab-mercearia" style="display:none">
@@ -1282,27 +1286,28 @@
     {name:"VASTMARKE Carregador sem fios com luz", store:"IKEA", price:"19,99 EUR", url:"https://www.ikea.com/pt/en/p/vaestmaerke-wireless-charger-with-lighting-50598214/", img:"https://www.ikea.com/pt/en/images/products/vaestmaerke-wireless-charger-with-lighting__1435814_pe983950_s5.jpg?f=u"},
     {name:"Abajur de substituicao (casquilho E26/27)", store:"Temu", price:"ver na Temu", url:"https://www.temu.com/pt/1pc-abajur-de-substitui%C3%A7%C3%A3o-adequado-para-casquilho-e26-27--garagem-restaurante-v%C3%A1rios-locais-g-606220018628001.html", img:"https://img.kwcdn.com/product/fancy/c45ae903-d6bb-429a-ae7c-4b0fccbdc7e4.jpg"}
   ];
+  // --- Compras de casa: cartoes poster (foto+preco) + comprado/eliminar ---
   (function(){
-    var grid=document.getElementById("prodgrid"); if(!grid)return;
-    var saved=JSON.parse(localStorage.getItem("jarvis:mobilia")||"{}");
-    if(!mobilia.length){grid.innerHTML='<p class="noev">Ainda sem produtos. Manda um link ao OTIS.</p>';return;}
-    grid.innerHTML=mobilia.map(function(p){
-      var b=saved[p.url]?" bought":"";
-      return '<div class="prod'+b+'" data-url="'+p.url+'">'+
-        '<a class="ph" href="'+p.url+'" target="_blank" rel="noopener"><img src="'+p.img+'" alt="" loading="lazy" onerror="this.parentNode.innerHTML=\'<div style=&quot;display:flex;align-items:center;justify-content:center;height:100%;color:#8696ab;font-size:11px&quot;>sem foto</div>\'"></a>'+
-        '<div class="info"><div class="pn">'+esc(p.name)+'</div>'+
-        '<div class="meta"><span class="store">'+esc(p.store)+'</span><span class="price">'+esc(p.price)+'</span></div></div>'+
-        '<a class="buy" href="'+p.url+'" target="_blank" rel="noopener">Ver / comprar</a>'+
-        '<label class="chk"><input type="checkbox"'+(saved[p.url]?" checked":"")+'> comprado</label>'+
-      '</div>';
-    }).join("");
-    grid.querySelectorAll(".prod").forEach(function(card){
-      var cb=card.querySelector("input[type=checkbox]"), url=card.getAttribute("data-url");
-      cb.addEventListener("change",function(){
-        card.classList.toggle("bought",cb.checked);
-        var s=JSON.parse(localStorage.getItem("jarvis:mobilia")||"{}");
-        if(cb.checked){s[url]=true;}else{delete s[url];}
-        localStorage.setItem("jarvis:mobilia",JSON.stringify(s));
+    var grid=document.getElementById("casaGrid"); if(!grid)return;
+    var del; try{del=JSON.parse(localStorage.getItem("jarvis:casadel")||"[]");}catch(e){del=[];}
+    var bgt; try{bgt=JSON.parse(localStorage.getItem("jarvis:casabought")||"[]");}catch(e){bgt=[];}
+    var its=mobilia.filter(function(p){return del.indexOf(p.url)<0;});
+    grid.innerHTML='<div class="wlgrid">'+its.map(function(p){
+      var ph=p.img?'<a class="wlph" href="'+p.url+'" target="_blank" rel="noopener"><img src="'+p.img+'" alt="" loading="lazy" onerror="this.parentNode.classList.add(\'noimg\');this.remove()"></a>':'<a class="wlph noimg" href="'+p.url+'" target="_blank" rel="noopener"></a>';
+      var b=bgt.indexOf(p.url)>=0;
+      return '<div class="wlcard'+(b?' bought':'')+'" data-u="'+esc(p.url)+'">'+ph+'<div class="wln">'+esc(p.name)+'</div><div class="wlm"><span>'+esc(p.store)+'</span><b>'+esc(p.price)+'</b></div><div class="wlact"><a href="#" class="wlbuy" title="Comprado">&#10003;</a><a href="#" class="wldel" title="Eliminar">&#128465;</a></div></div>';
+    }).join("")+'</div>';
+    grid.querySelectorAll(".wlcard").forEach(function(card){
+      var u=card.getAttribute("data-u"), bd=card.querySelector(".wlbuy"), dl=card.querySelector(".wldel");
+      if(bd)bd.addEventListener("click",function(e){ e.preventDefault();
+        var arr; try{arr=JSON.parse(localStorage.getItem("jarvis:casabought")||"[]");}catch(x){arr=[];}
+        var k=arr.indexOf(u); if(k>=0){arr.splice(k,1);card.classList.remove("bought");}else{arr.push(u);card.classList.add("bought");}
+        localStorage.setItem("jarvis:casabought",JSON.stringify(arr));
+      });
+      if(dl)dl.addEventListener("click",function(e){ e.preventDefault();
+        if(!confirm("Eliminar este produto?"))return;
+        var arr; try{arr=JSON.parse(localStorage.getItem("jarvis:casadel")||"[]");}catch(x){arr=[];}
+        if(arr.indexOf(u)<0)arr.push(u); localStorage.setItem("jarvis:casadel",JSON.stringify(arr)); card.remove();
       });
     });
   })();

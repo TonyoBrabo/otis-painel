@@ -744,37 +744,22 @@
     var st=document.getElementById("bootStatus");
     var msgs=["A iniciar nucleo OTIS...","A ligar ao Google Calendar...","A obter meteorologia...","A carregar a tua agenda...","A sincronizar tudo...","Bem-vindo, Daniel. Sistema online."];
     var k=0,iv=setInterval(function(){if(st)st.textContent=msgs[k++]||"Sistema online.";if(k>=msgs.length)clearInterval(iv);},820);
-    // som de arranque (Web Audio - sem ficheiro). So toca apos um gesto do utilizador (regra dos browsers).
+    // som de arranque: primeiros ~5s de "Master of Puppets" via YouTube (streaming, sem alojar MP3).
+    // So toca apos um gesto do utilizador (regra dos browsers); o gate/primeiro clique conta como gesto.
     var soou=false;
     function otisSom(){
       if(soou)return; soou=true;
       try{
-        var Ctx=window.AudioContext||window.webkitAudioContext; if(!Ctx)return;
-        var ac=new Ctx(); if(ac.state==="suspended"){ac.resume();}
-        var t=ac.currentTime;
-        var lp=ac.createBiquadFilter(); lp.type="lowpass";
-        lp.frequency.setValueAtTime(650,t); lp.frequency.exponentialRampToValueAtTime(3800,t+0.4); lp.frequency.exponentialRampToValueAtTime(900,t+1.7); lp.connect(ac.destination);
-        // power chord grave (Mi + 5a) com 3 osciladores desafinados
-        [41.2,82.4,123.5].forEach(function(f,i){
-          var o=ac.createOscillator(),g=ac.createGain();
-          o.type="sawtooth"; o.frequency.value=f; o.detune.value=(i-1)*7;
-          g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.09,t+0.08); g.gain.setValueAtTime(0.09,t+1.05); g.gain.exponentialRampToValueAtTime(0.0001,t+1.75);
-          o.connect(g).connect(lp); o.start(t); o.stop(t+1.8);
-        });
-        // batidas tipo bombo (queda de tom)
-        [0,0.5,1.0].forEach(function(d){
-          var k=ac.createOscillator(),kg=ac.createGain();
-          k.type="sine"; k.frequency.setValueAtTime(150,t+d); k.frequency.exponentialRampToValueAtTime(45,t+d+0.12);
-          kg.gain.setValueAtTime(0.2,t+d); kg.gain.exponentialRampToValueAtTime(0.0001,t+d+0.18);
-          k.connect(kg).connect(ac.destination); k.start(t+d); k.stop(t+d+0.2);
-        });
-        // lead a subir no fim
-        var ld=ac.createOscillator(),lg=ac.createGain();
-        ld.type="square"; ld.frequency.setValueAtTime(330,t+1.15); ld.frequency.exponentialRampToValueAtTime(660,t+1.65);
-        lg.gain.setValueAtTime(0.0001,t+1.15); lg.gain.exponentialRampToValueAtTime(0.06,t+1.25); lg.gain.exponentialRampToValueAtTime(0.0001,t+1.75);
-        ld.connect(lg).connect(lp); ld.start(t+1.15); ld.stop(t+1.8);
+        var box=document.createElement("div");
+        box.style.cssText="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden";
+        var f=document.createElement("iframe");
+        f.allow="autoplay"; f.width="1"; f.height="1";
+        f.src="https://www.youtube.com/embed/zbSjDVcZA2o?autoplay=1&start=0&controls=0&disablekb=1&playsinline=1&fs=0";
+        box.appendChild(f); document.body.appendChild(box);
+        setTimeout(function(){ if(box&&box.parentNode)box.parentNode.removeChild(box); },6500); // ~5s + buffer, depois corta
       }catch(e){}
     }
+    window.otisSom=otisSom;
     function onGesto(){otisSom();["pointerdown","keydown"].forEach(function(ev){document.removeEventListener(ev,onGesto);});}
     ["pointerdown","keydown"].forEach(function(ev){document.addEventListener(ev,onGesto);});
     function fechar(){boot.classList.add("hide");setTimeout(function(){if(boot&&boot.parentNode)boot.parentNode.removeChild(boot);},700);}
@@ -884,9 +869,10 @@
     if(!(window.google&&google.accounts&&google.accounts.oauth2)){return setTimeout(gInit,300);}
     gTokenClient=google.accounts.oauth2.initTokenClient({
       client_id:CLIENT_ID, scope:GSCOPE, hint:"daniel.queiros.lima@gmail.com",
-      callback:function(resp){ if(resp&&resp.access_token){ gToken=resp.access_token; gSetBtn("Google ligado",true); fetchCalLive(); } }
+      callback:function(resp){ if(resp&&resp.access_token){ gToken=resp.access_token; gSetBtn("Google ligado",true); fetchCalLive(); } },
+      error_callback:function(){ /* silencioso: se precisar de interacao, nao mostra popup */ }
     });
-    try{ gTokenClient.requestAccessToken({prompt:""}); }catch(e){}
+    try{ gTokenClient.requestAccessToken({prompt:"none"}); }catch(e){}
   }
   function gConnect(){ if(gTokenClient){ gTokenClient.requestAccessToken({prompt:""}); } else { gInit(); } }
   function fetchCalLive(){

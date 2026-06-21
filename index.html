@@ -104,7 +104,7 @@
   .ehead:hover{background:rgba(57,197,207,.05)}
   .ehead .en{font-weight:700;color:var(--accent2);min-width:30px}
   .ehead .ef{flex:1;font-size:13.5px}
-  .ehead .ev{color:var(--muted);font-size:12.5px;font-variant-numeric:tabular-nums}
+  .ehead .ev{color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;opacity:.8;font-variant-numeric:tabular-nums}
   .echev{width:24px;height:24px;position:relative;flex:0 0 auto}
   .echev::before{content:"";position:absolute;left:50%;top:44%;width:7px;height:7px;
     border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);
@@ -365,6 +365,9 @@
   .cprod.bought{opacity:.5}
   .cprod.bought .cpn{text-decoration:line-through}
   .cprod.bought .cpbuy{color:var(--accent2)}
+  .prodrow td{padding:0 4px 8px 12px}
+  .cprods{display:flex;flex-direction:column}
+  .itemrow.open .iarrow{transform:rotate(90deg);display:inline-block}
   #invA td:nth-child(2),#invB td:nth-child(2){cursor:pointer}
   /* player de musica */
   .ytrow{display:flex;gap:8px;margin-bottom:10px}
@@ -591,7 +594,7 @@
       <p class="hint" style="margin:0 0 10px">Sub-etapas da Fase 1 - <b style="color:var(--accent)">clica numa etapa para abrir a lista de compras</b></p>
 
       <div class="etapa" data-etapa="1.1">
-        <div class="ehead"><span class="en">1.1</span><span class="ef"><span class="badge b-activa">actual</span></span><span class="ev">Jun</span><span class="echev"></span></div>
+        <div class="ehead"><span class="en">1.1</span><span class="ef"><span class="badge b-activa">actual</span></span><span class="ev">Jul</span><span class="echev"></span></div>
         <div class="ebody"><table>
           <tr data-price="150" data-key="sofa"><td><input type="checkbox"></td><td>Sofa</td><td class="num">150</td><td>OLX/IKEA/Homa</td></tr>
           <tr data-price="120" data-key="tv"><td><input type="checkbox"></td><td>Televisao</td><td class="num">120</td><td>OLX/Worten</td></tr>
@@ -606,7 +609,7 @@
       </div>
 
       <div class="etapa" data-etapa="1.2">
-        <div class="ehead"><span class="en">1.2</span><span class="ef"></span><span class="ev">Jul</span><span class="echev"></span></div>
+        <div class="ehead"><span class="en">1.2</span><span class="ef"></span><span class="ev">Ago</span><span class="echev"></span></div>
         <div class="ebody"><table>
           <tr data-price="40" data-key="tapete"><td><input type="checkbox"></td><td>Tapete sala</td><td class="num">40</td><td>IKEA</td></tr>
           <tr data-key="moveltv"><td><input type="checkbox"></td><td>Movel TV</td><td class="num"></td><td>IKEA</td></tr>
@@ -620,7 +623,7 @@
       </div>
 
       <div class="etapa" data-etapa="1.3">
-        <div class="ehead"><span class="en">1.3</span><span class="ef"></span><span class="ev">Ago</span><span class="echev"></span></div>
+        <div class="ehead"><span class="en">1.3</span><span class="ef"></span><span class="ev">Set</span><span class="echev"></span></div>
         <div class="ebody"><table>
           <tr data-price="60" data-key="micro"><td><input type="checkbox"></td><td>Microondas</td><td class="num">60</td><td>Worten/Media Markt</td></tr>
           <tr data-price="40" data-key="panelas"><td><input type="checkbox"></td><td>Conjunto de panelas (3+)</td><td class="num">40</td><td>IKEA/Continente</td></tr>
@@ -635,7 +638,7 @@
       </div>
 
       <div class="etapa" data-etapa="1.4">
-        <div class="ehead"><span class="en">1.4</span><span class="ef"></span><span class="ev">Set</span><span class="echev"></span></div>
+        <div class="ehead"><span class="en">1.4</span><span class="ef"></span><span class="ev">Out</span><span class="echev"></span></div>
         <div class="ebody"><table>
           <tr data-price="30" data-key="utens"><td><input type="checkbox"></td><td>Utensilios de cozinha</td><td class="num">30</td><td>IKEA</td></tr>
           <tr data-price="40" data-key="limpeza"><td><input type="checkbox"></td><td>Kit de limpeza casa</td><td class="num">40</td><td>Continente</td></tr>
@@ -645,7 +648,7 @@
       </div>
 
       <div class="etapa" data-etapa="1.5">
-        <div class="ehead"><span class="en">1.5</span><span class="ef"></span><span class="ev">Out</span><span class="echev"></span></div>
+        <div class="ehead"><span class="en">1.5</span><span class="ef"></span><span class="ev">Nov</span><span class="echev"></span></div>
         <div class="ebody"><table>
           <tr data-price="60" data-key="cortinas"><td><input type="checkbox"></td><td>Cortinas/blackout</td><td class="num">60</td><td>IKEA</td></tr>
           <tr data-price="30" data-key="almof"><td><input type="checkbox"></td><td>Almofadas decorativas</td><td class="num">30</td><td>IKEA</td></tr>
@@ -1234,38 +1237,42 @@
   };
   var labelMap={sofa:"Sofá",tv:"TV",poltrona:"Poltrona",pufe:"Pufe",cand1:"Candeeiro de tecto",cand2:"Candeeiro de mesa",carregsala:"Carregador (sala)",extens:"Extensões",poster:"Poster de filme",tapete:"Tapete",moveltv:"Móvel TV",candquarto:"Candeeiro (quarto)",girafa:"Girafa LED",carregquarto:"Carregador c/ luz",roupa:"Roupa de cama",cabides:"Cabides",cesto:"Cesto roupa suja",micro:"Microondas",panelas:"Panelas",louca:"Loiça",facas:"Facas",chaleira:"Chaleira",tigelas:"Tigelas",torradeira:"Torradeira",carrinho:"Carrinho cozinha",frigideiras:"Frigideiras",utens:"Utensílios",limpeza:"Kit limpeza",ferro:"Ferro",lixo:"Caixote do lixo",cortinas:"Cortinas",almof:"Almofadas"};
 
-  function casaPopup(k,label){
-    var modal=document.getElementById("casaModal"), body=document.getElementById("casaBody"), ttl=document.getElementById("casaTitle");
-    if(!modal||!body)return;
-    if(ttl)ttl.textContent=label;
+  function prodCardsHTML(k,label){
     var pdel; try{pdel=JSON.parse(localStorage.getItem("jarvis:proddel")||"[]");}catch(e){pdel=[];}
     var prods=(prodMap[k]||[]).filter(function(p){return pdel.indexOf(p.u)<0;});
     var b=getBought();
-    if(!prods.length){ body.innerHTML='<p class="hint" style="margin:0">Sem produto escolhido ainda. Manda-me um link e eu adiciono.</p>'; }
-    else {
-      body.innerHTML=prods.map(function(p){
-        var bought=!!b[p.u];
-        var im=p.i?'<img src="'+p.i+'" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">':'';
-        return '<div class="cprod'+(bought?" bought":"")+'" data-u="'+esc(p.u)+'" data-n="'+esc(label+" - "+p.n)+'" data-p="'+esc(p.p)+'"><div class="cpact"><a href="#" class="cpbuy" title="Comprado">&#10003;</a><a href="#" class="cpdel" title="Eliminar">&#128465;</a></div><a class="cpimg" href="'+p.u+'" target="_blank" rel="noopener">'+im+'</a><div class="cpinfo"><div class="cpn">'+esc(p.n)+'</div><div class="cpp">'+esc(p.p)+'</div></div></div>';
-      }).join("");
-      body.querySelectorAll(".cprod").forEach(function(card){
-        var u=card.getAttribute("data-u"), buy=card.querySelector(".cpbuy"), del=card.querySelector(".cpdel");
-        if(buy)buy.addEventListener("click",function(e){ e.preventDefault();
-          var bb=getBought();
-          if(bb[u]){ delete bb[u]; card.classList.remove("bought"); }
-          else { bb[u]={name:card.getAttribute("data-n"),price:card.getAttribute("data-p")}; card.classList.add("bought"); }
-          setBought(bb); renderBought(); updateBudget();
-        });
-        if(del)del.addEventListener("click",function(e){ e.preventDefault();
-          if(!confirm("Eliminar este produto?"))return;
-          var pd; try{pd=JSON.parse(localStorage.getItem("jarvis:proddel")||"[]");}catch(x){pd=[];}
-          if(pd.indexOf(u)<0)pd.push(u); localStorage.setItem("jarvis:proddel",JSON.stringify(pd));
-          var bb=getBought(); if(bb[u]){delete bb[u];setBought(bb);renderBought();updateBudget();}
-          card.remove();
-        });
+    if(!prods.length) return '<p class="hint" style="margin:2px 0 6px">Sem produto escolhido ainda. Manda-me um link e eu adiciono.</p>';
+    return '<div class="cprods">'+prods.map(function(p){
+      var bought=!!b[p.u];
+      var im=p.i?'<img src="'+p.i+'" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">':'';
+      return '<div class="cprod'+(bought?" bought":"")+'" data-u="'+esc(p.u)+'" data-n="'+esc(label+" - "+p.n)+'" data-p="'+esc(p.p)+'"><div class="cpact"><a href="#" class="cpbuy" title="Comprado">&#10003;</a><a href="#" class="cpdel" title="Eliminar">&#128465;</a></div><a class="cpimg" href="'+p.u+'" target="_blank" rel="noopener">'+im+'</a><div class="cpinfo"><div class="cpn">'+esc(p.n)+'</div><div class="cpp">'+esc(p.p)+'</div></div></div>';
+    }).join("")+'</div>';
+  }
+  function wireProds(scope){
+    scope.querySelectorAll(".cprod").forEach(function(card){
+      var u=card.getAttribute("data-u"), buy=card.querySelector(".cpbuy"), del=card.querySelector(".cpdel");
+      if(buy)buy.addEventListener("click",function(e){ e.preventDefault();
+        var bb=getBought();
+        if(bb[u]){ delete bb[u]; card.classList.remove("bought"); }
+        else { bb[u]={name:card.getAttribute("data-n"),price:card.getAttribute("data-p")}; card.classList.add("bought"); }
+        setBought(bb); renderBought(); updateBudget();
       });
-    }
-    modal.style.display="flex";
+      if(del)del.addEventListener("click",function(e){ e.preventDefault();
+        if(!confirm("Eliminar este produto?"))return;
+        var pd; try{pd=JSON.parse(localStorage.getItem("jarvis:proddel")||"[]");}catch(x){pd=[];}
+        if(pd.indexOf(u)<0)pd.push(u); localStorage.setItem("jarvis:proddel",JSON.stringify(pd));
+        var bb=getBought(); if(bb[u]){delete bb[u];setBought(bb);renderBought();updateBudget();}
+        card.remove();
+      });
+    });
+  }
+  function toggleProds(tr,k,label){
+    var nx=tr.nextElementSibling;
+    if(nx && nx.classList.contains("prodrow")){ nx.remove(); tr.classList.remove("open"); return; }
+    var r=document.createElement("tr"); r.className="prodrow";
+    r.innerHTML='<td>'+prodCardsHTML(k,label)+'</td>';
+    tr.parentNode.insertBefore(r, tr.nextSibling);
+    tr.classList.add("open"); wireProds(r);
   }
 
   (function(){
@@ -1278,7 +1285,7 @@
       var label=labelMap[k]||(tr.children[1]?tr.children[1].textContent.trim():k);
       var hasProd=prodMap[k]&&prodMap[k].length;
       tr.innerHTML='<td class="itemrow"><span>'+esc(label)+'</span><i class="iarrow'+(hasProd?'':' dim')+'">'+(hasProd?'›':'+ link')+'</i></td>';
-      tr.querySelector(".itemrow").addEventListener("click",function(){ casaPopup(k,label); });
+      tr.querySelector(".itemrow").addEventListener("click",function(){ toggleProds(tr,k,label); });
     });
     renderBought();
     var modal=document.getElementById("casaModal"), close=document.getElementById("casaClose");

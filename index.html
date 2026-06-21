@@ -344,8 +344,18 @@
   .ytrow input:focus{outline:none;border-color:var(--accent)}
   .ytwrap{position:relative;width:100%;max-width:280px;aspect-ratio:16/9;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#000}
   .ytwrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-  .podgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:6px}
-  .podgrid iframe{width:100%;height:152px;border:0;border-radius:12px}
+  .podgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:14px;margin-top:8px}
+  .podcard{background:transparent;border:0;padding:0;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;gap:6px;text-align:center}
+  .podimg{position:relative;display:block;border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+  .podimg img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
+  .podplay{position:absolute;inset:0;margin:auto;width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-style:normal;opacity:0;transition:opacity .15s}
+  .podcard:hover .podplay{opacity:1}
+  .podcard:hover .podimg{border-color:var(--accent)}
+  .podname{font-size:12px;color:var(--muted);line-height:1.25}
+  .podmodal{position:fixed;inset:0;z-index:1300;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:16px}
+  .podmbox{position:relative;width:100%;max-width:420px}
+  .podclose{position:absolute;top:-36px;right:0;background:transparent;border:0;color:#fff;font-size:28px;cursor:pointer;line-height:1}
+  .podmbox iframe{width:100%;height:480px;border:0;border-radius:12px;background:#000}
   /* chat OTIS */
   .otischat{border-top:1px solid var(--line);max-height:50vh;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:10px}
   .omsg{border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13.5px;line-height:1.5;white-space:pre-wrap}
@@ -721,11 +731,12 @@
 
       <div class="evcity" style="margin-top:16px">Podcasts</div>
       <div class="podgrid">
-        <iframe src="https://open.spotify.com/embed/show/7BPlS7nr261mqaBW3ctzPE?utm_source=generator" title="isso nao se diz" loading="lazy" allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-        <iframe src="https://open.spotify.com/embed/show/0YUJ80cvEHAAm0qEyfxbIe?utm_source=generator" title="Extremamente Desagradavel" loading="lazy" allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-        <iframe src="https://open.spotify.com/embed/show/2OSrNmY2aRczyjLyRPJqxM?utm_source=generator" title="Pedro Teixeira da Mota (watch.tm)" loading="lazy" allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-        <iframe src="https://open.spotify.com/embed/show/4rOoJ6Egrf8K2IrywzwOMk?utm_source=generator" title="The Joe Rogan Experience" loading="lazy" allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+        <button class="podcard" data-show="7BPlS7nr261mqaBW3ctzPE"><span class="podimg"><img src="https://i.scdn.co/image/ab67656300005f1f0b769dc24968c8ff26d5b754" alt="isso nao se diz" loading="lazy"><i class="podplay">&#9654;</i></span><span class="podname">isso nao se diz</span></button>
+        <button class="podcard" data-show="0YUJ80cvEHAAm0qEyfxbIe"><span class="podimg"><img src="https://i.scdn.co/image/ab67656300005f1f98cc17817554780d565a03ba" alt="Extremamente Desagradavel" loading="lazy"><i class="podplay">&#9654;</i></span><span class="podname">Extremamente Desagradavel</span></button>
+        <button class="podcard" data-show="2OSrNmY2aRczyjLyRPJqxM"><span class="podimg"><img src="https://i.scdn.co/image/ab67656300005f1f53becb8a878bef519914b609" alt="Pedro Teixeira da Mota" loading="lazy"><i class="podplay">&#9654;</i></span><span class="podname">Pedro Teixeira da Mota</span></button>
+        <button class="podcard" data-show="4rOoJ6Egrf8K2IrywzwOMk"><span class="podimg"><img src="https://i.scdn.co/image/ab67656300005f1f1e1acaebe06610165612f1ef" alt="Joe Rogan" loading="lazy"><i class="podplay">&#9654;</i></span><span class="podname">The Joe Rogan Experience</span></button>
       </div>
+      <div id="podModal" class="podmodal" style="display:none"><div class="podmbox"><button class="podclose" id="podClose" aria-label="Fechar">&times;</button><div id="podEmbed"></div></div></div>
     </div>
   </section>
 
@@ -1417,6 +1428,23 @@
     if(btn)btn.addEventListener("click",function(){load(inp.value.trim());});
     if(inp)inp.addEventListener("keydown",function(e){if(e.key==="Enter")load(inp.value.trim());});
     var sv=localStorage.getItem("jarvis:yt"); if(sv){inp.value=sv;}
+  })();
+
+  // --- Podcasts: capa abre popup com os episodios ---
+  (function(){
+    var modal=document.getElementById("podModal"), embed=document.getElementById("podEmbed"), close=document.getElementById("podClose");
+    if(!modal)return;
+    function hide(){ modal.style.display="none"; embed.innerHTML=""; }
+    document.querySelectorAll(".podcard").forEach(function(c){
+      c.addEventListener("click",function(){
+        var id=c.getAttribute("data-show");
+        embed.innerHTML='<iframe src="https://open.spotify.com/embed/show/'+id+'?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>';
+        modal.style.display="flex";
+      });
+    });
+    if(close)close.addEventListener("click",hide);
+    modal.addEventListener("click",function(e){ if(e.target===modal)hide(); });
+    document.addEventListener("keydown",function(e){ if(e.key==="Escape"&&modal.style.display==="flex")hide(); });
   })();
 
   // --- Mercearia (agrupada por seccao, template lista_compras.md) ---

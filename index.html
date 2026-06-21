@@ -344,6 +344,8 @@
   .ytrow input:focus{outline:none;border-color:var(--accent)}
   .ytwrap{position:relative;width:100%;max-width:280px;aspect-ratio:16/9;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#000}
   .ytwrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .podgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:6px}
+  .podgrid iframe{width:100%;height:152px;border:0;border-radius:12px}
   /* chat OTIS */
   .otischat{border-top:1px solid var(--line);max-height:50vh;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:10px}
   .omsg{border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13.5px;line-height:1.5;white-space:pre-wrap}
@@ -712,9 +714,18 @@
     <div class="shead"><h2><span class="dot"></span>Musica</h2><button class="tog" aria-label="Minimizar"></button></div>
     <div class="sbody">
       <div class="ytrow">
-        <input id="ytUrl" placeholder="Cola um link do YouTube e carrega Enter...">
+        <input id="ytUrl" placeholder="Cola um link do YouTube ou Spotify e carrega Enter...">
       </div>
       <div class="ytwrap" style="display:none"><iframe id="ytFrame" src="" title="Player de musica" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+      <div id="spotWrap" style="display:none;margin-top:8px"><iframe id="spotFrame" src="" title="Spotify" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" style="border-radius:12px;border:0"></iframe></div>
+
+      <div class="evcity" style="margin-top:16px">Podcasts</div>
+      <div class="podgrid">
+        <iframe src="https://open.spotify.com/embed/show/7BPlS7nr261mqaBW3ctzPE?utm_source=generator" title="isso nao se diz" loading="lazy" allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+        <iframe src="https://open.spotify.com/embed/show/0YUJ80cvEHAAm0qEyfxbIe?utm_source=generator" title="Extremamente Desagradavel" loading="lazy" allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+        <iframe src="https://open.spotify.com/embed/show/2OSrNmY2aRczyjLyRPJqxM?utm_source=generator" title="Pedro Teixeira da Mota (watch.tm)" loading="lazy" allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+        <iframe src="https://open.spotify.com/embed/show/4rOoJ6Egrf8K2IrywzwOMk?utm_source=generator" title="The Joe Rogan Experience" loading="lazy" allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+      </div>
     </div>
   </section>
 
@@ -1397,7 +1408,12 @@
     var fr=document.getElementById("ytFrame"), inp=document.getElementById("ytUrl"), btn=document.getElementById("ytPlay");
     if(!fr)return;
     function emb(u){ if(!u)return ""; var vid="",list=""; var m=u.match(/[?&]v=([\w-]{6,})/); if(m)vid=m[1]; var b=u.match(/youtu\.be\/([\w-]{6,})/); if(b)vid=b[1]; var e=u.match(/embed\/([\w-]{6,})/); if(e)vid=e[1]; var l=u.match(/[?&]list=([\w-]+)/); if(l)list=l[1]; if(vid&&list)return "https://www.youtube.com/embed/"+vid+"?list="+list+"&autoplay=1"; if(list)return "https://www.youtube.com/embed/videoseries?list="+list+"&autoplay=1"; if(vid)return "https://www.youtube.com/embed/"+vid+"?autoplay=1"; return ""; }
-    function load(u){ var x=emb(u); if(x){fr.src=x; var w=document.querySelector("#s-musica .ytwrap"); if(w)w.style.display="block"; localStorage.setItem("jarvis:yt",u);} else { alert("Link do YouTube nao reconhecido."); } }
+    function spotEmb(u){ var m=u&&u.match(/open\.spotify\.com\/(?:intl-[a-z]+\/)?(track|playlist|album|show|episode|artist)\/([A-Za-z0-9]+)/); return m?("https://open.spotify.com/embed/"+m[1]+"/"+m[2]):""; }
+    function load(u){
+      var sp=spotEmb(u);
+      if(sp){ var sf=document.getElementById("spotFrame"), sw=document.getElementById("spotWrap"); if(sf)sf.src=sp; if(sw)sw.style.display="block"; localStorage.setItem("jarvis:yt",u); return; }
+      var x=emb(u); if(x){fr.src=x; var w=document.querySelector("#s-musica .ytwrap"); if(w)w.style.display="block"; localStorage.setItem("jarvis:yt",u);} else { alert("Link nao reconhecido (YouTube ou Spotify)."); }
+    }
     if(btn)btn.addEventListener("click",function(){load(inp.value.trim());});
     if(inp)inp.addEventListener("keydown",function(e){if(e.key==="Enter")load(inp.value.trim());});
     var sv=localStorage.getItem("jarvis:yt"); if(sv){inp.value=sv;}

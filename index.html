@@ -341,6 +341,7 @@
   .rowact.addw{font-weight:700}
   .rowact.addw:hover{color:var(--accent2)}
   .rowact.delw:hover{color:var(--alta,#ff8a8a)}
+  .itemthumb{width:30px;height:30px;object-fit:cover;border-radius:5px;vertical-align:middle;margin-right:9px;background:#0a0f15;border:1px solid var(--line)}
   #invA td:nth-child(2),#invB td:nth-child(2){cursor:pointer}
   /* player de musica */
   .ytrow{display:flex;gap:8px;margin-bottom:10px}
@@ -1195,10 +1196,22 @@
     // Internet ja resolvida (1GB) -> entra logo no "Ja comprado"
     if(!localStorage.getItem("jarvis:boughtSeed")){ if(!b.internet){ b.internet={name:"Internet 1GB (instalada)",price:"-"}; setBought(b); } localStorage.setItem("jarvis:boughtSeed","1"); }
     var delrows=JSON.parse(localStorage.getItem("jarvis:delrows")||"[]");
+    var itemImg={
+      poltrona:"https://www.ikea.com/pt/pt/images/products/dyvlinge-poltrona-giratoria-kelinge-laranja__1322501_pe942192_s5.jpg?f=u",
+      pufe:"https://www.ikea.com/pt/pt/images/products/jaerrestad-pufe-c-arrumacao-djuparp-azul-escuro__1320776_pe941352_s5.jpg?f=u",
+      cand1:"https://img.kwcdn.com/product/fancy/c45ae903-d6bb-429a-ae7c-4b0fccbdc7e4.jpg",
+      cand2:"https://www.ikea.com/pt/pt/images/products/spetsboj-candeeiro-de-mesa-intensidade-regulavel-amarelo__1355566_pe953171_s5.jpg?f=u",
+      carregsala:"https://www.ikea.com/pt/en/images/products/vaestmaerke-wireless-charging-stand__1435811_pe983948_s5.jpg",
+      candquarto:"https://www.ikea.com/pt/pt/images/products/varmblixt-candeeiro-led-de-mesa-parede-laranja-vidro-redondo__1116616_pe872535_s5.jpg",
+      girafa:"https://www.ikea.com/pt/en/images/products/grejsimojs-led-decoration-lighting-floor-giraffe-yellow-battery-operated__1453074_pe991272_s5.jpg",
+      carregquarto:"https://www.ikea.com/pt/en/images/products/vaestmaerke-wireless-charger-with-lighting__1435814_pe983950_s5.jpg?f=u",
+      carrinho:"https://www.ikea.com/pt/pt/images/products/raskog-norrava-carrinho-c-tampa-verm-acastanhado__1515754_pe1011568_s5.jpg?f=u"
+    };
     document.querySelectorAll(".etapa tr[data-key]").forEach(function(tr){
       var cb=tr.querySelector("input[type=checkbox]"); if(!cb)return;
       var k=tr.getAttribute("data-key"), nameTd=tr.children[1];
       if(delrows.indexOf(k)>=0){ tr.remove(); return; }
+      if(nameTd && itemImg[k]){ var th=document.createElement("img"); th.className="itemthumb"; th.src=itemImg[k]; th.alt=""; th.loading="lazy"; th.onerror=function(){this.remove();}; nameTd.insertBefore(th, nameTd.firstChild); }
       if(getBought()[k]){ tr.style.display="none"; cb.checked=true; }
       var firstTd=tr.children[0];
       if(firstTd){

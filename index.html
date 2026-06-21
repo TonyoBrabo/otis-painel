@@ -335,8 +335,12 @@
   .invopts a:hover{border-color:var(--accent)}
   .invopts a.hasimg{padding:5px 12px 5px 5px}
   .invopts a img{width:54px;height:54px;object-fit:cover;border-radius:6px;background:#0a0f15;flex:none}
-  .delrow{margin-left:8px;color:var(--muted);text-decoration:none;font-size:13px;opacity:.5;float:right}
-  .delrow:hover{opacity:1;color:var(--alta,#ff8a8a)}
+  .etapa td:first-child{white-space:nowrap}
+  .rowact{margin-left:7px;color:var(--muted);text-decoration:none;font-size:13px;opacity:.55;vertical-align:middle}
+  .rowact:hover{opacity:1}
+  .rowact.addw{font-weight:700}
+  .rowact.addw:hover{color:var(--accent2)}
+  .rowact.delw:hover{color:var(--alta,#ff8a8a)}
   #invA td:nth-child(2),#invB td:nth-child(2){cursor:pointer}
   /* player de musica */
   .ytrow{display:flex;gap:8px;margin-bottom:10px}
@@ -1196,8 +1200,12 @@
       var k=tr.getAttribute("data-key"), nameTd=tr.children[1];
       if(delrows.indexOf(k)>=0){ tr.remove(); return; }
       if(getBought()[k]){ tr.style.display="none"; cb.checked=true; }
-      var lastTd=tr.children[tr.children.length-1];
-      if(lastTd){ var del=document.createElement("a"); del.href="#"; del.className="delrow"; del.title="Eliminar item"; del.innerHTML="&#128465;";
+      var firstTd=tr.children[0];
+      if(firstTd){
+        var itm=nameTd?nameTd.textContent.trim():k;
+        var add=document.createElement("a"); add.href="#"; add.className="rowact addw"; add.title="Guardar na wishlist"; add.innerHTML="+";
+        add.addEventListener("click",function(e){ e.preventDefault(); e.stopPropagation(); addWishlist(itm); add.textContent="✓"; add.style.color="var(--accent2)"; });
+        var del=document.createElement("a"); del.href="#"; del.className="rowact delw"; del.title="Eliminar item"; del.innerHTML="&#128465;";
         del.addEventListener("click",function(e){ e.preventDefault(); e.stopPropagation();
           var nm=nameTd?nameTd.textContent.trim():"item"; if(!confirm("Eliminar \""+nm+"\" da lista?"))return;
           var dl=JSON.parse(localStorage.getItem("jarvis:delrows")||"[]"); if(dl.indexOf(k)<0){dl.push(k);localStorage.setItem("jarvis:delrows",JSON.stringify(dl));}
@@ -1205,7 +1213,7 @@
           var nx=tr.nextElementSibling; if(nx&&nx.classList.contains("optrow"))nx.remove();
           tr.remove();
         });
-        lastTd.appendChild(del);
+        firstTd.appendChild(add); firstTd.appendChild(del);
       }
       if(nameTd){ nameTd.style.cursor="pointer"; nameTd.title="Ver onde comprar";
         nameTd.addEventListener("click",function(){

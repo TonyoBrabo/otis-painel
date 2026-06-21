@@ -631,6 +631,10 @@
       <p class="hint" id="boughtEmpty">Ainda nada registado. Mete o visto num item e diz-me quanto foi - fica aqui o registo (eu nao compro nada, so anoto).</p>
       <ul class="weeklist" id="boughtList"></ul>
       <div class="etot" id="boughtTotalRow" style="display:none"><span>Total ja gasto (real)</span><b id="boughtTotal">0 EUR</b></div>
+
+      <div class="evcity" style="margin-top:16px">Compras de casa (temporario - para arrumar)</div>
+      <p class="hint">Diz-me onde por cada numero. Depois retiro esta seccao.</p>
+      <div id="casaGrid"></div>
       </div>
 
       <div class="ptab" id="ptab-mercearia" style="display:none">
@@ -1309,29 +1313,13 @@
     {name:"VASTMARKE Carregador sem fios com luz", store:"IKEA", price:"19,99 EUR", url:"https://www.ikea.com/pt/en/p/vaestmaerke-wireless-charger-with-lighting-50598214/", img:"https://www.ikea.com/pt/en/images/products/vaestmaerke-wireless-charger-with-lighting__1435814_pe983950_s5.jpg?f=u"},
     {name:"Abajur de substituicao (casquilho E26/27)", store:"Temu", price:"ver na Temu", url:"https://www.temu.com/pt/1pc-abajur-de-substitui%C3%A7%C3%A3o-adequado-para-casquilho-e26-27--garagem-restaurante-v%C3%A1rios-locais-g-606220018628001.html", img:"https://img.kwcdn.com/product/fancy/c45ae903-d6bb-429a-ae7c-4b0fccbdc7e4.jpg"}
   ];
+  // --- Compras de casa (temporario): cartoes numerados para o Daniel dizer onde arrumar ---
   (function(){
-    var grid=document.getElementById("prodgrid"); if(!grid)return;
-    var saved=JSON.parse(localStorage.getItem("jarvis:mobilia")||"{}");
-    if(!mobilia.length){grid.innerHTML='<p class="noev">Ainda sem produtos. Manda um link ao OTIS.</p>';return;}
-    grid.innerHTML=mobilia.map(function(p){
-      var b=saved[p.url]?" bought":"";
-      return '<div class="prod'+b+'" data-url="'+p.url+'">'+
-        '<a class="ph" href="'+p.url+'" target="_blank" rel="noopener"><img src="'+p.img+'" alt="" loading="lazy" onerror="this.parentNode.innerHTML=\'<div style=&quot;display:flex;align-items:center;justify-content:center;height:100%;color:#8696ab;font-size:11px&quot;>sem foto</div>\'"></a>'+
-        '<div class="info"><div class="pn">'+esc(p.name)+'</div>'+
-        '<div class="meta"><span class="store">'+esc(p.store)+'</span><span class="price">'+esc(p.price)+'</span></div></div>'+
-        '<a class="buy" href="'+p.url+'" target="_blank" rel="noopener">Ver / comprar</a>'+
-        '<label class="chk"><input type="checkbox"'+(saved[p.url]?" checked":"")+'> comprado</label>'+
-      '</div>';
-    }).join("");
-    grid.querySelectorAll(".prod").forEach(function(card){
-      var cb=card.querySelector("input[type=checkbox]"), url=card.getAttribute("data-url");
-      cb.addEventListener("change",function(){
-        card.classList.toggle("bought",cb.checked);
-        var s=JSON.parse(localStorage.getItem("jarvis:mobilia")||"{}");
-        if(cb.checked){s[url]=true;}else{delete s[url];}
-        localStorage.setItem("jarvis:mobilia",JSON.stringify(s));
-      });
-    });
+    var grid=document.getElementById("casaGrid"); if(!grid)return;
+    grid.innerHTML='<div class="wlgrid">'+mobilia.map(function(p,i){
+      var ph=p.img?'<a class="wlph" href="'+p.url+'" target="_blank" rel="noopener"><img src="'+p.img+'" alt="" loading="lazy" onerror="this.parentNode.classList.add(\'noimg\');this.remove()"></a>':'<a class="wlph noimg" href="'+p.url+'" target="_blank" rel="noopener"></a>';
+      return '<div class="wlcard" style="position:relative"><div style="position:absolute;top:6px;left:6px;z-index:2;background:var(--accent);color:#04222a;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">'+(i+1)+'</div>'+ph+'<div class="wln">'+esc(p.name)+'</div><div class="wlm"><span>'+esc(p.store)+'</span><b>'+esc(p.price)+'</b></div></div>';
+    }).join("")+'</div>';
   })();
 
   // cinema - filmes/sessoes por shopping (snapshot 14 Jun 2026)

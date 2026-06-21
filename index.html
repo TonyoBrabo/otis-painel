@@ -307,8 +307,12 @@
   .film:hover{border-color:var(--accent)}
   /* inventario - opcoes de compra */
   .invopts{display:flex;flex-wrap:wrap;gap:8px;padding:2px 0 6px}
-  .invopts a{font-size:12px;background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:5px 10px;color:var(--accent);text-decoration:none}
+  .invopts a{font-size:12px;background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:5px 10px;color:var(--accent);text-decoration:none;display:inline-flex;align-items:center;gap:7px}
   .invopts a:hover{border-color:var(--accent)}
+  .invopts a.hasimg{padding:4px 10px 4px 4px}
+  .invopts a img{width:36px;height:36px;object-fit:cover;border-radius:5px;background:#0a0f15;flex:none}
+  .delrow{margin-left:8px;color:var(--muted);text-decoration:none;font-size:13px;opacity:.5;float:right}
+  .delrow:hover{opacity:1;color:var(--alta,#ff8a8a)}
   #invA td:nth-child(2),#invB td:nth-child(2){cursor:pointer}
   /* player de musica */
   .ytrow{display:flex;gap:8px;margin-bottom:10px}
@@ -414,7 +418,6 @@
   <section id="s-cultura">
     <div class="shead"><h2><span class="dot"></span>Agenda cultural</h2><button class="tog" aria-label="Minimizar"></button></div>
     <div class="sbody">
-      <p class="hint">Dividida por cidade. Em baixo, o que esta a decorrer na proxima semana com link para bilhetes.</p>
       <div class="two">
         <div class="venue">
           <h3>Viana e Alto Minho</h3>
@@ -433,18 +436,19 @@
         </div>
       </div>
 
+      <div class="evcity" style="margin-top:6px">Mundial 2026 - Portugal (Grupo K)</div>
+      <ul class="weeklist">
+        <li>17 Jun - Portugal 1-1 RD Congo <span class="free">terminado</span></li>
+        <li><b>Ter 23 Jun - Portugal x Uzbequistao</b> - 19:00 (hora PT), Houston</li>
+        <li><b>Dom 28 Jun - Colombia x Portugal</b> - 01:30 (madrugada, hora PT), Miami</li>
+      </ul>
+
       <div class="two">
         <div>
-          <div class="evcity">A decorrer na proxima semana - 15 a 21 Jun</div>
+          <div class="evcity">Esta semana - 22 a 28 Jun</div>
           <ul class="weeklist">
-            <li>Seg 15 - Concerto de Encerramento do Ano Letivo, Casa da Musica, 21:00 - <a href="https://casadamusica.com/agenda/" target="_blank" rel="noopener">bilhetes</a></li>
-            <li>Ter 16 - Anavitoria (folk-pop), Casa da Musica (Sala Suggia), 21:00 - <a href="https://casadamusica.com/agenda/" target="_blank" rel="noopener">bilhetes</a></li>
-            <li>Qua 17 - Pedro &amp; Helder Moutinho (fado), Casa da Musica, 21:30 - <a href="https://casadamusica.com/agenda/" target="_blank" rel="noopener">bilhetes</a></li>
-            <li>Qui 18 - Cesar Soares canta Ney Matogrosso, Casa da Musica, 21:30 - <a href="https://casadamusica.com/agenda/" target="_blank" rel="noopener">bilhetes</a></li>
-            <li>Sex 19 - Desire Haze, Casa da Musica (Esplanada), 22:00 - <span class="free">entrada livre</span></li>
-            <li>16-19 - Concertos das Festas, Tui-Valenca, 22:30 - <span class="free">entrada livre</span></li>
-            <li>Sex 19 - Cinema no Palco, Cerveira, 21:30 - <span class="free">entrada livre</span></li>
-            <li>18-21 - Festas de Viana - <a href="https://vianafestas.com/eventos/" target="_blank" rel="noopener">programa</a></li>
+            <li>ate 28 Jun - Rock in Rio Lisboa (Parque Tejo, Lisboa)</li>
+            <li>Concertos da semana: ve a <a href="https://casadamusica.com/agenda/" target="_blank" rel="noopener">agenda da Casa da Musica</a> e a <a href="https://www.viralagenda.com/pt/viana-do-castelo" target="_blank" rel="noopener">Viral Agenda (Viana)</a>.</li>
           </ul>
         </div>
         <div>
@@ -1143,17 +1147,30 @@
     var b=getBought();
     // Internet ja resolvida (1GB) -> entra logo no "Ja comprado"
     if(!localStorage.getItem("jarvis:boughtSeed")){ if(!b.internet){ b.internet={name:"Internet 1GB (instalada)",price:"-"}; setBought(b); } localStorage.setItem("jarvis:boughtSeed","1"); }
+    var delrows=JSON.parse(localStorage.getItem("jarvis:delrows")||"[]");
     document.querySelectorAll(".etapa tr[data-key]").forEach(function(tr){
       var cb=tr.querySelector("input[type=checkbox]"); if(!cb)return;
       var k=tr.getAttribute("data-key"), nameTd=tr.children[1];
+      if(delrows.indexOf(k)>=0){ tr.remove(); return; }
       if(getBought()[k]){ tr.style.display="none"; cb.checked=true; }
+      var lastTd=tr.children[tr.children.length-1];
+      if(lastTd){ var del=document.createElement("a"); del.href="#"; del.className="delrow"; del.title="Eliminar item"; del.innerHTML="&#128465;";
+        del.addEventListener("click",function(e){ e.preventDefault(); e.stopPropagation();
+          var nm=nameTd?nameTd.textContent.trim():"item"; if(!confirm("Eliminar \""+nm+"\" da lista?"))return;
+          var dl=JSON.parse(localStorage.getItem("jarvis:delrows")||"[]"); if(dl.indexOf(k)<0){dl.push(k);localStorage.setItem("jarvis:delrows",JSON.stringify(dl));}
+          var bb=getBought(); if(bb[k]){ delete bb[k]; setBought(bb); renderBought(); updateBudget(); }
+          var nx=tr.nextElementSibling; if(nx&&nx.classList.contains("optrow"))nx.remove();
+          tr.remove();
+        });
+        lastTd.appendChild(del);
+      }
       if(nameTd){ nameTd.style.cursor="pointer"; nameTd.title="Ver onde comprar";
         nameTd.addEventListener("click",function(){
           var nxt=tr.nextElementSibling;
           if(nxt&&nxt.classList.contains("optrow")){ nxt.remove(); return; }
           var item=nameTd.textContent.trim(), opts=buyOptions(item);
           var r=document.createElement("tr"); r.className="optrow";
-          r.innerHTML='<td></td><td colspan="3"><div class="invopts">'+opts.map(function(o){return '<a href="'+o.url+'" target="_blank" rel="noopener">'+esc(o.label)+'</a>';}).join("")+'<a href="#" class="towish">+ guardar na wishlist</a></div></td>';
+          r.innerHTML='<td></td><td colspan="3"><div class="invopts">'+opts.map(function(o){ var im=o.img?'<img src="'+o.img+'" alt="" loading="lazy" onerror="this.remove()">':''; return '<a class="'+(o.img?"hasimg":"")+'" href="'+o.url+'" target="_blank" rel="noopener">'+im+'<span>'+esc(o.label)+'</span></a>'; }).join("")+'<a href="#" class="towish">+ guardar na wishlist</a></div></td>';
           tr.parentNode.insertBefore(r, tr.nextSibling);
           var tw=r.querySelector(".towish"); if(tw)tw.addEventListener("click",function(e){ e.preventDefault(); addWishlist(item); tw.textContent="guardado na wishlist"; tw.style.color="var(--muted)"; });
         });
@@ -1275,7 +1292,7 @@
     mobilia.forEach(function(p){
       if(opts.length>=2)return;
       var pn=p.name.toLowerCase();
-      if(words.some(function(w){return pn.indexOf(w)>=0;})) opts.push({label:"★ "+p.name+" - "+p.price, url:p.url});
+      if(words.some(function(w){return pn.indexOf(w)>=0;})) opts.push({label:"★ "+p.name+" - "+p.price, url:p.url, img:p.img});
     });
     var slug=low.replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
     if(opts.length<2) opts.push({label:"OLX (2a mao)", url:"https://www.olx.pt/ads/q-"+slug+"/"});

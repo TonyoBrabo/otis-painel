@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OTIS - Painel</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0f14'/%3E%3Ccircle cx='32' cy='32' r='21' fill='none' stroke='%2339c5cf' stroke-width='3'/%3E%3Ccircle cx='32' cy='32' r='13' fill='none' stroke='%235ee0a0' stroke-width='2.5'/%3E%3Ccircle cx='32' cy='32' r='5.5' fill='%2339c5cf'/%3E%3C/svg%3E">
 <style>
   :root{
     --bg:#0b0f14; --panel:#111824; --panel2:#0e141d; --line:#1e2937;
@@ -184,6 +185,8 @@
   .barbtn.alt{background:transparent;color:var(--accent);border:1px solid var(--accent)}
   .barbtn.on{background:var(--accent2);color:#04231a;border-color:var(--accent2)}
   .barbtn:hover{opacity:.88}
+  .chatclose{align-self:flex-end;margin:6px 10px 0;background:transparent;color:var(--muted);border:1px solid var(--line);border-radius:7px;padding:4px 12px;font-size:12px;font-family:inherit;cursor:pointer}
+  .chatclose:hover{color:var(--txt);border-color:var(--accent)}
   .vozsel{background:var(--panel2);border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:7px 6px;font-size:12px;max-width:130px}
   .vozsel:focus{outline:none;border-color:var(--accent)}
   @media(max-width:600px){.otisbar{flex-wrap:wrap}.otisbar input{order:5;flex-basis:100%}}
@@ -307,10 +310,10 @@
   .film:hover{border-color:var(--accent)}
   /* inventario - opcoes de compra */
   .invopts{display:flex;flex-wrap:wrap;gap:8px;padding:2px 0 6px}
-  .invopts a{font-size:12px;background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:5px 10px;color:var(--accent);text-decoration:none;display:inline-flex;align-items:center;gap:7px}
+  .invopts a{font-size:13.5px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 12px;color:var(--accent);text-decoration:none;display:inline-flex;align-items:center;gap:9px}
   .invopts a:hover{border-color:var(--accent)}
-  .invopts a.hasimg{padding:4px 10px 4px 4px}
-  .invopts a img{width:36px;height:36px;object-fit:cover;border-radius:5px;background:#0a0f15;flex:none}
+  .invopts a.hasimg{padding:5px 12px 5px 5px}
+  .invopts a img{width:54px;height:54px;object-fit:cover;border-radius:6px;background:#0a0f15;flex:none}
   .delrow{margin-left:8px;color:var(--muted);text-decoration:none;font-size:13px;opacity:.5;float:right}
   .delrow:hover{opacity:1;color:var(--alta,#ff8a8a)}
   #invA td:nth-child(2),#invB td:nth-child(2){cursor:pointer}
@@ -372,10 +375,10 @@
   <div class="otispanel">
     <div class="otisbar">
       <input id="cmdInput" placeholder="Pergunta ao OTIS... (Enter envia)">
-      <select id="vozSel" class="vozsel" title="Escolher voz" style="display:none"></select>
       <button class="barbtn alt" id="bomDia" title="Bom dia (voz)">&#9835;</button>
       <button class="barbtn alt" id="btnRefresh" title="Actualizar OTIS">&#8635;</button>
     </div>
+    <button id="chatClose" class="chatclose" style="display:none">Fechar conversa</button>
     <div id="otisChat" class="otischat" style="display:none"></div>
   </div>
 
@@ -418,41 +421,30 @@
   <section id="s-cultura">
     <div class="shead"><h2><span class="dot"></span>Agenda cultural</h2><button class="tog" aria-label="Minimizar"></button></div>
     <div class="sbody">
-      <div class="two">
-        <div class="venue">
-          <h3>Viana e Alto Minho</h3>
-          <div class="ev"><span class="evd">Sab 13</span><span class="evt">Dia do Porto de Viana - barcos, Navio Gil Eannes, animacao<span class="free">gratis</span></span></div>
-          <div class="ev"><span class="evd">Sab 13</span><span class="evt">Folclore + mercado de sabores, Praca da Republica<span class="free">gratis</span></span></div>
-          <div class="ev"><span class="evd">Dom 14</span><span class="evt">44o Festival de Folclore, Ponte de Lima - 15:30</span></div>
-          <div class="ev"><span class="evd">ate 2 Ago</span><span class="evt">Exposicao "Mana - Agua Mae", Museu de Caminha</span></div>
-          <p class="upd"><a href="https://www.cm-viana-castelo.pt" target="_blank" rel="noopener">Agenda da Camara</a> - <a href="https://www.viralagenda.com/pt/viana-do-castelo" target="_blank" rel="noopener">Viral Agenda</a> - <a href="https://vianafestas.com/eventos/" target="_blank" rel="noopener">Festas de Viana</a></p>
-        </div>
-        <div class="venue">
-          <h3>Porto</h3>
-          <div class="ev"><span class="evd">Sab 13</span><span class="evt">Casa da Musica - Cibermusica (16:00) e Sala Suggia (18:00)</span></div>
-          <div class="ev"><span class="evd">Sab 27</span><span class="evt">Opera Puccini: Suor Angelica + Gianni Schicchi - 21:00 - <a href="https://www.ticketline.pt/evento/suor-angelica-gianni-schicchi-103478" target="_blank" rel="noopener">bilhetes</a> (20-45 EUR)</span></div>
-          <div class="ev"><span class="evd">Dom 28</span><span class="evt">The Arena Battle - dancas urbanas, Coliseu</span></div>
-          <p class="upd"><a href="https://casadamusica.com/agenda/" target="_blank" rel="noopener">Casa da Musica</a> - <a href="https://www.coliseu.pt" target="_blank" rel="noopener">Coliseu</a> - <a href="https://www.ticketline.pt" target="_blank" rel="noopener">Ticketline</a></p>
-        </div>
-      </div>
-
-      <div class="evcity" style="margin-top:6px">Mundial 2026 - Portugal (Grupo K)</div>
+      <div class="evcity">Mundial 2026 - Portugal (Grupo K)</div>
       <ul class="weeklist">
         <li>17 Jun - Portugal 1-1 RD Congo <span class="free">terminado</span></li>
         <li><b>Ter 23 Jun - Portugal x Uzbequistao</b> - 19:00 (hora PT), Houston</li>
         <li><b>Dom 28 Jun - Colombia x Portugal</b> - 01:30 (madrugada, hora PT), Miami</li>
       </ul>
 
-      <div class="two">
-        <div>
-          <div class="evcity">Esta semana - 22 a 28 Jun</div>
-          <ul class="weeklist">
-            <li>ate 28 Jun - Rock in Rio Lisboa (Parque Tejo, Lisboa)</li>
-            <li>Concertos da semana: ve a <a href="https://casadamusica.com/agenda/" target="_blank" rel="noopener">agenda da Casa da Musica</a> e a <a href="https://www.viralagenda.com/pt/viana-do-castelo" target="_blank" rel="noopener">Viral Agenda (Viana)</a>.</li>
-          </ul>
+      <div class="two" style="margin-top:14px">
+        <div class="venue">
+          <h3>Viana e Alto Minho</h3>
+          <div class="ev"><span class="evd">ate 2 Ago</span><span class="evt">Exposicao "Mana - Agua Mae", Museu de Caminha</span></div>
+          <p class="upd">Esta semana: <a href="https://www.viralagenda.com/pt/viana-do-castelo" target="_blank" rel="noopener">Viral Agenda</a> - <a href="https://www.cm-viana-castelo.pt" target="_blank" rel="noopener">Camara</a> - <a href="https://vianafestas.com/eventos/" target="_blank" rel="noopener">Festas de Viana</a></p>
         </div>
+        <div class="venue">
+          <h3>Porto</h3>
+          <div class="ev"><span class="evd">Sab 27</span><span class="evt">Opera Puccini: Suor Angelica + Gianni Schicchi - 21:00 - <a href="https://www.ticketline.pt/evento/suor-angelica-gianni-schicchi-103478" target="_blank" rel="noopener">bilhetes</a> (20-45 EUR)</span></div>
+          <div class="ev"><span class="evd">Dom 28</span><span class="evt">The Arena Battle - dancas urbanas, Coliseu</span></div>
+          <p class="upd"><a href="https://casadamusica.com/agenda/" target="_blank" rel="noopener">Casa da Musica</a> - <a href="https://www.coliseu.pt" target="_blank" rel="noopener">Coliseu</a> - <a href="https://www.ticketline.pt" target="_blank" rel="noopener">Ticketline</a></p>
+        </div>
+      </div>
+
+      <div class="two" style="margin-top:14px">
         <div>
-          <div class="evcity">Formula 1 2026 - proximas corridas</div>
+          <div class="evcity">Formula 1 - proximas corridas</div>
           <ul class="weeklist">
             <li>28 Jun - GP da Austria (Spielberg)</li>
             <li>5 Jul - GP da Gra-Bretanha (Silverstone)</li>
@@ -474,21 +466,22 @@
           </ul>
           <button class="ghost" id="f1toggle">Ver as outras corridas (+12)</button>
         </div>
+        <div>
+          <div class="evcity">Festivais de verao</div>
+          <ul class="weeklist">
+            <li>ate 28 Jun - Rock in Rio Lisboa (Lisboa)</li>
+            <li>9-11 Jul - NOS Alive (Lisboa)</li>
+            <li>17-25 Jul - FMM Musicas do Mundo (Sines)</li>
+            <li>6-8 Ago - Neopop / Antipop (Viana)</li>
+            <li>12-15 Ago - Paredes de Coura</li>
+            <li>15-23 Ago - Festas da Agonia (Viana)</li>
+            <li>18-22 Ago - Vilar de Mouros (Caminha)</li>
+            <li>28-30 Ago - MEO Kalorama (Lisboa)</li>
+            <li>5 Set - Super Bock Super Rock: The Weeknd (Lisboa)</li>
+          </ul>
+        </div>
       </div>
-
-      <div class="evcity" style="margin-top:18px">Festivais de verao (Portugal)</div>
-      <ul class="weeklist">
-        <li>20-28 Jun - Rock in Rio Lisboa (Lisboa)</li>
-        <li>9-11 Jul - NOS Alive (Alges, Lisboa)</li>
-        <li>17-25 Jul - FMM Festival Musicas do Mundo (Sines / Porto Covo)</li>
-        <li>6-8 Ago - Neopop / Antipop (Viana do Castelo)</li>
-        <li>12-15 Ago - Vodafone Paredes de Coura</li>
-        <li>15-23 Ago - Festas da Agonia (Viana do Castelo)</li>
-        <li>18-22 Ago - CA Vilar de Mouros (Caminha)</li>
-        <li>28-30 Ago - MEO Kalorama (Lisboa)</li>
-        <li>5 Set - Super Bock Super Rock: The Weeknd (Lisboa)</li>
-      </ul>
-      <p class="upd">Ordenado por data de inicio. Neopop/Antipop, Coura, Agonia e Vilar de Mouros sao no Minho, ao pe de ti. Bilhetes em <a href="https://www.bol.pt" target="_blank" rel="noopener">BOL</a> e <a href="https://ticketline.sapo.pt" target="_blank" rel="noopener">Ticketline</a>.</p>
+      <p class="upd">Neopop, Coura, Agonia e Vilar de Mouros sao no Minho, ao pe de ti. Bilhetes em <a href="https://www.bol.pt" target="_blank" rel="noopener">BOL</a> e <a href="https://ticketline.sapo.pt" target="_blank" rel="noopener">Ticketline</a>.</p>
     </div>
   </section>
 
@@ -496,7 +489,6 @@
   <section id="s-cinema">
     <div class="shead"><h2><span class="dot"></span>Cinema</h2><button class="tog" aria-label="Minimizar"></button></div>
     <div class="sbody">
-      <p class="hint">Viana ja nao tem cinema. Sessoes de hoje/fim de semana (snapshot de 14 Jun) nos 3 cinemas mais proximos. Clica no nome do cinema para horarios e bilhetes sempre atualizados.</p>
       <div class="evcity"><a href="https://filmspot.pt/cinema/cinemas-nos-mar-shopping-matosinhos-49/" target="_blank" rel="noopener">NOS MAR Shopping</a></div>
       <div class="films" id="cine-mar"></div>
       <div class="evcity" style="margin-top:14px"><a href="https://filmspot.pt/cinema/cinemas-nos-norteshopping-matosinhos-35/" target="_blank" rel="noopener">NOS NorteShopping</a></div>
@@ -603,15 +595,15 @@
       </div>
 
       <div class="ptab" id="ptab-mercearia" style="display:none">
-        <div class="evcity">Mercearia</div>
-        <p class="hint">Lista de supermercado (quinta-feira). Escreve um item e Enter - vai para a seccao certa.</p>
         <div class="grocrow"><input id="grocInput" placeholder="Adicionar item e Enter..."></div>
         <div id="grocList"></div>
       </div>
 
       <div class="ptab" id="ptab-wishlist" style="display:none">
-        <div class="evcity">Wishlist</div>
-        <p class="hint">Desejos pessoais e alternativas que decidiste nao comprar (compraste o sofa? manda as outras opcoes para aqui). Escreve e Enter para adicionar.</p>
+        <div class="evcity">Wishlist - favoritos W.L.</div>
+        <p class="hint">Da tua barra de favoritos do Chrome (Relogios, Guitarras, Facas, Vario). Clica para abrir. Imagens e precos vou buscar por lotes.</p>
+        <div id="wlGrid"></div>
+        <div class="evcity" style="margin-top:16px">Outros desejos / alternativas</div>
         <div class="grocrow"><input id="wishInput" placeholder="Adicionar desejo e Enter..."></div>
         <ul class="weeklist" id="wishlist"></ul>
       </div>
@@ -746,25 +738,26 @@
     var k=0,iv=setInterval(function(){if(st)st.textContent=msgs[k++]||"Sistema online.";if(k>=msgs.length)clearInterval(iv);},820);
     // som de arranque: primeiros ~5s de "Master of Puppets" via YouTube (streaming, sem alojar MP3).
     // So toca apos um gesto do utilizador (regra dos browsers); o gate/primeiro clique conta como gesto.
-    var soou=false;
+    var soou=false, sndBox=null;
     function otisSom(){
       if(soou)return; soou=true;
       try{
-        var box=document.createElement("div");
-        box.style.cssText="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden";
+        sndBox=document.createElement("div");
+        sndBox.style.cssText="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden";
         var f=document.createElement("iframe");
         f.allow="autoplay"; f.width="1"; f.height="1";
         f.src="https://www.youtube.com/embed/zbSjDVcZA2o?autoplay=1&start=0&controls=0&disablekb=1&playsinline=1&fs=0";
-        box.appendChild(f); document.body.appendChild(box);
-        setTimeout(function(){ if(box&&box.parentNode)box.parentNode.removeChild(box); },6500); // ~5s + buffer, depois corta
+        sndBox.appendChild(f); document.body.appendChild(sndBox);
       }catch(e){}
     }
+    function pararSom(){ if(sndBox&&sndBox.parentNode)sndBox.parentNode.removeChild(sndBox); sndBox=null; }
     window.otisSom=otisSom;
     function onGesto(){otisSom();["pointerdown","keydown"].forEach(function(ev){document.removeEventListener(ev,onGesto);});}
     ["pointerdown","keydown"].forEach(function(ev){document.addEventListener(ev,onGesto);});
-    function fechar(){boot.classList.add("hide");setTimeout(function(){if(boot&&boot.parentNode)boot.parentNode.removeChild(boot);},700);}
+    // a musica so toca enquanto a animacao de arranque esta no ecra; ao fechar, corta
+    function fechar(){pararSom();boot.classList.add("hide");setTimeout(function(){if(boot&&boot.parentNode)boot.parentNode.removeChild(boot);},700);}
     var to=setTimeout(fechar,5000);
-    boot.addEventListener("click",function(){clearTimeout(to);clearInterval(iv);otisSom();fechar();});
+    boot.addEventListener("click",function(){clearTimeout(to);clearInterval(iv);fechar();});
   })();
   // --- Gate de acesso privado (password verificada no servidor, lembrada no dispositivo) ---
   (function(){
@@ -980,9 +973,12 @@
   // --- Chat OTIS (via /api/chat) ---
   var ci=document.getElementById("cmdInput"), cc=document.getElementById("cmdCopy"), chatBox=document.getElementById("otisChat");
   var chatHistory=[];
+  var chatCloseBtn=document.getElementById("chatClose");
+  if(chatCloseBtn){ chatCloseBtn.addEventListener("click",function(){ if(chatBox){chatBox.style.display="none";chatBox.innerHTML="";} chatCloseBtn.style.display="none"; chatHistory=[]; }); }
   function addMsg(role,text){
     if(!chatBox)return null;
     chatBox.style.display="block";
+    if(chatCloseBtn)chatCloseBtn.style.display="";
     var d=document.createElement("div"); d.className="omsg "+(role==="user"?"ouser":"obot");
     if(role==="bot"){
       d.innerHTML='<button class="omin" title="Minimizar">&ndash;</button><div class="otxt">'+esc(text)+'</div>';
@@ -1177,11 +1173,50 @@
     renderBought();
   })();
 
-  // --- Wishlist (desejos + alternativas nao compradas) ---
+  // --- Wishlist: favoritos W.L. (do Chrome) + desejos/alternativas ---
+  var wlist=[
+    {c:"Facas",n:"Zayiko Chef VG10 Damascus 20cm",s:"Amazon.ae",u:"https://www.amazon.ae/dp/B0D73V3CJM/"},
+    {c:"Relogios",n:"G-Shock CasiOak Jellyfish Rainbow",s:"IFL Watches",u:"https://iflwatches.ae/collections/all-watches/products/g-shock-casioak-jellyfish-rainbow"},
+    {c:"Relogios",n:"Supernatural Caturix",s:"Martin Design",u:"https://www.martindesignwatches.com/products/supernatural-caturix?variant=48250945405256"},
+    {c:"Relogios",n:"Citizen Automatic NJ0180-80L",s:"Amazon.ae",u:"https://www.amazon.ae/dp/B0D6BDQBF9/"},
+    {c:"Relogios",n:"Baltic MR Classic Blue",s:"Baltic",u:"https://baltic-watches.com/en/products/mr-classic-blue"},
+    {c:"Relogios",n:"CIGA Design Blue Planet U",s:"Amazon.ae",u:"https://www.amazon.ae/CIGADesign-CIGA-Design-Mechanical-Fluororubber/dp/B0BKXJB56B/"},
+    {c:"Relogios",n:"Farer Eastern Arabic Lander IV GMT",s:"Farer",u:"https://usd.farer.com/products/eastern-arabic-lander"},
+    {c:"Relogios",n:"Beaubleu Seconde Francaise 19.24 Midnight Blue",s:"Beaubleu",u:"https://beaubleu-paris.com/en/products/seconde-francaise-midnight-blue"},
+    {c:"Relogios",n:"Echo/Neutra Rivanera Dress White",s:"Echo/Neutra",u:"https://echoneutra.com/products/rivanera-white"},
+    {c:"Relogios",n:"Dufrane The Waterloo",s:"Dufrane",u:"https://www.dufranewatches.com/products/mechanical-dress-watch-waterloo?variant=51017287139615"},
+    {c:"Relogios",n:"Christopher Ward C1 Bel Canto",s:"C. Ward",u:"https://www.christopherward.com/int/this-years-best-watches/C1-Bel-Canto/C01-41APT0-T00B1-VLB.html"},
+    {c:"Relogios",n:"Christopher Ward C1 Moonglow",s:"C. Ward",u:"https://www.christopherward.com/int/watches/C1-Moonglow/C01-40AMP2-S00K0-VK1.html"},
+    {c:"Relogios",n:"Christopher Ward C12 Loco",s:"C. Ward",u:"https://www.christopherward.com/int/the-c12-loco-watches/The-C12-Loco/C12-41H6D1-S00K0-B0.html"},
+    {c:"Relogios",n:"Zelos Artemis Mokume",s:"Zelos",u:"https://zeloswatches.com/products/artemis-mokume"},
+    {c:"Relogios",n:"Venezianico Arsenale Avventurina",s:"Venezianico",u:"https://www.venezianico.com/products/arsenale-avventurina-6221550"},
+    {c:"Relogios",n:"Venezianico Redentore Enigma Red",s:"Venezianico",u:"https://www.venezianico.com/products/redentore-enigma-1221573"},
+    {c:"Vario",n:"Rokr Mechanical Manta Ray 3D Metal",s:"Rokr Geek",u:"https://rokrgeek.com/collections/3d-metal-model/products/mechanical-manta-ray-3d-metal-model"},
+    {c:"Vario",n:"BMW CE 02 (moto electrica)",s:"Caetano",u:"https://caetano.pt/bmw-motorrad/motos-novas/ce02/"},
+    {c:"Vario",n:"Dr. Martens Vegan Adrian",s:"Amazon.ae",u:"https://www.amazon.ae/dp/B0BPCKJ6TD/"},
+    {c:"Vario",n:"PowerBank Xiaomi 212W 25000mAh",s:"Xiaomi PT",u:"https://www.xiaomistore.pt/power-bank-xiaomi-212w-hypercharge-power-bank-25000mah-gl"},
+    {c:"Guitarras",n:"Cascha Ukulele Mahogany Baritone",s:"Thomann",u:"https://www.thomann.ae/cascha_ukulele_mahogany_baritone.htm"},
+    {c:"Guitarras",n:"Ibanez JEM7VP-WH",s:"Thomann",u:"https://www.thomann.ae/ibanez_jem7vp_wh.htm"},
+    {c:"Guitarras",n:"Gibson SG 61 Standard VC",s:"Thomann",u:"https://www.thomann.ae/gibson_sg_61_standard_vc.htm"},
+    {c:"Guitarras",n:"Fender 60 Tele JRN MN SGF",s:"Thomann",u:"https://www.thomann.ae/fender_60_tele_jrn_mn_sgf.htm"},
+    {c:"Guitarras",n:"Gibson Kirk Hammett Greeny LP Std",s:"Thomann",u:"https://www.thomann.ae/gibson_kirk_hammett_greeny_lp_std.htm"}
+  ];
   (function(){
+    var grid=document.getElementById("wlGrid");
+    if(grid){
+      var cats=["Relogios","Guitarras","Facas","Vario"], html="";
+      cats.forEach(function(cat){
+        var its=wlist.filter(function(w){return w.c===cat;}); if(!its.length)return;
+        html+='<div class="evcity" style="margin-top:10px">'+esc(cat)+'</div><div class="invopts">';
+        its.forEach(function(w){ html+='<a href="'+w.u+'" target="_blank" rel="noopener"><span>'+esc(w.n)+' <em style="color:var(--muted);font-style:normal">- '+esc(w.s)+'</em></span></a>'; });
+        html+='</div>';
+      });
+      grid.innerHTML=html;
+    }
     var ul=document.getElementById("wishlist"), inp=document.getElementById("wishInput"); if(!ul)return;
-    var arr; try{ arr=JSON.parse(localStorage.getItem("jarvis:wish")||"null"); }catch(e){ arr=null; }
-    if(arr===null){ arr=["Aspirador","Candeeiro de pe (sala)"]; localStorage.setItem("jarvis:wish",JSON.stringify(arr)); }
+    var arr; try{ arr=JSON.parse(localStorage.getItem("jarvis:wish")||"[]"); }catch(e){ arr=[]; }
+    arr=arr.filter(function(it){ return !/aspirador|candeeiro de pe/i.test(it); }); // pedido: tirar estes
+    localStorage.setItem("jarvis:wish",JSON.stringify(arr));
     ul.innerHTML=""; arr.forEach(function(it){ var li=document.createElement("li"); li.textContent=it; ul.appendChild(li); });
     if(inp)inp.addEventListener("keydown",function(e){ if(e.key==="Enter"&&inp.value.trim()){ addWishlist(inp.value.trim()); inp.value=""; } });
   })();

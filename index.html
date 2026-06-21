@@ -704,7 +704,9 @@
   <section id="s-finance">
     <div class="shead"><h2><span class="dot"></span>Finance</h2><button class="tog" aria-label="Minimizar"></button></div>
     <div class="sbody">
-      <p class="hint" id="finNote">Contabilista: Sr. Nando. O teu plano financeiro detalhado fica em privado com o OTIS (nao aqui, porque o painel e publico). Larga em baixo extratos/ficheiros para analise pontual.</p>
+      <p class="hint" id="finNote">Contabilista: Sr. Nando. Dados privados - servidos so depois da password e guardados fora do codigo publico (variavel FINANCE_DATA na Vercel).</p>
+      <div id="finBills"><p class="hint" id="finMsg">A carregar os teus dados...</p></div>
+      <p class="hint" style="margin-top:14px">Analise pontual de extratos:</p>
       <div class="findrop" id="finDrop">Larga aqui ficheiros (txt, csv, json) e o OTIS analisa-os. Ou clica para escolher.</div>
       <div class="finresult" id="finResult"></div>
     </div>
@@ -717,7 +719,7 @@
       <p class="hint">Projecto paralelo, por camadas.</p>
       <table>
         <tbody>
-          <tr><td>Pre-requisito</td><td>Internet instalada (bloqueia tudo)</td></tr>
+          <tr><td>Pre-requisito</td><td>Internet 1GB instalada <span class="badge b-activa">OK</span></td></tr>
           <tr><td>Ecossistema</td><td><span class="badge b-media">A definir</span> Alexa ou Google Home</td></tr>
           <tr><td>Orcamento base</td><td>100-150 EUR (hub + lampadas + tomadas)</td></tr>
           <tr><td>Regra</td><td>So apos internet estavel; preferir Matter</td></tr>
@@ -789,7 +791,7 @@
       fetch("/api/auth",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pw:pw})})
         .then(function(r){return r.json();})
         .then(function(j){
-          if(j&&j.ok){ if(fromUser&&rem&&rem.checked){ try{localStorage.setItem("otis:pw",pw);}catch(e){} } unlock(); }
+          if(j&&j.ok){ window.__otispw=pw; if(fromUser&&rem&&rem.checked){ try{localStorage.setItem("otis:pw",pw);}catch(e){} } if(window.otisLoadFinance)window.otisLoadFinance(); unlock(); }
           else { gate.style.display="flex"; if(fromUser&&err){ err.textContent="Palavra-passe errada."; } if(inp){inp.value="";inp.focus();} }
         })
         .catch(function(){ unlock(); }); // sem servidor (ex: ficheiro local) nao bloqueia
@@ -1392,6 +1394,57 @@
       });
     }
   })();
+
+  // --- Finance: dados privados via /api/finance (so apos password) ---
+  function finMonthKey(){ var d=new Date(); return d.getFullYear()+"-"+(d.getMonth()+1); }
+  function renderFin(data){
+    var box=document.getElementById("finBills"); if(!box)return; data=data||{};
+    var bought=(function(){try{return JSON.parse(localStorage.getItem("jarvis:bought")||"{}");}catch(e){return {};}})();
+    var mob=0; Object.keys(bought).forEach(function(k){var p=parseFloat(bought[k].price); if(!isNaN(p))mob+=p;});
+    var contas=data.contas||[], totalFixo=0; contas.forEach(function(c){totalFixo+=(+c.valor||0);});
+    var mk=finMonthKey();
+    var pd=(function(){try{return JSON.parse(localStorage.getItem("jarvis:finpaid")||"{}");}catch(e){return {};}})();
+    var paidM=pd[mk]||{}, porPagar=0; contas.forEach(function(c,i){ if(!paidM[i])porPagar+=(+c.valor||0); });
+    var h="";
+    if(data.resumo) h+='<p class="hint">'+esc(data.resumo)+'</p>';
+    h+='<div class="two"><div>';
+    h+='<div class="evcity">Contas fixas do mes (assinala as pagas)</div><table id="finContas"><tbody>';
+    contas.forEach(function(c,i){ h+='<tr data-i="'+i+'"'+(paidM[i]?' class="done"':'')+'><td><input type="checkbox"'+(paidM[i]?' checked':'')+'></td><td>'+esc(c.nome)+'</td><td class="num">'+fmt(c.valor)+'</td></tr>'; });
+    h+='</tbody></table>';
+    h+='<div class="etot"><span>Total fixo / mes</span><b>'+fmt(Math.round(totalFixo))+' EUR</b></div>';
+    h+='<div class="etot"><span>Ainda por pagar este mes</span><b id="finPorPagar">'+fmt(Math.round(porPagar))+' EUR</b></div>';
+    if(data.porApurar&&data.porApurar.length) h+='<p class="hint">Por apurar: '+data.porApurar.map(esc).join(", ")+'.</p>';
+    h+='</div><div>';
+    if(data.rendimentos&&data.rendimentos.length) h+='<div class="evcity">Rendimentos</div><ul class="weeklist">'+data.rendimentos.map(function(r){return '<li>'+esc(r.nome)+' - <b>'+fmt(r.valor)+' EUR</b></li>';}).join("")+'</ul>';
+    h+='<div class="evcity" style="margin-top:12px">Mobilia (Projeto Casa)</div><ul class="weeklist"><li>Ja gasto registado: <b>'+fmt(Math.round(mob))+' EUR</b></li></ul>';
+    if(data.objetivos&&data.objetivos.length) h+='<div class="evcity" style="margin-top:12px">Objetivos (Sr. Nando)</div><ul class="weeklist">'+data.objetivos.map(function(o){return '<li>'+esc(o)+'</li>';}).join("")+'</ul>';
+    h+='</div></div>';
+    box.innerHTML=h;
+    box.querySelectorAll("#finContas tr").forEach(function(tr){
+      var cb=tr.querySelector("input"), i=tr.getAttribute("data-i");
+      cb.addEventListener("change",function(){
+        tr.classList.toggle("done",cb.checked);
+        var p2=(function(){try{return JSON.parse(localStorage.getItem("jarvis:finpaid")||"{}");}catch(e){return {};}})();
+        if(!p2[mk])p2[mk]={}; p2[mk][i]=cb.checked; localStorage.setItem("jarvis:finpaid",JSON.stringify(p2));
+        var pp=0; contas.forEach(function(c,j){ if(!p2[mk][j])pp+=(+c.valor||0); });
+        var el=document.getElementById("finPorPagar"); if(el)el.textContent=fmt(Math.round(pp))+" EUR";
+      });
+    });
+  }
+  window.otisLoadFinance=function(){
+    var box=document.getElementById("finBills"); if(!box)return;
+    var pw=window.__otispw||(function(){try{return localStorage.getItem("otis:pw")||"";}catch(e){return "";}})();
+    fetch("/api/finance",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pw:pw})})
+      .then(function(r){return r.json();})
+      .then(function(j){
+        if(!j||!j.ok){ box.innerHTML='<p class="hint">Sem acesso aos dados.</p>'; return; }
+        if(!j.configured){ box.innerHTML='<p class="hint">Ainda nao configuraste a variavel FINANCE_DATA na Vercel. Pede ao OTIS o JSON para colares.</p>'; return; }
+        renderFin(j.data);
+      })
+      .catch(function(){ box.innerHTML='<p class="hint">Nao consegui obter os dados financeiros.</p>'; });
+  };
+  // se ja entraste antes (password lembrada), carrega logo
+  if(window.__otispw||(function(){try{return localStorage.getItem("otis:pw");}catch(e){return null;}})()){ window.otisLoadFinance(); }
 
   // --- Abas do Projeto (Fases | Compras) ---
   (function(){

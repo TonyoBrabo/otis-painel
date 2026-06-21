@@ -432,8 +432,9 @@
       <div class="evcity">Mundial 2026 - Portugal (Grupo K)</div>
       <ul class="weeklist">
         <li>17 Jun - Portugal 1-1 RD Congo <span class="free">terminado</span></li>
-        <li><b>Ter 23 Jun - Portugal x Uzbequistao</b> - 19:00 (hora PT), Houston</li>
+        <li><b>Ter 23 Jun - Portugal x Uzbequistao</b> - 18:00 (hora PT), Houston</li>
         <li><b>Dom 28 Jun - Colombia x Portugal</b> - 01:30 (madrugada, hora PT), Miami</li>
+        <li>16 avos de final - 1 a 5 Jul (data por confirmar, conforme a classificacao)</li>
       </ul>
 
       <div class="two" style="margin-top:14px">
@@ -446,6 +447,7 @@
           <h3>Porto</h3>
           <div class="ev"><span class="evd">Sab 27</span><span class="evt">Opera Puccini: Suor Angelica + Gianni Schicchi - 21:00 - <a href="https://www.ticketline.pt/evento/suor-angelica-gianni-schicchi-103478" target="_blank" rel="noopener">bilhetes</a> (20-45 EUR)</span></div>
           <div class="ev"><span class="evd">Dom 28</span><span class="evt">The Arena Battle - dancas urbanas, Coliseu</span></div>
+          <div class="ev"><span class="evd">Seg 29</span><span class="evt">Future Rocks 2026 (final), Casa da Musica - Sala 2, 21:30</span></div>
           <p class="upd"><a href="https://casadamusica.com/agenda/" target="_blank" rel="noopener">Casa da Musica</a> - <a href="https://www.coliseu.pt" target="_blank" rel="noopener">Coliseu</a> - <a href="https://www.ticketline.pt" target="_blank" rel="noopener">Ticketline</a></p>
         </div>
       </div>
@@ -877,7 +879,7 @@
       callback:function(resp){ if(resp&&resp.access_token){ gToken=resp.access_token; gSetBtn("Google ligado",true); fetchCalLive(); } },
       error_callback:function(){ /* silencioso: se precisar de interacao, nao mostra popup */ }
     });
-    try{ gTokenClient.requestAccessToken({prompt:"none"}); }catch(e){}
+    try{ gTokenClient.requestAccessToken({prompt:""}); }catch(e){}
   }
   function gConnect(){ if(gTokenClient){ gTokenClient.requestAccessToken({prompt:""}); } else { gInit(); } }
   function fetchCalLive(){
@@ -1281,34 +1283,41 @@
   var PB="https://filmspot.com.pt/images/filmes/posters/thumb/";
   var cinema={
     "cine-braga":[
-      {t:"18 buracos para o paraiso",s:"20:40, 23:20",p:PB+"1441488_pt.jpg"},
-      {t:"Backrooms - O Labirinto",s:"14:20, 16:40, 19:00, 22:00, 00:20",p:PB+"1083381_pt.jpg"},
-      {t:"Baleia Assassina",s:"20:50, 23:30",p:PB+"1412598_pt.jpg"},
-      {t:"Bichos a Bordo (VP)",s:"11:20, 14:10, 16:30",p:PB+"1107216_pt.jpg"},
-      {t:"Michael",s:"13:00, 15:40, 18:20, 21:10, 23:50",p:PB+"936075_pt.jpg"},
-      {t:"Mumbo Jumbo (VP)",s:"11:00, 13:50, 16:05, 18:10",p:PB+"1218067_pt.jpg"},
-      {t:"O Dia da Revelacao",s:"14:00, 17:20, 21:00, 00:15",p:PB+"1275779_pt.jpg"},
-      {t:"Scary Movie: What's Up?",s:"13:20, 16:00, 18:40, 21:30, 00:00",p:PB+"1273221_pt.jpg"}
+      {t:"Toy Story 5",s:"varias 10:40 - 23:30",p:PB+"1084244_pt.jpg"},
+      {t:"A Morte de Robin Hood",s:"13:50, 17:00, 20:45, 23:45",p:""},
+      {t:"Backrooms - O Labirinto",s:"14:15, 16:40, 19:10, 22:00, 00:20",p:PB+"1083381_pt.jpg"},
+      {t:"Bichos a Bordo",s:"11:00, 14:00, 16:30",p:PB+"1107216_pt.jpg"},
+      {t:"Hokum - A Maldicao Oculta",s:"13:45, 16:20, 19:00, 21:40, 00:15",p:""},
+      {t:"Michael",s:"13:00, 15:45, 18:30, 21:10, 00:00",p:PB+"936075_pt.jpg"},
+      {t:"O Dia da Revelacao",s:"14:10, 17:30, 20:50, 00:10",p:PB+"1275779_pt.jpg"},
+      {t:"Obsession - A Felicidade E Relativa",s:"21:20, 00:05",p:""},
+      {t:"Scary Movie: What's Up?",s:"13:30, 16:00, 18:55, 21:30, 23:55",p:PB+"1273221_pt.jpg"},
+      {t:"Tudo o que Nunca Fomos",s:"18:50, 21:50, 00:25",p:""}
     ],
     "cine-norte":[
-      {t:"Backrooms - O Labirinto",s:"13:40, 16:20, 19:00, 21:50, 00:30",p:PB+"1083381_pt.jpg"},
-      {t:"Baleia Assassina",s:"19:10, 21:40, 00:25",p:PB+"1412598_pt.jpg"},
-      {t:"Bichos a Bordo",s:"10:40, 13:20, 15:30, 18:00",p:PB+"1107216_pt.jpg"},
-      {t:"Masters of the Universe",s:"12:35, 15:20, 18:10, 21:00, 00:00",p:PB+"454639_pt.jpg"},
-      {t:"Mumbo Jumbo",s:"11:20, 14:30, 16:50",p:PB+"1218067_pt.jpg"},
-      {t:"O Dia da Revelacao",s:"14:05, 17:15, 20:30, 23:50",p:PB+"1275779_pt.jpg"},
-      {t:"O Diabo Veste Prada 2",s:"12:30, 15:10, 17:50, 20:40, 23:30",p:PB+"1314481_pt.jpg"},
-      {t:"Scary Movie: What's Up?",s:"13:40, 16:00, 18:40, 21:30, 00:10",p:PB+"1273221_pt.jpg"}
+      {t:"Toy Story 5",s:"10:30, 13:10, 15:40, 18:20, 21:00, 23:30",p:PB+"1084244_pt.jpg"},
+      {t:"A Morte de Robin Hood",s:"13:20, 16:00, 18:40, 21:20, 00:00",p:""},
+      {t:"Backrooms - O Labirinto",s:"13:40, 16:40, 19:20, 21:50, 00:30",p:PB+"1083381_pt.jpg"},
+      {t:"Bichos a Bordo",s:"10:40, 12:55, 15:10",p:PB+"1107216_pt.jpg"},
+      {t:"Hokum - A Maldicao Oculta",s:"21:40, 00:20",p:""},
+      {t:"Masters of the Universe",s:"12:50, 15:50",p:PB+"454639_pt.jpg"},
+      {t:"O Dia da Revelacao",s:"14:00, 17:10, 20:30, 23:50",p:PB+"1275779_pt.jpg"},
+      {t:"O Diabo Veste Prada 2",s:"17:30, 20:20, 23:10",p:PB+"1314481_pt.jpg"},
+      {t:"Obsession - A Felicidade E Relativa",s:"13:55, 16:30, 19:10, 22:00, 00:35",p:""},
+      {t:"Scary Movie: What's Up?",s:"13:00, 15:20, 17:50, 21:30, 00:10",p:PB+"1273221_pt.jpg"},
+      {t:"Tudo o que Nunca Fomos",s:"19:00, 21:10, 23:40",p:""}
     ],
     "cine-mar":[
-      {t:"Backrooms - O Labirinto",s:"13:40, 16:00, 18:20, 21:00, 23:20",p:PB+"1083381_pt.jpg"},
-      {t:"Bichos a Bordo (VP)",s:"10:40, 13:20, 15:30, 18:00",p:PB+"1107216_pt.jpg"},
-      {t:"Masters of the Universe",s:"14:10, 17:30, 20:40, 23:40",p:PB+"454639_pt.jpg"},
-      {t:"Michael",s:"12:40, 15:40, 18:50, 22:00",p:PB+"936075_pt.jpg"},
-      {t:"O Dia da Revelacao",s:"13:00, 16:30, 20:00, 23:30",p:PB+"1275779_pt.jpg"},
-      {t:"O Diabo Veste Prada 2",s:"13:10, 15:50, 18:40, 21:30",p:PB+"1314481_pt.jpg"},
-      {t:"Scary Movie: What's Up?",s:"12:50, 15:20, 17:50, 21:20, 23:50",p:PB+"1273221_pt.jpg"},
-      {t:"Toy Story 5 (estreia 18 Jun)",s:"12:20, 15:00, 17:40, 20:10, 22:50",p:PB+"1084244_pt.jpg"}
+      {t:"Toy Story 5",s:"12:20, 15:00, 17:40, 20:10, 22:50",p:PB+"1084244_pt.jpg"},
+      {t:"Toy Story 5 (IMAX)",s:"13:00, 15:40, 18:20, 20:40, 23:20",p:PB+"1084244_pt.jpg"},
+      {t:"Scary Movie: What's Up?",s:"13:40, 16:00, 18:25, 21:00, 23:30",p:PB+"1273221_pt.jpg"},
+      {t:"Backrooms - O Labirinto",s:"18:30, 21:20, 00:00",p:PB+"1083381_pt.jpg"},
+      {t:"O Dia da Revelacao",s:"13:30, 17:00, 20:30, 23:45",p:PB+"1275779_pt.jpg"},
+      {t:"Michael",s:"12:40, 15:35, 18:40, 21:40",p:PB+"936075_pt.jpg"},
+      {t:"A Morte de Robin Hood",s:"17:50, 20:50, 23:50",p:""},
+      {t:"Bichos a Bordo",s:"10:40, 13:10, 15:20",p:PB+"1107216_pt.jpg"},
+      {t:"O Que e o Amor?",s:"13:20, 15:40, 18:10, 21:10, 23:40",p:""},
+      {t:"O Diabo Veste Prada 2",s:"12:50, 15:30",p:PB+"1314481_pt.jpg"}
     ]
   };
   var cineUrl={"cine-braga":"https://filmspot.pt/cinema/cinemas-nos-braga-parque-25/","cine-norte":"https://filmspot.pt/cinema/cinemas-nos-norteshopping-matosinhos-35/","cine-mar":"https://filmspot.pt/cinema/cinemas-nos-mar-shopping-matosinhos-49/"};
@@ -1316,7 +1325,8 @@
     var el=document.getElementById(id); if(!el)return;
     var u=cineUrl[id]||"#";
     el.innerHTML=cinema[id].map(function(f){
-      return '<a class="film" href="'+u+'" target="_blank" rel="noopener"><img class="fp" src="'+f.p+'" alt="" loading="lazy" onerror="this.style.display=\'none\'"><div class="fi"><div class="ft">'+esc(f.t)+'</div><div class="fs">'+esc(f.s)+'</div></div></a>';
+      var poster=f.p?'<img class="fp" src="'+f.p+'" alt="" loading="lazy" onerror="this.style.display=\'none\'">':'';
+      return '<a class="film" href="'+u+'" target="_blank" rel="noopener">'+poster+'<div class="fi"><div class="ft">'+esc(f.t)+'</div><div class="fs">'+esc(f.s)+'</div></div></a>';
     }).join("");
   });
 

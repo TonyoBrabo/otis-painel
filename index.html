@@ -756,16 +756,20 @@
         f.allow="autoplay"; f.width="1"; f.height="1";
         f.src="https://www.youtube.com/embed/zbSjDVcZA2o?autoplay=1&start=0&controls=0&disablekb=1&playsinline=1&fs=0";
         sndBox.appendChild(f); document.body.appendChild(sndBox);
+        setTimeout(pararSom,7000); // limite rigido: a musica para sempre entre 5-7s
       }catch(e){}
     }
     function pararSom(){ if(sndBox&&sndBox.parentNode)sndBox.parentNode.removeChild(sndBox); sndBox=null; }
     window.otisSom=otisSom;
-    function onGesto(){otisSom();["pointerdown","keydown"].forEach(function(ev){document.removeEventListener(ev,onGesto);});}
+    function fechar(){pararSom();clearInterval(iv);boot.classList.add("hide");setTimeout(function(){if(boot&&boot.parentNode)boot.parentNode.removeChild(boot);},700);}
+    var to=setTimeout(fechar,8000); // fallback: fecha mesmo sem qualquer interacao
+    function onGesto(){
+      otisSom();                                    // arranca a musica (dentro de um gesto do utilizador)
+      clearTimeout(to); to=setTimeout(fechar,6000); // loading + musica ~6s e depois fecha (corta a musica)
+      ["pointerdown","keydown"].forEach(function(ev){document.removeEventListener(ev,onGesto);});
+    }
     ["pointerdown","keydown"].forEach(function(ev){document.addEventListener(ev,onGesto);});
-    // a musica so toca enquanto a animacao de arranque esta no ecra; ao fechar, corta
-    function fechar(){pararSom();boot.classList.add("hide");setTimeout(function(){if(boot&&boot.parentNode)boot.parentNode.removeChild(boot);},700);}
-    var to=setTimeout(fechar,5000);
-    boot.addEventListener("click",function(){clearTimeout(to);clearInterval(iv);fechar();});
+    boot.addEventListener("click",function(){fechar();});
   })();
   // --- Gate de acesso privado (password verificada no servidor, lembrada no dispositivo) ---
   (function(){

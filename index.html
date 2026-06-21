@@ -290,6 +290,14 @@
   .day.today{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 8px 22px rgba(57,197,207,.18)}
   /* lista de compras - mobilia e casa */
   .prodgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px;margin-top:4px}
+  .wlgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:12px;margin-top:6px}
+  .wlcard{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel2);display:flex;flex-direction:column}
+  .wlph{display:block;aspect-ratio:1/1;background:#0a0f15}
+  .wlph img{width:100%;height:100%;object-fit:cover;display:block}
+  .wlph.noimg{aspect-ratio:16/7;background:linear-gradient(135deg,#0e141d,#0a0f15)}
+  .wln{font-size:12px;padding:7px 9px 2px;line-height:1.25}
+  .wlm{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:3px 9px 9px;font-size:11px;color:var(--muted)}
+  .wlm b{color:var(--accent);font-size:12px;font-weight:700;text-align:right}
   .prod{background:var(--panel2);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
   .prod .ph{display:block;aspect-ratio:1/1;background:#0a0f15;overflow:hidden}
   .prod .ph img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .25s}
@@ -516,7 +524,7 @@
     <div class="shead"><h2><span class="dot"></span>Projeto Casa</h2><button class="tog" aria-label="Minimizar"></button></div>
     <div class="sbody">
       <div class="ptabs">
-        <button class="ptab-btn active" data-tab="fases">Fases</button>
+        <button class="ptab-btn active" data-tab="fases">Plano Casa</button>
         <button class="ptab-btn" data-tab="mercearia">Mercearia</button>
         <button class="ptab-btn" data-tab="wishlist">Wishlist</button>
       </div>
@@ -1176,21 +1184,21 @@
   // --- Wishlist: favoritos W.L. (do Chrome) + desejos/alternativas ---
   var wlist=[
     {c:"Facas",n:"Zayiko Chef VG10 Damascus 20cm",s:"Amazon.ae",u:"https://www.amazon.ae/dp/B0D73V3CJM/"},
-    {c:"Relogios",n:"G-Shock CasiOak Jellyfish Rainbow",s:"IFL Watches",u:"https://iflwatches.ae/collections/all-watches/products/g-shock-casioak-jellyfish-rainbow"},
-    {c:"Relogios",n:"Supernatural Caturix",s:"Martin Design",u:"https://www.martindesignwatches.com/products/supernatural-caturix?variant=48250945405256"},
-    {c:"Relogios",n:"Citizen Automatic NJ0180-80L",s:"Amazon.ae",u:"https://www.amazon.ae/dp/B0D6BDQBF9/"},
-    {c:"Relogios",n:"Baltic MR Classic Blue",s:"Baltic",u:"https://baltic-watches.com/en/products/mr-classic-blue"},
-    {c:"Relogios",n:"CIGA Design Blue Planet U",s:"Amazon.ae",u:"https://www.amazon.ae/CIGADesign-CIGA-Design-Mechanical-Fluororubber/dp/B0BKXJB56B/"},
-    {c:"Relogios",n:"Farer Eastern Arabic Lander IV GMT",s:"Farer",u:"https://usd.farer.com/products/eastern-arabic-lander"},
-    {c:"Relogios",n:"Beaubleu Seconde Francaise 19.24 Midnight Blue",s:"Beaubleu",u:"https://beaubleu-paris.com/en/products/seconde-francaise-midnight-blue"},
-    {c:"Relogios",n:"Echo/Neutra Rivanera Dress White",s:"Echo/Neutra",u:"https://echoneutra.com/products/rivanera-white"},
-    {c:"Relogios",n:"Dufrane The Waterloo",s:"Dufrane",u:"https://www.dufranewatches.com/products/mechanical-dress-watch-waterloo?variant=51017287139615"},
-    {c:"Relogios",n:"Christopher Ward C1 Bel Canto",s:"C. Ward",u:"https://www.christopherward.com/int/this-years-best-watches/C1-Bel-Canto/C01-41APT0-T00B1-VLB.html"},
-    {c:"Relogios",n:"Christopher Ward C1 Moonglow",s:"C. Ward",u:"https://www.christopherward.com/int/watches/C1-Moonglow/C01-40AMP2-S00K0-VK1.html"},
-    {c:"Relogios",n:"Christopher Ward C12 Loco",s:"C. Ward",u:"https://www.christopherward.com/int/the-c12-loco-watches/The-C12-Loco/C12-41H6D1-S00K0-B0.html"},
-    {c:"Relogios",n:"Zelos Artemis Mokume",s:"Zelos",u:"https://zeloswatches.com/products/artemis-mokume"},
-    {c:"Relogios",n:"Venezianico Arsenale Avventurina",s:"Venezianico",u:"https://www.venezianico.com/products/arsenale-avventurina-6221550"},
-    {c:"Relogios",n:"Venezianico Redentore Enigma Red",s:"Venezianico",u:"https://www.venezianico.com/products/redentore-enigma-1221573"},
+    {c:"Relogios",n:"G-Shock CasiOak Jellyfish Rainbow",s:"IFL Watches",p:"Dhs 1.790 (~445 EUR)",i:"https://iflwatches.ae/cdn/shop/files/IFLW_CasiOak_Custom_g-shock_Jellyfish_rainbow.webp?v=1773128167",u:"https://iflwatches.ae/collections/all-watches/products/g-shock-casioak-jellyfish-rainbow"},
+    {c:"Relogios",n:"Supernatural Caturix",s:"Martin Design",p:"459 EUR",i:"https://www.martindesignwatches.com/cdn/shop/files/Caturix_Midnight_Blue_600x.jpg?v=1746193814",u:"https://www.martindesignwatches.com/products/supernatural-caturix?variant=48250945405256"},
+    {c:"Relogios",n:"Citizen Automatic NJ0180-80L",s:"Amazon.ae",p:"ver na Amazon.ae",i:"",u:"https://www.amazon.ae/dp/B0D6BDQBF9/"},
+    {c:"Relogios",n:"Baltic MR Classic Blue",s:"Baltic",p:"545 EUR",i:"https://cdn.shopify.com/s/files/1/0012/9299/2583/products/mr01-blue-face-stitched-lion.png?v=1676367521&width=800",u:"https://baltic-watches.com/en/products/mr-classic-blue"},
+    {c:"Relogios",n:"CIGA Design Blue Planet U",s:"Amazon.ae",p:"ver na Amazon.ae",i:"",u:"https://www.amazon.ae/CIGADesign-CIGA-Design-Mechanical-Fluororubber/dp/B0BKXJB56B/"},
+    {c:"Relogios",n:"Farer Eastern Arabic Lander IV GMT",s:"Farer",p:"1.575 USD",i:"https://usd.farer.com/cdn/shop/files/LANDER-GMT-SUEDE-Lander_9594da4b-39d7-409c-a238-8b8fb09cf223_450x.png?v=1727257509",u:"https://usd.farer.com/products/eastern-arabic-lander"},
+    {c:"Relogios",n:"Beaubleu Seconde Francaise Midnight Blue",s:"Beaubleu",p:"esgotado",i:"",u:"https://beaubleu-paris.com/en/products/seconde-francaise-midnight-blue"},
+    {c:"Relogios",n:"Echo/Neutra Rivanera White",s:"Echo/Neutra",p:"1.490 EUR",i:"https://echoneutra.com/cdn/shop/files/Rivanera-Bianco-01.png?v=1762784909&width=800",u:"https://echoneutra.com/products/rivanera-white"},
+    {c:"Relogios",n:"Dufrane The Waterloo",s:"Dufrane",p:"899 USD",i:"https://www.dufranewatches.com/cdn/shop/files/Waterloo_RG_HC_Main_1800x.jpg?v=1780872625",u:"https://www.dufranewatches.com/products/mechanical-dress-watch-waterloo?variant=51017287139615"},
+    {c:"Relogios",n:"Christopher Ward C1 Bel Canto",s:"C. Ward",p:"4.350 EUR",i:"https://www.christopherward.com/dw/image/v2/BDWD_PRD/on/demandware.static/-/Sites-cw-master-catalog/default/dwca80df1a/images/WATCHES/C01-41APT0-T00B1-VLB/C01-41APT0-T00B1-VLB_Picture_1.jpg?sw=600&sh=600",u:"https://www.christopherward.com/int/this-years-best-watches/C1-Bel-Canto/C01-41APT0-T00B1-VLB.html"},
+    {c:"Relogios",n:"Christopher Ward C1 Moonglow",s:"C. Ward",p:"2.725 EUR",i:"https://www.christopherward.com/dw/image/v2/BDWD_PRD/on/demandware.static/-/Sites-cw-master-catalog/default/dw9e186a11/images/WATCHES/C01-40AMP2-S00K0-VK/C01-40AMP2-S00K0-VK_Picture_1.jpg?sw=600&sh=600",u:"https://www.christopherward.com/int/watches/C1-Moonglow/C01-40AMP2-S00K0-VK1.html"},
+    {c:"Relogios",n:"Christopher Ward C12 Loco",s:"C. Ward",p:"5.395 EUR",i:"https://www.christopherward.com/dw/image/v2/BDWD_PRD/on/demandware.static/-/Sites-cw-master-catalog/default/dwcf545a99/images/WATCHES/C12-41H6D1-S00K0-B0/C12-41H6D1-S00K0-B0_Picture_1.jpg?sw=600&sh=600",u:"https://www.christopherward.com/int/the-c12-loco-watches/The-C12-Loco/C12-41H6D1-S00K0-B0.html"},
+    {c:"Relogios",n:"Zelos Artemis Mokume",s:"Zelos",p:"2.499 USD (esgotado)",i:"https://zeloswatches.com/cdn/shop/files/1_bcd04f72-b981-4381-9fee-decdd4b34be7_grande.jpg?v=5277",u:"https://zeloswatches.com/products/artemis-mokume"},
+    {c:"Relogios",n:"Venezianico Arsenale Avventurina",s:"Venezianico",p:"800 EUR",i:"https://www.venezianico.com/cdn/shop/files/00_Packshot_ArsenaleAvventurina_Gomma.png?v=1750071478&width=600",u:"https://www.venezianico.com/products/arsenale-avventurina-6221550"},
+    {c:"Relogios",n:"Venezianico Redentore Enigma Red",s:"Venezianico",p:"625 EUR",i:"",u:"https://www.venezianico.com/products/redentore-enigma-1221573"},
     {c:"Vario",n:"Rokr Mechanical Manta Ray 3D Metal",s:"Rokr Geek",u:"https://rokrgeek.com/collections/3d-metal-model/products/mechanical-manta-ray-3d-metal-model"},
     {c:"Vario",n:"BMW CE 02 (moto electrica)",s:"Caetano",u:"https://caetano.pt/bmw-motorrad/motos-novas/ce02/"},
     {c:"Vario",n:"Dr. Martens Vegan Adrian",s:"Amazon.ae",u:"https://www.amazon.ae/dp/B0BPCKJ6TD/"},
@@ -1207,8 +1215,11 @@
       var cats=["Relogios","Guitarras","Facas","Vario"], html="";
       cats.forEach(function(cat){
         var its=wlist.filter(function(w){return w.c===cat;}); if(!its.length)return;
-        html+='<div class="evcity" style="margin-top:10px">'+esc(cat)+'</div><div class="invopts">';
-        its.forEach(function(w){ html+='<a href="'+w.u+'" target="_blank" rel="noopener"><span>'+esc(w.n)+' <em style="color:var(--muted);font-style:normal">- '+esc(w.s)+'</em></span></a>'; });
+        html+='<div class="evcity" style="margin-top:10px">'+esc(cat)+'</div><div class="wlgrid">';
+        its.forEach(function(w){
+          var ph=w.i?'<a class="wlph" href="'+w.u+'" target="_blank" rel="noopener"><img src="'+w.i+'" alt="" loading="lazy" onerror="this.parentNode.classList.add(\'noimg\');this.remove()"></a>':'<a class="wlph noimg" href="'+w.u+'" target="_blank" rel="noopener"></a>';
+          html+='<div class="wlcard">'+ph+'<div class="wln">'+esc(w.n)+'</div><div class="wlm"><span>'+esc(w.s)+'</span>'+(w.p?'<b>'+esc(w.p)+'</b>':'')+'</div></div>';
+        });
         html+='</div>';
       });
       grid.innerHTML=html;

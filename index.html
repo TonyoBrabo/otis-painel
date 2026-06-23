@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OTIS - Painel</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0f14'/%3E%3Ccircle cx='32' cy='32' r='21' fill='none' stroke='%2339c5cf' stroke-width='3'/%3E%3Ccircle cx='32' cy='32' r='13' fill='none' stroke='%235ee0a0' stroke-width='2.5'/%3E%3Ccircle cx='32' cy='32' r='5.5' fill='%2339c5cf'/%3E%3C/svg%3E">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0b0f14">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="OTIS">
 <style>
   :root{
     --bg:#0b0f14; --panel:#111824; --panel2:#0e141d; --line:#1e2937;
@@ -678,6 +685,7 @@
       <div class="ptab" id="ptab-mercearia" style="display:none">
         <div class="grocrow"><input id="grocInput" placeholder="Adicionar item e Enter..."></div>
         <div id="grocList"></div>
+        <button class="ghost" id="grocShare" style="margin-top:10px">Partilhar lista (WhatsApp/SMS)</button>
       </div>
 
       <div class="ptab" id="ptab-wishlist" style="display:none">
@@ -1542,6 +1550,20 @@
     }
     function add(t){ if(!t)return; items.push({t:t,sec:gsec(t),d:false}); save(); render(); }
     if(inp)inp.addEventListener("keydown",function(e){if(e.key==="Enter"){var t=inp.value.trim(); if(t){add(t); inp.value="";}}});
+    function shareList(){
+      var lines=["Lista de compras (OTIS):"], any=false;
+      ORDER.forEach(function(sec){
+        var its=items.filter(function(o){return o.sec===sec && !o.d;});
+        if(!its.length)return; any=true;
+        lines.push(""); lines.push(sec+":");
+        its.forEach(function(o){ lines.push("- "+o.t); });
+      });
+      if(!any){ alert("A lista de mercearia esta vazia."); return; }
+      var txt=lines.join("\n");
+      if(navigator.share){ navigator.share({title:"Mercearia OTIS",text:txt}).catch(function(){}); }
+      else { window.open("https://wa.me/?text="+encodeURIComponent(txt),"_blank"); }
+    }
+    var sb=document.getElementById("grocShare"); if(sb)sb.addEventListener("click",shareList);
     render();
   })();
 
@@ -1648,6 +1670,8 @@
       box.appendChild(b);
     });
   })();
+
+  if("serviceWorker" in navigator){ navigator.serviceWorker.register("/sw.js").catch(function(){}); }
 
   document.getElementById("resetBtn").addEventListener("click",function(){
     if(confirm("Repor marcacoes e seccoes minimizadas?")){

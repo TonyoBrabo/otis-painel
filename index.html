@@ -612,6 +612,8 @@
           <tr data-price="13" data-key="carregsala"><td><input type="checkbox"></td><td>Carregador wireless sala (VASTMARKE)</td><td class="num">13</td><td>IKEA</td></tr>
           <tr data-price="15" data-key="extens"><td><input type="checkbox"></td><td>Extensoes / regletas</td><td class="num">15</td><td>Continente/Worten</td></tr>
           <tr data-price="25" data-key="poster"><td><input type="checkbox"></td><td>Poster de filme (decoracao)</td><td class="num">25</td><td>Posterstore/Etsy</td></tr>
+          <tr data-key="cortinachuveiro"><td><input type="checkbox"></td><td>Cortina chuveiro + vara</td><td class="num"></td><td></td></tr>
+          <tr data-key="suportepapel"><td><input type="checkbox"></td><td>Suporte papel cozinha</td><td class="num"></td><td></td></tr>
         </table></div>
       </div>
 
@@ -654,7 +656,6 @@
       <div class="etapa" data-etapa="1.5">
         <div class="ehead"><span class="en">1.5</span><span class="ef"></span><span class="ev">Nov</span><span class="echev"></span></div>
         <div class="ebody"><table>
-          <tr data-price="60" data-key="cortinas"><td><input type="checkbox"></td><td>Cortinas/blackout</td><td class="num">60</td><td>IKEA</td></tr>
           <tr data-price="30" data-key="almof"><td><input type="checkbox"></td><td>Almofadas decorativas</td><td class="num">30</td><td>IKEA</td></tr>
         </table></div>
       </div>
@@ -1240,12 +1241,83 @@
     cesto:[{n:"Cesto c/ divisórias",p:"ver na Amazon",i:"",u:"https://www.amazon.es/-/pt/dp/B0FHHKR8C1/"}],
     frigideiras:[{n:"Conjunto frigideiras",p:"ver na Amazon",i:"",u:"https://www.amazon.es/-/pt/dp/B0D36DNPXN/"}],
     poster:[{n:"Posters grandes (escolhe la)",p:"a escolher",i:"",u:"https://posterstore.com/pt-pt/"}],
-    tv:[{n:"TV 55\" 4K ate 500€ (ex: TCL 55C655, Xiaomi A 55, Hisense 55E7Q)",p:"ate 500 €",i:"",u:"https://www.worten.pt/tv-video-e-som/tvs/tv-55-polegadas/f/resolucao/4K%20Ultra%20HD"}],
-    extens:[{n:"Extensao 5 tomadas",p:"~15-25 €",i:"",u:"https://www.worten.pt/search?query=extensao+5+tomadas"}],
-    tapete:[{n:"Tapete grande cor forte (ex: IKEA MORUM laranja 200x300)",p:"~100 €",i:"",u:"https://www.ikea.com/pt/pt/cat/tapetes-grandes-e-medios-10692/"}],
-    panelas:[{n:"Conjunto panelas boa marca (Tefal / Tramontina)",p:"~80-150 €",i:"",u:"https://www.worten.pt/casa-e-lazer/cozinha/tachos-e-panelas"}]
+    tv:[
+      {n:"Barata - Xiaomi TV A 55 4K",p:"~370 €",i:"",u:"https://www.google.com/search?tbm=shop&q=Xiaomi+TV+A+55+2025+4K"},
+      {n:"Melhor - TCL 55C655 QLED 4K",p:"~430 €",i:"",u:"https://www.google.com/search?tbm=shop&q=TCL+55C655"},
+      {n:"Alternativa - Hisense 55E7NQ QLED",p:"~400 €",i:"",u:"https://www.google.com/search?tbm=shop&q=Hisense+55E7NQ"}
+    ],
+    extens:[
+      {n:"Barata - régua 5 tomadas",p:"~10 €",i:"",u:"https://www.google.com/search?tbm=shop&q=regua+5+tomadas"},
+      {n:"Melhor - torre 5 tomadas c/ USB e proteção",p:"~25 €",i:"",u:"https://www.google.com/search?tbm=shop&q=torre+tomadas+USB+protecao+sobretensao"},
+      {n:"Alternativa - extensão 5 tomadas c/ interruptor",p:"~15 €",i:"",u:"https://www.google.com/search?tbm=shop&q=extensao+5+tomadas+interruptor"}
+    ],
+    tapete:[
+      {n:"Barata - tapete laranja 160x230",p:"~50 €",i:"",u:"https://www.google.com/search?tbm=shop&q=tapete+sala+laranja+160x230"},
+      {n:"Melhor - IKEA MORUM laranja 200x300",p:"~100 €",i:"",u:"https://www.ikea.com/pt/pt/search/?q=morum"},
+      {n:"Alternativa - tapete vermelho grande",p:"~80 €",i:"",u:"https://www.google.com/search?tbm=shop&q=tapete+sala+vermelho+200x300"}
+    ],
+    panelas:[
+      {n:"Barata - Tramontina conjunto",p:"~70 €",i:"",u:"https://www.google.com/search?tbm=shop&q=Tramontina+conjunto+panelas"},
+      {n:"Melhor - Tefal conjunto (Ingenio/Daily)",p:"~120 €",i:"",u:"https://www.google.com/search?tbm=shop&q=Tefal+conjunto+panelas"},
+      {n:"Alternativa - Silampos (PT)",p:"~100 €",i:"",u:"https://www.google.com/search?tbm=shop&q=Silampos+conjunto+panelas"}
+    ],
+    micro:[
+      {n:"Barata - microondas 20L básico",p:"~50 €",i:"",u:"https://www.google.com/search?tbm=shop&q=microondas+20L"},
+      {n:"Melhor - Cecotec GrandHeat 23L",p:"~80 €",i:"",u:"https://www.google.com/search?tbm=shop&q=Cecotec+GrandHeat+microondas"},
+      {n:"Alternativa - microondas c/ grill",p:"~70 €",i:"",u:"https://www.google.com/search?tbm=shop&q=microondas+grill+23L"}
+    ],
+    chaleira:[
+      {n:"Barata - chaleira inox 1.7L",p:"~15 €",i:"",u:"https://www.google.com/search?tbm=shop&q=chaleira+eletrica+inox+1.7L"},
+      {n:"Melhor - Russell Hobbs",p:"~30 €",i:"",u:"https://www.google.com/search?tbm=shop&q=Russell+Hobbs+chaleira+eletrica"},
+      {n:"Alternativa - c/ controlo de temperatura",p:"~40 €",i:"",u:"https://www.google.com/search?tbm=shop&q=chaleira+temperatura+regulavel"}
+    ],
+    tigelas:[
+      {n:"Barata - jogo de tigelas",p:"~10 €",i:"",u:"https://www.google.com/search?tbm=shop&q=jogo+tigelas+cozinha"},
+      {n:"Melhor - escorredor de loiça inox",p:"~25 €",i:"",u:"https://www.google.com/search?tbm=shop&q=escorredor+loica+inox"},
+      {n:"Alternativa - taças de mistura c/ tampa",p:"~20 €",i:"",u:"https://www.google.com/search?tbm=shop&q=tacas+mistura+tampa+cozinha"}
+    ],
+    torradeira:[
+      {n:"Barata - torradeira 2 fatias",p:"~15 €",i:"",u:"https://www.google.com/search?tbm=shop&q=torradeira+2+fatias"},
+      {n:"Melhor - Russell Hobbs / Cecotec",p:"~30 €",i:"",u:"https://www.google.com/search?tbm=shop&q=Russell+Hobbs+torradeira"},
+      {n:"Alternativa - 4 fatias",p:"~40 €",i:"",u:"https://www.google.com/search?tbm=shop&q=torradeira+4+fatias"}
+    ],
+    utens:[
+      {n:"Barata - jogo utensílios nylon",p:"~15 €",i:"",u:"https://www.google.com/search?tbm=shop&q=jogo+utensilios+cozinha"},
+      {n:"Melhor - utensílios inox",p:"~30 €",i:"",u:"https://www.google.com/search?tbm=shop&q=utensilios+cozinha+inox"},
+      {n:"Alternativa - silicone (anti-risco)",p:"~25 €",i:"",u:"https://www.google.com/search?tbm=shop&q=utensilios+cozinha+silicone"}
+    ],
+    limpeza:[
+      {n:"Barata - kit esfregona + balde + panos",p:"~20 €",i:"",u:"https://www.google.com/search?tbm=shop&q=kit+limpeza+esfregona+balde"},
+      {n:"Melhor - aspirador vertical sem fios",p:"~80 €",i:"",u:"https://www.google.com/search?tbm=shop&q=aspirador+vertical+sem+fios"},
+      {n:"Alternativa - aspirador Rowenta/Cecotec",p:"~120 €",i:"",u:"https://www.google.com/search?tbm=shop&q=aspirador+escoba+rowenta+cecotec"}
+    ],
+    ferro:[
+      {n:"Barata - ferro a vapor básico",p:"~20 €",i:"",u:"https://www.google.com/search?tbm=shop&q=ferro+engomar+vapor"},
+      {n:"Melhor - Rowenta / Braun",p:"~45 €",i:"",u:"https://www.google.com/search?tbm=shop&q=Rowenta+ferro+engomar"},
+      {n:"Alternativa - ferro vertical (roupa pendurada)",p:"~50 €",i:"",u:"https://www.google.com/search?tbm=shop&q=ferro+vertical+vapor+roupa"}
+    ],
+    lixo:[
+      {n:"Barata - caixote pedal 30L",p:"~15 €",i:"",u:"https://www.google.com/search?tbm=shop&q=caixote+lixo+pedal+30L"},
+      {n:"Melhor - inox pedal 30L",p:"~35 €",i:"",u:"https://www.google.com/search?tbm=shop&q=caixote+lixo+inox+pedal"},
+      {n:"Alternativa - reciclagem 2-3 compart.",p:"~50 €",i:"",u:"https://www.google.com/search?tbm=shop&q=caixote+reciclagem+separacao"}
+    ],
+    almof:[
+      {n:"Barata - almofadas decorativas",p:"~10 €",i:"",u:"https://www.google.com/search?tbm=shop&q=almofada+decorativa+50x50"},
+      {n:"Melhor - tom forte (vermelho/laranja)",p:"~20 €",i:"",u:"https://www.google.com/search?tbm=shop&q=almofada+decorativa+laranja+vermelho"},
+      {n:"Alternativa - capas + enchimento",p:"~15 €",i:"",u:"https://www.google.com/search?tbm=shop&q=capa+almofada+50x50+enchimento"}
+    ],
+    cortinachuveiro:[
+      {n:"Barata - cortina tecido + vara extensível",p:"~15 €",i:"",u:"https://www.google.com/search?tbm=shop&q=cortina+chuveiro+tecido+vara+extensivel"},
+      {n:"Melhor - conjunto cortina + vara inox",p:"~30 €",i:"",u:"https://www.google.com/search?tbm=shop&q=conjunto+cortina+chuveiro+vara+inox"},
+      {n:"Alternativa - vara curva + cortina",p:"~40 €",i:"",u:"https://www.google.com/search?tbm=shop&q=vara+chuveiro+curva+cortina"}
+    ],
+    suportepapel:[
+      {n:"Barata - suporte de bancada",p:"~8 €",i:"",u:"https://www.google.com/search?tbm=shop&q=suporte+rolo+papel+cozinha+bancada"},
+      {n:"Melhor - inox c/ base pesada",p:"~15 €",i:"",u:"https://www.google.com/search?tbm=shop&q=suporte+rolo+papel+cozinha+inox+base"},
+      {n:"Alternativa - de parede",p:"~12 €",i:"",u:"https://www.google.com/search?tbm=shop&q=suporte+rolo+papel+cozinha+parede"}
+    ]
   };
-  var labelMap={sofa:"Sofá",tv:"TV",poltrona:"Poltrona",pufe:"Pufe",cand1:"Candeeiro de tecto",cand2:"Candeeiro de mesa",carregsala:"Carregador (sala)",extens:"Extensões",poster:"Poster de filme",tapete:"Tapete",moveltv:"Móvel TV",candquarto:"Candeeiro (quarto)",girafa:"Girafa LED",carregquarto:"Carregador c/ luz",roupa:"Roupa de cama",cabides:"Cabides",cesto:"Cesto roupa suja",micro:"Microondas",panelas:"Panelas",louca:"Loiça",facas:"Facas",chaleira:"Chaleira",tigelas:"Tigelas",torradeira:"Torradeira",carrinho:"Carrinho cozinha",frigideiras:"Frigideiras",utens:"Utensílios",limpeza:"Kit limpeza",ferro:"Ferro",lixo:"Caixote do lixo",cortinas:"Cortinas",almof:"Almofadas"};
+  var labelMap={sofa:"Sofá",tv:"TV",poltrona:"Poltrona",pufe:"Pufe",cand1:"Candeeiro de tecto",cand2:"Candeeiro de mesa",carregsala:"Carregador (sala)",extens:"Extensões",poster:"Poster de filme",cortinachuveiro:"Cortina chuveiro + vara",suportepapel:"Suporte papel cozinha",tapete:"Tapete",moveltv:"Móvel TV",candquarto:"Candeeiro (quarto)",girafa:"Girafa LED",carregquarto:"Carregador c/ luz",roupa:"Roupa de cama",cabides:"Cabides",cesto:"Cesto roupa suja",micro:"Microondas",panelas:"Panelas",louca:"Loiça",facas:"Facas",chaleira:"Chaleira",tigelas:"Tigelas",torradeira:"Torradeira",carrinho:"Carrinho cozinha",frigideiras:"Frigideiras",utens:"Utensílios",limpeza:"Kit limpeza",ferro:"Ferro",lixo:"Caixote do lixo",cortinas:"Cortinas",almof:"Almofadas"};
 
   function prodCardsHTML(k,label){
     var pdel; try{pdel=JSON.parse(localStorage.getItem("jarvis:proddel")||"[]");}catch(e){pdel=[];}
@@ -1254,8 +1326,8 @@
     if(!prods.length) return '<p class="hint" style="margin:2px 0 6px">Sem produto escolhido ainda. Manda-me um link e eu adiciono.</p>';
     return '<div class="cprods">'+prods.map(function(p){
       var bought=!!b[p.u];
-      var im=p.i?'<img src="'+p.i+'" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">':'';
-      return '<div class="cprod'+(bought?" bought":"")+'" data-u="'+esc(p.u)+'" data-n="'+esc(label+" - "+p.n)+'" data-p="'+esc(p.p)+'"><div class="cpact"><a href="#" class="cpbuy" title="Comprado">&#10003;</a><a href="#" class="cpdel" title="Eliminar">&#128465;</a></div><a class="cpimg" href="'+p.u+'" target="_blank" rel="noopener">'+im+'</a><div class="cpinfo"><div class="cpn">'+esc(p.n)+'</div><div class="cpp">'+esc(p.p)+'</div></div></div>';
+      var imgEl=p.i?'<a class="cpimg" href="'+p.u+'" target="_blank" rel="noopener"><img src="'+p.i+'" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'"></a>':'';
+      return '<div class="cprod'+(bought?" bought":"")+'" data-u="'+esc(p.u)+'" data-n="'+esc(label+" - "+p.n)+'" data-p="'+esc(p.p)+'"><div class="cpact"><a href="#" class="cpbuy" title="Comprado">&#10003;</a><a href="#" class="cpdel" title="Eliminar">&#128465;</a></div>'+imgEl+'<div class="cpinfo"><div class="cpn"><a href="'+p.u+'" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">'+esc(p.n)+'</a></div><div class="cpp">'+esc(p.p)+'</div></div></div>';
     }).join("")+'</div>';
   }
   function wireProds(scope){

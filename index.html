@@ -650,6 +650,7 @@
           <tr data-price="40" data-key="limpeza"><td><input type="checkbox"></td><td>Kit de limpeza casa</td><td class="num">40</td><td>Continente</td></tr>
           <tr data-price="35" data-key="ferro"><td><input type="checkbox"></td><td>Ferro + tabua de engomar</td><td class="num">35</td><td>Worten</td></tr>
           <tr data-price="15" data-key="lixo"><td><input type="checkbox"></td><td>Caixote do lixo</td><td class="num">15</td><td>IKEA</td></tr>
+          <tr data-key="moppe"><td><input type="checkbox"></td><td>Mini gavetas (MOPPE)</td><td class="num"></td><td>IKEA</td></tr>
         </table></div>
       </div>
 
@@ -1315,9 +1316,10 @@
       {n:"Barata - suporte de bancada",p:"~8 €",i:"",u:"https://www.google.com/search?tbm=shop&q=suporte+rolo+papel+cozinha+bancada"},
       {n:"Melhor - inox c/ base pesada",p:"~15 €",i:"",u:"https://www.google.com/search?tbm=shop&q=suporte+rolo+papel+cozinha+inox+base"},
       {n:"Alternativa - de parede",p:"~12 €",i:"",u:"https://www.google.com/search?tbm=shop&q=suporte+rolo+papel+cozinha+parede"}
-    ]
+    ],
+    moppe:[{n:"Mini gavetas MOPPE (bétula)",p:"25 €",i:"https://www.ikea.com/pt/en/images/products/moppe-mini-chest-of-drawers-birch-plywood__1476382_pe998863_s5.jpg?f=u",u:"https://www.ikea.com/pt/en/p/moppe-mini-chest-of-drawers-birch-plywood-90623141/"}]
   };
-  var labelMap={sofa:"Sofá",tv:"TV",poltrona:"Poltrona",pufe:"Pufe",cand1:"Candeeiro de tecto",cand2:"Candeeiro de mesa",carregsala:"Carregador (sala)",extens:"Extensões",poster:"Poster de filme",cortinachuveiro:"Cortina chuveiro + vara",suportepapel:"Suporte papel cozinha",tapete:"Tapete",moveltv:"Móvel TV",candquarto:"Candeeiro (quarto)",girafa:"Girafa LED",carregquarto:"Carregador c/ luz",roupa:"Roupa de cama",cabides:"Cabides",cesto:"Cesto roupa suja",micro:"Microondas",panelas:"Panelas",louca:"Loiça",facas:"Facas",chaleira:"Chaleira",tigelas:"Tigelas",torradeira:"Torradeira",carrinho:"Carrinho cozinha",frigideiras:"Frigideiras",utens:"Utensílios",limpeza:"Kit limpeza",ferro:"Ferro",lixo:"Caixote do lixo",cortinas:"Cortinas",almof:"Almofadas"};
+  var labelMap={sofa:"Sofá",tv:"TV",poltrona:"Poltrona",pufe:"Pufe",cand1:"Candeeiro de tecto",cand2:"Candeeiro de mesa",carregsala:"Carregador (sala)",extens:"Extensões",poster:"Poster de filme",cortinachuveiro:"Cortina chuveiro + vara",suportepapel:"Suporte papel cozinha",tapete:"Tapete",moveltv:"Móvel TV",candquarto:"Candeeiro (quarto)",girafa:"Girafa LED",carregquarto:"Carregador c/ luz",roupa:"Roupa de cama",cabides:"Cabides",cesto:"Cesto roupa suja",micro:"Microondas",panelas:"Panelas",louca:"Loiça",facas:"Facas",chaleira:"Chaleira",tigelas:"Tigelas",torradeira:"Torradeira",carrinho:"Carrinho cozinha",frigideiras:"Frigideiras",utens:"Utensílios",limpeza:"Kit limpeza",ferro:"Ferro",lixo:"Caixote do lixo",moppe:"Mini gavetas (MOPPE)",cortinas:"Cortinas",almof:"Almofadas"};
 
   function prodCardsHTML(k,label){
     var pdel; try{pdel=JSON.parse(localStorage.getItem("jarvis:proddel")||"[]");}catch(e){pdel=[];}

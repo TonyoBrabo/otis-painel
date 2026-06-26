@@ -447,6 +447,7 @@
     <div class="otisbar">
       <input id="cmdInput" placeholder="Pergunta ao OTIS... (Enter envia)">
       <button class="barbtn alt" id="bomDia" title="Bom dia (voz)">&#9835;</button>
+      <button class="barbtn alt" id="vozCycle" title="Trocar/testar voz">voz</button>
       <button class="barbtn alt" id="btnRefresh" title="Actualizar OTIS">&#8635;</button>
     </div>
     <button id="chatClose" class="chatclose" style="display:none">Fechar conversa</button>
@@ -1021,8 +1022,8 @@
     var saved=localStorage.getItem("otis:voz");
     if(saved){ for(var k=0;k<vs.length;k++){ if(vs[k].name===saved) return vs[k]; } }
     function find(re){for(var i=0;i<vs.length;i++){var s=(vs[i].name||"")+" "+(vs[i].lang||"");if(re.test(s))return vs[i];}return null;}
-    // preferir voz masculina PT (mordomo); depois Google/Microsoft PT, etc.
-    return find(/(Duarte|Raul|Antonio|Joao).*(portug|pt[-_])/i)||find(/Google.*(portug|pt[-_])/i)||find(/Microsoft.*(Portug|pt[-_])/i)||find(/pt[-_]PT/i)||find(/Portug/i)||find(/pt[-_]BR/i)||null;
+    // melhor qualidade primeiro: vozes "Natural"/"Online" PT -> Google pt-PT -> Microsoft PT -> outras
+    return find(/(Natural|Online).*(portug|pt[-_])/i)||find(/(portug|pt[-_]).*(Natural|Online)/i)||find(/Google.*(portug|pt[-_])/i)||find(/Microsoft.*(Portug|pt[-_])/i)||find(/pt[-_]PT/i)||find(/Portug/i)||find(/pt[-_]BR/i)||null;
   }
   function fillVozSel(){
     var sel=document.getElementById("vozSel"); if(!sel)return;
@@ -1059,6 +1060,16 @@
   if("speechSynthesis" in window){ speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged=function(){speechSynthesis.getVoices();fillVozSel();}; setTimeout(fillVozSel,300); }
   var bd=document.getElementById("bomDia"); if(bd){bd.addEventListener("click",falarBomDia);}
   var rb=document.getElementById("btnRefresh"); if(rb){rb.addEventListener("click",function(){location.reload();});}
+  var vc=document.getElementById("vozCycle");
+  if(vc){ vc.addEventListener("click",function(){
+    var pts=allVozPt(); if(!pts.length){ alert("Nao ha vozes portuguesas no browser. Diz-me e mostro-te como instalar uma melhor no Windows."); return; }
+    var cur=localStorage.getItem("otis:voz"), idx=-1;
+    for(var i=0;i<pts.length;i++){ if(pts[i].name===cur){idx=i;break;} }
+    var nv=pts[(idx+1)%pts.length]; localStorage.setItem("otis:voz",nv.name);
+    var u=new SpeechSynthesisUtterance("Bom dia, Senhor Daniel. Esta voz serve, ou troco outra vez?");
+    u.voice=nv; u.lang=nv.lang; u.rate=0.95; u.pitch=1.0; speechSynthesis.cancel(); speechSynthesis.speak(u);
+    vc.title="Voz: "+(nv.name||"").replace(/Microsoft|Online|\(Natural\)/g,"").trim();
+  }); }
 
   // obter meteorologia (Praia da Amorosa) e voltar a desenhar a semana
   fetch("https://api.open-meteo.com/v1/forecast?latitude=41.66&longitude=-8.81&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Europe%2FLisbon&forecast_days=14")

@@ -1034,8 +1034,17 @@
     sel.style.display="";
     sel.onchange=function(){ localStorage.setItem("otis:voz",sel.value); var u=new SpeechSynthesisUtterance("Voz alterada. Assim esta melhor, Senhor Daniel?"); var v=pickVoz(); if(v){u.voice=v;u.lang=v.lang;} u.rate=0.95; speechSynthesis.cancel(); speechSynthesis.speak(u); };
   }
+  function speakBrowser(txt){ if(!("speechSynthesis" in window))return; var u=new SpeechSynthesisUtterance(txt); var v=pickVoz(); if(v){u.voice=v;u.lang=v.lang;} else {u.lang="pt-PT";} u.rate=0.95; u.pitch=1.0; speechSynthesis.cancel(); speechSynthesis.speak(u); }
+  function speak(txt){
+    try{
+      fetch("/api/tts",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text:txt})})
+        .then(function(r){ var ct=r.headers.get("Content-Type")||""; if(!r.ok||ct.indexOf("audio")<0) throw 0; return r.blob(); })
+        .then(function(b){ var a=new Audio(URL.createObjectURL(b)); a.play().catch(function(){ speakBrowser(txt); }); })
+        .catch(function(){ speakBrowser(txt); });
+    }catch(e){ speakBrowser(txt); }
+  }
   function falarBomDia(){
-    if(!("speechSynthesis" in window)){alert("O teu browser nao suporta voz.");return;}
+    if(!("speechSynthesis" in window)){ /* tenta TTS na mesma */ }
     var hora=new Date().getHours();
     var saud;
     if(hora<12) saud="Bom dia, Senhor Daniel.";
@@ -1052,10 +1061,7 @@
       }
     }
     txt+=" "+frasesDia[Math.floor(Math.random()*frasesDia.length)];
-    var u=new SpeechSynthesisUtterance(txt);
-    var v=pickVoz(); if(v){u.voice=v;u.lang=v.lang;} else {u.lang="pt-PT";}
-    u.rate=0.95; u.pitch=1.0;
-    speechSynthesis.cancel(); speechSynthesis.speak(u);
+    speak(txt);
   }
   if("speechSynthesis" in window){ speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged=function(){speechSynthesis.getVoices();fillVozSel();}; setTimeout(fillVozSel,300); }
   var bd=document.getElementById("bomDia"); if(bd){bd.addEventListener("click",falarBomDia);}

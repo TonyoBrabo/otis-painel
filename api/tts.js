@@ -9,7 +9,7 @@ module.exports = async (req, res) => {
   if (typeof body === "string") { try { body = JSON.parse(body || "{}"); } catch (e) { body = {}; } }
   const text = ((body && body.text) || "").toString().slice(0, 800);
   if (!text.trim()) { res.status(400).json({ ok: false, error: "no-text" }); return; }
-  const voiceId = process.env.ELEVENLABS_VOICE_ID || "JBFqnCBsd6RMkjVDRZzb"; // George (masculino, maduro)
+  const voiceId = process.env.ELEVENLABS_VOICE_ID || "nPczCjzI2devNBz1zQrb"; // Brian (masculino americano, maduro - mordomo)
   try {
     const r = await fetch("https://api.elevenlabs.io/v1/text-to-speech/" + voiceId, {
       method: "POST",

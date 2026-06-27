@@ -1036,12 +1036,17 @@
   }
   function speakBrowser(txt){ if(!("speechSynthesis" in window))return; var u=new SpeechSynthesisUtterance(txt); var v=pickVoz(); if(v){u.voice=v;u.lang=v.lang;} else {u.lang="pt-PT";} u.rate=0.95; u.pitch=1.0; speechSynthesis.cancel(); speechSynthesis.speak(u); }
   function speak(txt){
-    try{
-      fetch("/api/tts",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text:txt})})
-        .then(function(r){ var ct=r.headers.get("Content-Type")||""; if(!r.ok||ct.indexOf("audio")<0) throw 0; return r.blob(); })
-        .then(function(b){ var a=new Audio(URL.createObjectURL(b)); a.play().catch(function(){ speakBrowser(txt); }); })
-        .catch(function(){ speakBrowser(txt); });
-    }catch(e){ speakBrowser(txt); }
+    var k=""; try{ k=localStorage.getItem("otis:11k")||""; }catch(e){}
+    fetch("/api/tts",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text:txt,key:k})})
+      .then(function(r){
+        var ct=r.headers.get("Content-Type")||"";
+        if(ct.indexOf("audio")>=0){ return r.blob().then(function(b){ new Audio(URL.createObjectURL(b)).play().catch(function(){ speakBrowser(txt); }); }); }
+        return r.json().then(function(j){
+          if(j&&j.error==="no-key"){ var nk=prompt("Cola aqui a tua chave do ElevenLabs (fica guardada so neste dispositivo):"); if(nk&&nk.trim()){ localStorage.setItem("otis:11k",nk.trim()); return speak(txt); } }
+          speakBrowser(txt);
+        });
+      })
+      .catch(function(){ speakBrowser(txt); });
   }
   function falarBomDia(){
     if(!("speechSynthesis" in window)){ /* tenta TTS na mesma */ }

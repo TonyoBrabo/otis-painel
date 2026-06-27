@@ -3,10 +3,10 @@
 
 module.exports = async (req, res) => {
   if (req.method !== "POST") { res.status(405).json({ ok: false }); return; }
-  const key = process.env.ELEVENLABS_API_KEY;
-  if (!key) { res.status(200).json({ ok: false, error: "no-key" }); return; }
   let body = req.body;
   if (typeof body === "string") { try { body = JSON.parse(body || "{}"); } catch (e) { body = {}; } }
+  const key = (body && body.key) || process.env.ELEVENLABS_API_KEY;
+  if (!key) { res.status(200).json({ ok: false, error: "no-key" }); return; }
   const text = ((body && body.text) || "").toString().slice(0, 800);
   if (!text.trim()) { res.status(400).json({ ok: false, error: "no-text" }); return; }
   const voiceId = process.env.ELEVENLABS_VOICE_ID || "nPczCjzI2devNBz1zQrb"; // Brian (masculino americano, maduro - mordomo)

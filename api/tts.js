@@ -7,7 +7,7 @@ module.exports = async (req, res) => {
   let body = req.body;
   if (typeof body === "string") { try { body = JSON.parse(body || "{}"); } catch (e) { body = {}; } }
   if (!body || typeof body !== "object") body = {};
-  const key = body.key || process.env.ELEVENLABS_API_KEY;
+  const key = process.env.ELEVENLABS_API_KEY || body.key;
   const text = (body.text || "").toString().slice(0, 800);
   if (!key) { return jres(200, { ok: false, error: "no-key" }); }
   if (!text.trim()) { return jres(200, { ok: false, error: "no-text" }); }

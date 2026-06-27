@@ -11,7 +11,7 @@ module.exports = async (req, res) => {
   const text = (body.text || "").toString().slice(0, 800);
   if (!key) { return jres(200, { ok: false, error: "no-key" }); }
   if (!text.trim()) { return jres(200, { ok: false, error: "no-text" }); }
-  const voiceId = process.env.ELEVENLABS_VOICE_ID || "onwK4e9ZLuTAKqWW03F9"; // Daniel (britanico, refinado)
+  const voiceId = process.env.ELEVENLABS_VOICE_ID || "JBFqnCBsd6RMkjVDRZzb"; // George (britanico, quente)
   try {
     const r = await fetch("https://api.elevenlabs.io/v1/text-to-speech/" + voiceId, {
       method: "POST",

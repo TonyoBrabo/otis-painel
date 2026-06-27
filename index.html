@@ -1074,10 +1074,7 @@
     else {
       var evs=(calEvents[dkey(now)]||[]);
       if(!evs.length){ txt+="You have no appointments today. A free day, to be squandered with impeccable style. "; }
-      else {
-        txt+="Today you have "+evs.length+(evs.length===1?" appointment":" appointments")+". ";
-        evs.slice(0,8).forEach(function(e){ txt+=e.t.replace("dia inteiro - ","during the day, ")+". "; });
-      }
+      else { txt+="Today you have "+evs.length+(evs.length===1?" appointment":" appointments")+", all neatly laid out for you on the panel. "; }
     }
     txt+=" "+frasesDia[Math.floor(Math.random()*frasesDia.length)];
     txt+=" "+funFacts[Math.floor(Math.random()*funFacts.length)];

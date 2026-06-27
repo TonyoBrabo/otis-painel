@@ -1008,13 +1008,27 @@
 
   // --- Voz "Bom dia" estilo mordomo (cordial mas divertido) ---
   var frasesDia=[
-    "Como sempre, eu trato dos pormenores; o Senhor trata do charme.",
-    "Sugiro cafe primeiro, decisoes importantes depois. Por experiencia propria.",
-    "Se hoje algo correr menos bem, fingimos os dois que foi de proposito.",
-    "O dia esta servido. Tente nao o entornar antes do almoco.",
-    "Um cavalheiro nunca tem pressa, apenas uma pontualidade impecavel.",
-    "Tudo sob controlo, Senhor. Ou pelo menos e o que diremos a todos.",
-    "Recomendo beber agua e, ja agora, conquistar o mundo com elegancia."
+    "As ever, I shall handle the details; you handle the charm.",
+    "I suggest coffee first and important decisions later. Speaking from bitter experience.",
+    "Should anything go sideways today, we shall both pretend it was entirely intentional.",
+    "The day is served, sir. Do try not to spill it before lunch.",
+    "A gentleman is never in a hurry, merely impeccably punctual.",
+    "Everything is under control. Or at least, that is what we shall tell everyone.",
+    "I recommend water, and while you are at it, conquering the world with elegance."
+  ];
+  var funFacts=[
+    "Fun fact: octopuses have three hearts and blue blood.",
+    "Fun fact: honey never spoils; perfectly edible jars were found in ancient Egyptian tombs.",
+    "Fun fact: a day on Venus is longer than its entire year.",
+    "Fun fact: bananas are berries, yet strawberries are not.",
+    "Fun fact: the Eiffel Tower can grow about fifteen centimetres taller in summer.",
+    "Fun fact: there are more stars in the universe than grains of sand on Earth.",
+    "Fun fact: a group of flamingos is called a flamboyance.",
+    "Fun fact: sharks are older than trees.",
+    "Fun fact: your nose can distinguish roughly fifty thousand different scents.",
+    "Fun fact: wombat droppings are cube-shaped.",
+    "Fun fact: the shortest war in history lasted about thirty-eight minutes.",
+    "Fun fact: a teaspoon of a neutron star would weigh about six billion tonnes."
   ];
   function allVozPt(){ var vs=speechSynthesis.getVoices()||[]; return vs.filter(function(v){return /(portug|pt[-_])/i.test((v.name||"")+" "+(v.lang||""));}); }
   function pickVoz(){
@@ -1052,20 +1066,21 @@
     if(!("speechSynthesis" in window)){ /* tenta TTS na mesma */ }
     var hora=new Date().getHours();
     var saud;
-    if(hora<12) saud="Bom dia, Senhor Daniel.";
-    else if(hora<21) saud="Boa tarde, Senhor Daniel.";
-    else { saud="Boa noite, "+(Math.random()<0.5?"meu garanhao":"meu pirocudo")+"."; }
+    if(hora<12) saud="Good morning, Master Daniel.";
+    else if(hora<19) saud="Good afternoon, Master Daniel.";
+    else saud="Good evening, Master Daniel.";
     var txt=saud+" ";
-    if(!gToken){ txt+="Ainda nao estou ligado ao seu calendario. Ligue o Google, se for do seu agrado. "; }
+    if(!gToken){ txt+="I am not yet connected to your calendar; do log into Google whenever it pleases you. "; }
     else {
       var evs=(calEvents[dkey(now)]||[]);
-      if(!evs.length){ txt+="Nao tem compromissos para hoje. Um dia livre, a aproveitar com classe. "; }
+      if(!evs.length){ txt+="You have no appointments today. A free day, to be squandered with impeccable style. "; }
       else {
-        txt+="Hoje tem "+evs.length+(evs.length===1?" compromisso":" compromissos")+". ";
-        evs.slice(0,8).forEach(function(e){ txt+=e.t.replace("dia inteiro - ","durante o dia, ")+". "; });
+        txt+="Today you have "+evs.length+(evs.length===1?" appointment":" appointments")+". ";
+        evs.slice(0,8).forEach(function(e){ txt+=e.t.replace("dia inteiro - ","during the day, ")+". "; });
       }
     }
     txt+=" "+frasesDia[Math.floor(Math.random()*frasesDia.length)];
+    txt+=" "+funFacts[Math.floor(Math.random()*funFacts.length)];
     speak(txt);
   }
   if("speechSynthesis" in window){ speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged=function(){speechSynthesis.getVoices();fillVozSel();}; setTimeout(fillVozSel,300); }

@@ -753,8 +753,9 @@
         <li><b>Regra:</b> materiais naturais + humor. Nada de branco puro nem cinzento frio; cada divisao com 1-2 pecas divertidas.</li>
       </ul>
       <div class="evcity" style="margin-top:14px">As tuas imagens de inspiracao</div>
-      <p class="hint">Arrasta imagens para aqui (ou clica para escolher). Ficam guardadas neste dispositivo.</p>
-      <div class="findrop" id="moodDrop">Larga aqui imagens de inspiracao</div>
+      <p class="hint">Cola (Ctrl+V) uma imagem copiada de um site, arrasta ficheiros, clica para escolher, ou cola um link de imagem em baixo. Fica tudo guardado neste dispositivo.</p>
+      <div class="findrop" id="moodDrop">Larga aqui imagens - ou simplesmente Ctrl+V em qualquer sitio da pagina</div>
+      <div class="grocrow" style="margin-top:8px"><input id="moodUrl" placeholder="Ou cola um link de imagem e Enter..."></div>
       <div class="moodgrid" id="moodGrid"></div>
     </div>
   </section>
@@ -1878,6 +1879,20 @@
     drop.addEventListener("dragleave",function(e){stop(e);drop.classList.remove("over");});
     drop.addEventListener("drop",function(e){stop(e);drop.classList.remove("over"); if(e.dataTransfer&&e.dataTransfer.files)Array.prototype.forEach.call(e.dataTransfer.files,addFile);});
     drop.addEventListener("click",function(){var i=document.createElement("input");i.type="file";i.accept="image/*";i.multiple=true;i.onchange=function(){Array.prototype.forEach.call(i.files,addFile);};i.click();});
+    // Ctrl+V em qualquer sitio da pagina: cola imagens copiadas de sites
+    document.addEventListener("paste",function(e){
+      if(e.target && /INPUT|TEXTAREA/.test(e.target.tagName) && e.target.id!=="moodUrl") return;
+      var its=(e.clipboardData&&e.clipboardData.items)||[], got=false;
+      for(var i=0;i<its.length;i++){ if(its[i].kind==="file" && /^image\//.test(its[i].type)){ var f=its[i].getAsFile(); if(f){ addFile(f); got=true; } } }
+      if(got){ e.preventDefault(); var s=document.getElementById("s-mood"); if(s){s.classList.remove("collapsed"); s.scrollIntoView({behavior:"smooth",block:"nearest"});} }
+    });
+    // link de imagem colado
+    var mu=document.getElementById("moodUrl");
+    if(mu)mu.addEventListener("keydown",function(e){
+      if(e.key!=="Enter")return; var u=mu.value.trim(); if(!u)return;
+      if(!/^https?:\/\//i.test(u)){ alert("Isso nao parece um link. Copia o endereco da imagem (botao direito na imagem > Copiar endereco da imagem)."); return; }
+      var arr=getImgs(); arr.push(u); setImgs(arr); mu.value=""; render();
+    });
     render();
   })();
 

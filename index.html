@@ -650,6 +650,9 @@
           <tr data-price="13" data-key="carregsala"><td><input type="checkbox"></td><td>Carregador wireless sala (VASTMARKE)</td><td class="num">13</td><td>IKEA</td></tr>
           <tr data-price="15" data-key="extens"><td><input type="checkbox"></td><td>Extensoes / regletas</td><td class="num">15</td><td>Continente/Worten</td></tr>
           <tr data-price="25" data-key="poster"><td><input type="checkbox"></td><td>Poster de filme (decoracao)</td><td class="num">25</td><td>Posterstore/Etsy</td></tr>
+          <tr data-key="bola8"><td><input type="checkbox"></td><td>Almofada bola 8</td><td class="num"></td><td></td></tr>
+          <tr data-key="vinilshelf"><td><input type="checkbox"></td><td>Prateleiras p/ vinis (parede)</td><td class="num"></td><td>IKEA</td></tr>
+          <tr data-key="onair"><td><input type="checkbox"></td><td>Caixa de luz ON AIR</td><td class="num"></td><td></td></tr>
           <tr data-key="cortinachuveiro"><td><input type="checkbox"></td><td>Cortina chuveiro + vara</td><td class="num"></td><td></td></tr>
           <tr data-key="suportepapel"><td><input type="checkbox"></td><td>Suporte papel cozinha</td><td class="num"></td><td></td></tr>
         </table></div>
@@ -1342,9 +1345,20 @@
       {n:"Alternativa - extensão 5 tomadas c/ interruptor",p:"~15 €",i:"",u:"https://www.google.com/search?tbm=shop&q=extensao+5+tomadas+interruptor"}
     ],
     tapete:[
-      {n:"Barata - tapete laranja 160x230",p:"~50 €",i:"",u:"https://www.google.com/search?tbm=shop&q=tapete+sala+laranja+160x230"},
-      {n:"Melhor - IKEA MORUM laranja 200x300",p:"~100 €",i:"",u:"https://www.ikea.com/pt/pt/search/?q=morum"},
-      {n:"Alternativa - tapete vermelho grande",p:"~80 €",i:"",u:"https://www.google.com/search?tbm=shop&q=tapete+sala+vermelho+200x300"}
+      {n:"Melhor - Loft Checkerboard creme 200x290",p:"~210 € (£179.90)",i:"https://the-rugs.com/cdn/shop/files/Loft_Checkerboard_Cream_top_view.jpg?v=1770303468&width=600",u:"https://the-rugs.com/products/loft-2050-checkerboard-rug"},
+      {n:"Alternativa - Rugvista Chaima xadrez preto/creme 200x300",p:"ver na Rugvista",i:"",u:"https://www.rugvista.com/p/chaima-200x300-cm-cream-white-black-large-rug-RVD32194"},
+      {n:"Barata - xadrez grande (pesquisa)",p:"~60-100 €",i:"",u:"https://www.google.com/search?tbm=shop&q=tapete+xadrez+checkerboard+200x300"}
+    ],
+    bola8:[
+      {n:"Almofada bola 8 (plush)",p:"~38 USD",i:"https://sodecorable.com/cdn/shop/files/ff0471b9-e8db-4173-85af-e727cf24a96e_1024x1024@2x.jpg?v=1741273413",u:"https://sodecorable.com/products/1pc-black-8-billiard-pillow-plush-toy-black-pillow-cushion-sofa-cushiontatami-cushion-for-halloween-decor-christmas-gift"},
+      {n:"Alternativa - Etsy (varias)",p:"~20-40 €",i:"",u:"https://www.etsy.com/market/8_ball_pillow"}
+    ],
+    vinilshelf:[
+      {n:"MOSSLANDA prateleira preta 115cm (3x = parede de vinis)",p:"9,99 €/un",i:"https://www.ikea.com/pt/pt/images/products/mosslanda-prateleira-p-molduras-preto__0634120_pe696314_s5.jpg?f=u",u:"https://www.ikea.com/pt/pt/p/mosslanda-prateleira-para-quadros-preto-70292104/"}
+    ],
+    onair:[
+      {n:"ON AIR neon light box (retro)",p:"~19 € (£16)",i:"https://shop.sciencemuseum.org.uk/cdn/shop/files/OnAirNeonLight4_1x.png?v=1741703956",u:"https://shop.sciencemuseum.org.uk/products/on-air-neon-light"},
+      {n:"Alternativa - Etsy (LED, maiores)",p:"~40-80 €",i:"",u:"https://www.etsy.com/market/on_air_lightbox"}
     ],
     panelas:[
       {n:"Barata - Tramontina conjunto",p:"~70 €",i:"",u:"https://www.google.com/search?tbm=shop&q=Tramontina+conjunto+panelas"},
@@ -1408,7 +1422,7 @@
     ],
     moppe:[{n:"Mini gavetas MOPPE (bétula)",p:"25 €",i:"https://www.ikea.com/pt/en/images/products/moppe-mini-chest-of-drawers-birch-plywood__1476382_pe998863_s5.jpg?f=u",u:"https://www.ikea.com/pt/en/p/moppe-mini-chest-of-drawers-birch-plywood-90623141/"}]
   };
-  var labelMap={sofa:"Sofá",tv:"TV",poltrona:"Poltrona",pufe:"Pufe",cand1:"Candeeiro de tecto",cand2:"Candeeiro de mesa",carregsala:"Carregador (sala)",extens:"Extensões",poster:"Poster de filme",cortinachuveiro:"Cortina chuveiro + vara",suportepapel:"Suporte papel cozinha",tapete:"Tapete",moveltv:"Móvel TV",candquarto:"Candeeiro (quarto)",girafa:"Girafa LED",carregquarto:"Carregador c/ luz",roupa:"Roupa de cama",cabides:"Cabides",cesto:"Cesto roupa suja",micro:"Microondas",panelas:"Panelas",louca:"Loiça",facas:"Facas",chaleira:"Chaleira",tigelas:"Tigelas",torradeira:"Torradeira",carrinho:"Carrinho cozinha",frigideiras:"Frigideiras",utens:"Utensílios",limpeza:"Kit limpeza",ferro:"Ferro",lixo:"Caixote do lixo",moppe:"Mini gavetas (MOPPE)",cortinas:"Cortinas",almof:"Almofadas"};
+  var labelMap={sofa:"Sofá",tv:"TV",poltrona:"Poltrona",pufe:"Pufe",cand1:"Candeeiro de tecto",cand2:"Candeeiro de mesa",carregsala:"Carregador (sala)",extens:"Extensões",poster:"Poster de filme",bola8:"Almofada bola 8",vinilshelf:"Prateleiras p/ vinis",onair:"Caixa de luz ON AIR",cortinachuveiro:"Cortina chuveiro + vara",suportepapel:"Suporte papel cozinha",tapete:"Tapete",moveltv:"Móvel TV",candquarto:"Candeeiro (quarto)",girafa:"Girafa LED",carregquarto:"Carregador c/ luz",roupa:"Roupa de cama",cabides:"Cabides",cesto:"Cesto roupa suja",micro:"Microondas",panelas:"Panelas",louca:"Loiça",facas:"Facas",chaleira:"Chaleira",tigelas:"Tigelas",torradeira:"Torradeira",carrinho:"Carrinho cozinha",frigideiras:"Frigideiras",utens:"Utensílios",limpeza:"Kit limpeza",ferro:"Ferro",lixo:"Caixote do lixo",moppe:"Mini gavetas (MOPPE)",cortinas:"Cortinas",almof:"Almofadas"};
 
   function prodCardsHTML(k,label){
     var pdel; try{pdel=JSON.parse(localStorage.getItem("jarvis:proddel")||"[]");}catch(e){pdel=[];}
